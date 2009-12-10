@@ -1,0 +1,150 @@
+#single_container
+  #single_container_top
+  #single_container_center
+    %h2 Forums
+    %form#contentSearch.search{:method => "get", :action => ""}
+      %p.fields
+        %input#s2{:type => "text", :value => "Search Forum", :name => "s2", :onfocus => "if (this.value == 'Search Forum') {this.value = '';}", :onblur => "if (this.value == '') {this.value = 'Search Forum';}"}
+        %button.go_button{:type => "submit", :name => "submit"} GO
+    
+    #article_white
+      - @categories.each do |category|
+        .article_white_container
+          .article_white_top
+          .article_white_center
+            %h3= category.title
+            %table.forumtb{:width => "100%", :cellspacing => "0"}
+              %thead
+                %tr
+                  %th
+                  %th Forum
+                  %th Posts/Threads
+                  %th Last Post
+              %tbody
+                - category.forums.each do |forum|
+                  %tr
+                    %td.forumIcon
+                      %img{:src => "/images/forum_newpost_false.jpg", :alt => "No New Posts"}
+                    %td.forumTitle
+                      %p.forumdesc
+                        %a.forumLink{:href => url_for(:forum, :forum => forum.permalink)}= forum.title
+                      %p.forumdesc= forum.description
+                    %td.forumPosts
+                      %p.forumdesc
+                        %strong 2 Posts
+                      %p.forumdesc 2 Threads
+                    %td.forumLastPost
+                      %p.forumdesc
+                        %a.forumLink{:href => "#"} LG Community Rules
+                      %p.forumdesc.byPost by LG Product Pro 06-18-2009 17:01
+            .clear
+          .article_white_bottom
+    
+    #aside_white
+      .aside_white_top
+      .aside_white_center
+        %h3 User Account
+        %ul
+          %li
+            %a{:href => "#"} Private Messages (1)
+          %li
+            %a{:href => "#"} View Your Posts
+          %li
+            %a{:href => "#"} Active Threads
+          %ul
+            %li
+              %a{:href => "#"} Will there be a update...
+            %li
+              %a{:href => "#"} Will there be a update...
+            %li
+              %a{:href => "#"} Will there be a update...
+            %li
+              %a{:href => "#"} Will there be a update...
+
+        #tagcloud
+          %span.tagcloud1
+            %a{:href => "#"} LG Shine
+          %span.tagcloud3
+            %a{:href => "#"} Cellular
+          %span.tagcloud2
+            %a{:href => "#"} Navigation
+          %span.tagcloud4
+            %a{:href => "#"} Tritan
+          %span.tagcloud1
+            %a{:href => "#"} LG Dare
+          %span.tagcloud1
+            %a{:href => "#"} Signal
+          %span.tagcloud3
+            %a{:href => "#"} EnV Touch
+          %span.tagcloud1
+            %a{:href => "#"} Texting
+          %span.tagcloud3
+            %a{:href => "#"} Bluetooth
+          %span.tagcloud2
+            %a{:href => "#"} Fame
+          %span.tagcloud1
+            %a{:href => "#"} Customers
+          %span.tagcloud4
+            %a{:href => "#"} Registration
+          %span.tagcloud7
+            %a{:href => "#"} File
+          %span.tagcloud3
+            %a{:href => "#"} Library
+          %span.tagcloud1
+            %a{:href => "#"} Partners
+          %span.tagcloud8
+            %a{:href => "#"} LG Xenon
+          %span.tagcloud1
+            %a{:href => "#"} Widgets
+          %span.tagcloud1
+            %a{:href => "#"} AutoDesk
+          %span.tagcloud7
+            %a{:href => "#"} Twitter
+          %span.tagcloud1
+            %a{:href => "#"} Music
+          %span.tagcloud1
+            %a{:href => "#"} LG Shine
+          %span.tagcloud6
+            %a{:href => "#"} Cellular
+          %span.tagcloud1
+            %a{:href => "#"} Navigation
+          %span.tagcloud1
+            %a{:href => "#"} Tritan
+          %span.tagcloud1
+            %a{:href => "#"} LG Dare
+          %span.tagcloud1
+            %a{:href => "#"} Signal
+          %span.tagcloud1
+            %a{:href => "#"} EnV Touch
+          %span.tagcloud6
+            %a{:href => "#"} Texting
+          %span.tagcloud5
+            %a{:href => "#"} Bluetooth
+          %span.tagcloud1
+            %a{:href => "#"} Fame
+          %span.tagcloud3
+            %a{:href => "#"} Customers Registration
+          %span.tagcloud1
+            %a{:href => "#"} File
+          %span.tagcloud1
+            %a{:href => "#"} Library
+          %span.tagcloud1
+            %a{:href => "#"} Partners
+          %span.tagcloud1
+            %a{:href => "#"} LG Xenon
+          %span.tagcloud1
+            %a{:href => "#"} Widgets
+          %span.tagcloud4
+            %a{:href => "#"} AutoDesk
+          %span.tagcloud1
+            %a{:href => "#"} Twitter
+          %span.tagcloud1
+            %a{:href => "#"} Music
+
+        .class
+
+      .aside_white_bottom
+        
+    .clear
+    
+  #single_container_bottom

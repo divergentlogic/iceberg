@@ -1,0 +1,9 @@
+= form_for(@topic, url_for(:topics, :forum => @forum.permalink)) do |f|
+  = f.error_messages
+  = f.hidden_field :forum_id
+  = f.label :title
+  = f.text_field :title
+  = f.label :message
+  = f.text_area :message
+  
+  = f.submit "Submit"

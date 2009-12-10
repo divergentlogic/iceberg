@@ -4,13 +4,14 @@ require 'rake'
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name = "forum"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
-    gem.email = "cdurtschi@divergentlogic.com"
-    gem.homepage = "http://github.com/cdurtschi/forum"
+    gem.name = "iceberg"
+    gem.summary = %Q{Forum as Rack middleware}
+    gem.description = %Q{Forum as Rack middleware}
+    gem.email = "christopher.durtschi@gmail.com"
+    gem.homepage = "http://github.com/robotapocalypse/iceberg"
     gem.authors = ["Christopher Durtschi"]
     gem.add_development_dependency "rspec"
+    gem.files = `git ls-files`.split("\n").sort.reject{ |file| file =~ /^\./ }.reject { |file| file =~ /^doc/ }
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 rescue LoadError
@@ -42,7 +43,7 @@ Rake::RDocTask.new do |rdoc|
   end
 
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "forum #{version}"
+  rdoc.title = "iceberg #{version}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end

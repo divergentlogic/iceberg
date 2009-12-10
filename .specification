@@ -1,0 +1,78 @@
+--- !ruby/object:Gem::Specification 
+name: forumz
+version: !ruby/object:Gem::Version 
+  version: 0.0.1
+platform: ruby
+authors: 
+- Christopher Durtschi
+autorequire: 
+bindir: bin
+cert_chain: []
+
+date: 2009-11-28 00:00:00 -07:00
+default_executable: 
+dependencies: 
+- !ruby/object:Gem::Dependency 
+  name: rspec
+  type: :development
+  version_requirement: 
+  version_requirements: !ruby/object:Gem::Requirement 
+    requirements: 
+    - - ">="
+      - !ruby/object:Gem::Version 
+        version: "0"
+    version: 
+description: Forum as Rack middleware
+email: cdurtschi@divergentlogic.com
+executables: []
+
+extensions: []
+
+extra_rdoc_files: 
+- LICENSE
+- README.rdoc
+files: 
+- .document
+- .gitignore
+- LICENSE
+- README.rdoc
+- Rakefile
+- VERSION
+- lib/forumz.rb
+- lib/mixins/external_layout.rb
+- lib/sinatra/forumz/forums.rb
+- lib/sinatra/forumz/views/layout.haml
+- lib/sinatra/forumz/views/forums/index.haml
+- spec/forumz_spec.rb
+- spec/spec_helper.rb
+has_rdoc: true
+homepage: http://github.com/cdurtschi/forumz
+licenses: []
+
+post_install_message: 
+rdoc_options: 
+- --charset=UTF-8
+require_paths: 
+- lib
+required_ruby_version: !ruby/object:Gem::Requirement 
+  requirements: 
+  - - ">="
+    - !ruby/object:Gem::Version 
+      version: "0"
+  version: 
+required_rubygems_version: !ruby/object:Gem::Requirement 
+  requirements: 
+  - - ">="
+    - !ruby/object:Gem::Version 
+      version: "0"
+  version: 
+requirements: []
+
+rubyforge_project: 
+rubygems_version: 1.3.5
+signing_key: 
+specification_version: 3
+summary: Forum as Rack middleware
+test_files: 
+- spec/forumz_spec.rb
+- spec/spec_helper.rb

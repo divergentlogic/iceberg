@@ -1,0 +1,9 @@
+- form_for(@forum, url_for(:forums)) do |f|
+  = f.label :title
+  = f.text_field :title
+  = f.label :description
+  = f.text_field :description
+  = f.label :category_id
+  = f.select :category_id, :collection => @categories, :fields => [:title, :id]
+  
+  = f.submit 'Submit'
