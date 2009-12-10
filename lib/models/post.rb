@@ -8,5 +8,5 @@ class Iceberg::Post
   
   belongs_to :topic
   belongs_to :forum
-  belongs_to :author, :model => 'Iceberg::User'
+  # belongs_to :author, :model => 'Iceberg::User'
 end

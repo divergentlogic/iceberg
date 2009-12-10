@@ -1,4 +1,4 @@
-= form_for(@topic, url_for(:topics, :forum => @forum.permalink)) do |f|
+- form_for(@topic, url_for(:topics, :forum => @forum.slug)) do |f|
   = f.error_messages
   = f.hidden_field :forum_id
   = f.label :title

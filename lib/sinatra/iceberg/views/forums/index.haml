@@ -27,7 +27,7 @@
                       %img{:src => "/images/forum_newpost_false.jpg", :alt => "No New Posts"}
                     %td.forumTitle
                       %p.forumdesc
-                        %a.forumLink{:href => url_for(:forum, :forum => forum.permalink)}= forum.title
+                        %a.forumLink{:href => url_for(:forum, :forum => forum.slug)}= forum.title
                       %p.forumdesc= forum.description
                     %td.forumPosts
                       %p.forumdesc

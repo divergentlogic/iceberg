@@ -33,7 +33,7 @@ module Sinatra
         end
         
         app.get :forum do |forum|
-          @forum = ::Iceberg::Forum.first(:permalink => forum)
+          @forum = ::Iceberg::Forum.first(:slug => forum)
           haml :'forums/show'
         end
       end

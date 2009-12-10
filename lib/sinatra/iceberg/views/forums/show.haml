@@ -19,7 +19,7 @@
       .article_wide_center
         %h3= @forum.title
         .forum_controls
-          %a.messageReply_Masterbutton{:href => url_for(:new_topic, :forum => @forum.permalink)} New Topic
+          %a.messageReply_Masterbutton{:href => url_for(:new_topic, :forum => @forum.slug)} New Topic
 
         %table.forumtb_post{:width => "100%", :cellspacing => "0"}
           %thead
@@ -35,7 +35,7 @@
                   %img{:src => "/images/forum_newpost_false.jpg", :alt => "No New Posts"}
                 %td.forumTitle
                   %p.forumdesc
-                    %a.forumLink{:href => "/forums/#{@forum.permalink}/topics/#{topic.permalink}"}= topic.title
+                    %a.forumLink{:href => "/forums/#{@forum.slug}/topics/#{topic.slug}"}= topic.title
                   %p.forumdesc
                 %td.forumPosts
                   %p.forumdesc

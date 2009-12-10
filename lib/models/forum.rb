@@ -2,9 +2,9 @@ class Iceberg::Forum
   include DataMapper::Resource
   
   property :id,               Serial
-  property :title,            String,   :length => (1..2000)
-  property :slug,             Slug
-  property :description,      String,   :length => (1..2000)
+  property :title,            String, :length => (1..250)
+  property :slug,             Slug,   :length => (1..250)
+  property :description,      String, :length => (1..500)
   property :last_post_id,     Integer
   property :created_at,       DateTime
   property :updated_at,       DateTime

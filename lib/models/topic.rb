@@ -2,8 +2,8 @@ class Iceberg::Topic
   include DataMapper::Resource
   
   property :id,               Serial
-  property :title,            String,   :length => (1..2000)
-  property :slug,             Slug
+  property :title,            String,   :length => (1..250)
+  property :slug,             Slug,     :length => (1..250)
   property :sticky,           Integer,  :default => 0
   property :locked,           Boolean
   property :posts_count,      Integer,  :default => 0
@@ -15,8 +15,8 @@ class Iceberg::Topic
   attr_accessor :message
   
   belongs_to :forum
-  belongs_to :author, :model => 'Iceberg::User'
-  belongs_to :last_author, :model => 'Iceberg::User'
+  # belongs_to :author, :model => 'Iceberg::User'
+  # belongs_to :last_author, :model => 'Iceberg::User'
   has n, :posts
   
   validates_present   :message, :on => :create
@@ -26,8 +26,8 @@ class Iceberg::Topic
   
   class << self
     def post(author, attributes={})
-      topic = new attributes.merge(:author => author)
-      topic.last_author = author
+      topic = new attributes #.merge(:author => author)
+      # topic.last_author = author
       topic.reply author, :message => attributes[:message]
       topic.save
       return topic
@@ -36,7 +36,7 @@ class Iceberg::Topic
 
   def reply(author, attributes)
     returning posts.new(attributes) do |post| # FIXME should be posts.create ?
-      post.author = author
+      # post.author = author
       post.forum = self.forum
       post.topic = self
     end
