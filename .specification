@@ -1,5 +1,5 @@
 --- !ruby/object:Gem::Specification 
-name: forumz
+name: iceberg
 version: !ruby/object:Gem::Version 
   version: 0.0.1
 platform: ruby
@@ -38,15 +38,15 @@ files:
 - README.rdoc
 - Rakefile
 - VERSION
-- lib/forumz.rb
+- lib/iceberg.rb
 - lib/mixins/external_layout.rb
-- lib/sinatra/forumz/forums.rb
-- lib/sinatra/forumz/views/layout.haml
-- lib/sinatra/forumz/views/forums/index.haml
-- spec/forumz_spec.rb
+- lib/sinatra/iceberg/forums.rb
+- lib/sinatra/iceberg/views/layout.haml
+- lib/sinatra/iceberg/views/forums/index.haml
+- spec/iceberg_spec.rb
 - spec/spec_helper.rb
 has_rdoc: true
-homepage: http://github.com/cdurtschi/forumz
+homepage: http://github.com/robotapocalypse/iceberg
 licenses: []
 
 post_install_message: 
@@ -74,5 +74,5 @@ signing_key:
 specification_version: 3
 summary: Forum as Rack middleware
 test_files: 
-- spec/forumz_spec.rb
+- spec/iceberg_spec.rb
 - spec/spec_helper.rb

@@ -11,7 +11,14 @@ begin
     gem.homepage = "http://github.com/robotapocalypse/iceberg"
     gem.authors = ["Christopher Durtschi"]
     gem.add_development_dependency "rspec"
-    gem.files = `git ls-files`.split("\n").sort.reject{ |file| file =~ /^\./ }.reject { |file| file =~ /^doc/ }
+    files = `git ls-files`.split("\n").sort.reject{ |file| file =~ /^\./ }.reject { |file| file =~ /^doc/ }
+    %w[sinatra_more].each do |dir|
+      files.delete(dir)
+      FileUtils.chdir(dir)
+      files.concat(`git ls-files`.split("\n").sort.reject{ |file| file =~ /^\./ }.reject { |file| file =~ /^doc/ }.map {|file| "#{dir}/#{file}"})
+      FileUtils.chdir('..')
+    end
+    gem.files = files
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 rescue LoadError
