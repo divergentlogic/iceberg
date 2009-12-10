@@ -16,7 +16,6 @@ require File.expand_path(File.dirname(__FILE__)+'/models/category')
 require File.expand_path(File.dirname(__FILE__)+'/models/forum')
 require File.expand_path(File.dirname(__FILE__)+'/models/topic')
 require File.expand_path(File.dirname(__FILE__)+'/models/post')
-require File.expand_path(File.dirname(__FILE__)+'/models/user')
 
 require File.expand_path(File.dirname(__FILE__)+'/sinatra/iceberg/forums')
 require File.expand_path(File.dirname(__FILE__)+'/mixins/external_layout')
