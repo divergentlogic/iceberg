@@ -19,7 +19,6 @@ require File.expand_path(File.dirname(__FILE__)+'/sinatra/iceberg/forums')
 require File.expand_path(File.dirname(__FILE__)+'/sinatra/iceberg/topics')
 require File.expand_path(File.dirname(__FILE__)+'/sinatra/iceberg/posts')
 
-require File.expand_path(File.dirname(__FILE__)+'/models/category')
 require File.expand_path(File.dirname(__FILE__)+'/models/forum')
 require File.expand_path(File.dirname(__FILE__)+'/models/topic')
 require File.expand_path(File.dirname(__FILE__)+'/models/post')
