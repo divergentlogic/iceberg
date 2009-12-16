@@ -1,42 +1,75 @@
 #single_container
   #single_container_top
   #single_container_center
-    %h2 Forums
+    %h2
+      Forums
+      %span
+        %a{:href => new_forum_path} (Add new root forum)
+        
     %form#contentSearch.search{:method => "get", :action => ""}
       %p.fields
         %input#s2{:type => "text", :value => "Search Forum", :name => "s2", :onfocus => "if (this.value == 'Search Forum') {this.value = '';}", :onblur => "if (this.value == '') {this.value = 'Search Forum';}"}
         %button.go_button{:type => "submit", :name => "submit"} GO
     
     #article_white
-      - @categories.each do |category|
+      - @forums.each do |forum|
         .article_white_container
           .article_white_top
           .article_white_center
-            %h3= category.title
-            %table.forumtb{:width => "100%", :cellspacing => "0"}
-              %thead
-                %tr
-                  %th
-                  %th Forum
-                  %th Posts/Threads
-                  %th Last Post
-              %tbody
-                - category.forums.each do |forum|
-                  %tr
-                    %td.forumIcon
-                      %img{:src => "/images/forum_newpost_false.jpg", :alt => "No New Posts"}
-                    %td.forumTitle
-                      %p.forumdesc
-                        %a.forumLink{:href => url_for(:forum, :forum => forum.slug)}= forum.title
-                      %p.forumdesc= forum.description
-                    %td.forumPosts
-                      %p.forumdesc
-                        %strong 2 Posts
-                      %p.forumdesc 2 Threads
-                    %td.forumLastPost
-                      %p.forumdesc
-                        %a.forumLink{:href => "#"} LG Community Rules
-                      %p.forumdesc.byPost by LG Product Pro 06-18-2009 17:01
+            %h3
+              = forum.title
+              %span
+                %a{:href => new_forum_path(forum)} (Add new sub-forum)
+            - unless forum.forums.empty?
+              .forum_container
+                %table.forumtb{:width => "100%", :cellspacing => "0"}
+                  %thead
+                    %tr
+                      %th
+                      %th Forum
+                      %th Posts/Topics
+                      %th Last Post
+                  %tbody
+                    - forum.forums.each do |forum|
+                      %tr
+                        %td.forumIcon
+                          %img{:src => "/images/forum_newpost_false.jpg", :alt => "No New Posts"}
+                        %td.forumTitle
+                          %p.forumdesc
+                            %a.forumLink{:href => "/forums/#{forum.ancestory_path}"}= forum.title
+                          %p.forumdesc= forum.description
+                        %td.forumPosts
+                          %p.forumdesc
+                            %strong= "#{forum.posts_count} Posts"
+                          %p.forumdesc= "#{forum.topics_count} Topics"
+                        %td.forumLastPost
+                          %p.forumdesc
+                            %a.forumLink{:href => "#"} LG Community Rules
+                          %p.forumdesc.byPost by LG Product Pro 06-18-2009 17:01
+
+              - unless forum.topics.empty?
+                .forum_container
+                  %table.forumtb{:width => "100%", :cellspacing => "0"}
+                    %thead
+                      %tr
+                        %th
+                        %th Topic
+                        %th Posts
+                        %th Last Post
+                    %tbody
+                      - forum.topics.each do |topic|
+                        %tr
+                          %td.forumIcon
+                            %img{:src => "/images/forum_newpost_false.jpg", :alt => "No New Posts"}
+                          %td.forumTitle
+                            %a.forumLink{:href => "/forums/#{topic.forum.ancestory_path}/topics/#{topic.slug}"}= topic.title
+                          %td.forumPosts
+                            %p.forumdesc= "#{topic.posts_count} Posts"
+                          %td.forumLastPost
+                            %p.forumdesc
+                              %a.forumLink{:href => "#"} LG Community Rules
+                            %p.forumdesc.byPost by LG Product Pro 06-18-2009 17:01
+
             .clear
           .article_white_bottom
     

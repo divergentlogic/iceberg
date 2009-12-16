@@ -1,0 +1,58 @@
+#single_container
+  #single_container_top
+  #single_container_center
+    %h2 Forums
+    %p.breadCrumb= breadcrumbs(@topic)
+    
+    %form#contentSearch.search{:method => "get", :action => ""}
+      %p.fields
+        %input#s2{:type => "text", :value => "Search Forum", :name => "s2", :onfocus => "if (this.value == 'Search Forum') {this.value = '';}", :onblur => "if (this.value == '') {this.value = 'Search Forum';}"}
+        %button.go_button{:type => "submit", :name => "submit"} GO
+    
+    #article_wide
+      .article_wide_top
+      .article_wide_center
+        %h3= @topic.title
+        .forum_controls
+          %a.messageReply_Masterbutton{:href => new_topic_path(@topic.forum)} New Topic
+          %a.messageReply_Masterbutton{:href => new_post_path(@topic)} Post Reply
+
+        .forum_container
+          %table.forumtb_post{:width => "100%", :cellspacing => "0"}
+            %thead
+              %tr
+                %th Author
+                %th Message
+            %tbody
+              - @topic.posts.each do |post|
+                %tr.messageHeader
+                  %td.forumAuthor
+                    %p.forumDate= post.created_at
+                  %td.forumMessage
+                    .forum_controls
+                      %a.messageReply_button{:href => "#"} Quote
+                      %a.messageReply_button{:href => new_post_path(@topic, post)} Reply
+                %tr
+                  %td.messageUser{:valign => 'top'}
+                    %h4 LG Product Pro
+                    %p Moderator
+                    .user_viewstats
+                      %p
+                        %a{:href => "#"}
+                          %img{:src => "/images/thumbsUp.gif", :alt => "Thumbs Up"}
+                        %a{:href => "#"}
+                          %img{:src => "/images/thumbsDown.gif", :alt => "Thumbs Down"}
+                      %hr
+                      %p Join Date: Jul 2009
+                      %p Location: Dallas, Tx
+                      %p Posts: 1,385
+                      %p Repuation: 426
+                  %td.messageBody{:valign => "top"}= post.message
+              
+        .clear
+
+      .article_wide_bottom
+
+    .clear
+
+  #single_container_bottom

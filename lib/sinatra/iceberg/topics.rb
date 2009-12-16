@@ -2,31 +2,53 @@ module Sinatra
   module Iceberg
     module Topics
       module Helpers
-        # def current_user
-        #   ::Iceberg::User.first
-        # end
+        def topics_path(forum)
+          "/forums/#{forum.ancestory_path}/topics"
+        end
+        
+        def topic_path(topic)
+          "/forums/#{topic.forum.ancestory_path}/topics/#{topic.slug}"
+        end
+        
+        def new_topic_path(forum)
+          "/forums/#{forum.ancestory_path}/topics/new"
+        end
+        
+        def get_forum
+          slugs = split_splat
+          @forum = ::Iceberg::Forum.get_child_from_slugs(slugs)
+          halt 404 unless @forum
+        end
       end
 
       def self.registered(app)
         app.helpers Helpers
-        
-        app.map(:topics).to('/forums/:forum/topics')
-        app.map(:new_topic).to('/forums/:forum/topics/new')
 
-        app.get :new_topic do |forum|
-          @forum = ::Iceberg::Forum.first(:slug => forum)
+        app.get "/forums/*/topics/new" do
+          get_forum
           @topic = @forum.topics.new
           haml :'topics/new'
         end
         
-        app.post :topics do |forum|
-          @forum = ::Iceberg::Forum.first(:slug => forum)
+        app.post "/forums/*/topics" do
+          get_forum
+          # TODO add author
           # @forum.topics.post(current_user, params['iceberg-topic'])
-          @topic = @forum.topics.post(nil, params['iceberg-topic'])
-          if @topic.save
-            redirect url_for(:forum, :forum => @forum.slug)
+          @topic = @forum.post_topic(nil, params['iceberg-topic'])
+          unless @topic.new_record?
+            redirect forum_path(@forum)
           else
             haml :'topics/new'
+          end
+        end
+        
+        app.get "/forums/*/topics/:topic" do
+          get_forum
+          @topic = @forum.topics.first(:slug => params[:topic])
+          if @topic
+            haml :'topics/show'
+          else
+            404
           end
         end
       end

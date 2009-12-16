@@ -6,11 +6,18 @@ require 'haml'
 
 require 'dm-core'
 require 'dm-types'
+require 'dm-aggregates'
 require 'dm-timestamps'
 require 'dm-validations'
 require 'dm-is-list'
+require 'dm-is-tree'
 
 module Iceberg; end
+
+require File.expand_path(File.dirname(__FILE__)+'/sinatra/iceberg/helpers')
+require File.expand_path(File.dirname(__FILE__)+'/sinatra/iceberg/forums')
+require File.expand_path(File.dirname(__FILE__)+'/sinatra/iceberg/topics')
+require File.expand_path(File.dirname(__FILE__)+'/sinatra/iceberg/posts')
 
 require File.expand_path(File.dirname(__FILE__)+'/models/category')
 require File.expand_path(File.dirname(__FILE__)+'/models/forum')
@@ -24,11 +31,13 @@ module Iceberg
   class App < Sinatra::Base
     include Mixins::ExternalLayout
     
+    helpers Sinatra::Iceberg::Helpers
+    
     set :views, File.dirname(__FILE__) + '/sinatra/iceberg/views'
 
     register SinatraMore::MarkupPlugin
-    register SinatraMore::RoutingPlugin
-    register Sinatra::Iceberg::Forums
+    register Sinatra::Iceberg::Posts
     register Sinatra::Iceberg::Topics
+    register Sinatra::Iceberg::Forums
   end
 end

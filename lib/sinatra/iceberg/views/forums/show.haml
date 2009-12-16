@@ -2,12 +2,7 @@
   #single_container_top
   #single_container_center
     %h2 Forums
-    %p.breadCrumb
-      %a{:href => "#"} Board Index
-      >
-      %a{:href => "#"} LG
-      >
-      %a{:href => "#"} LG enV3 and SDHC
+    %p.breadCrumb= breadcrumbs(@forum)
 
     %form#contentSearch.search{:method => "get", :action => ""}
       %p.fields
@@ -19,32 +14,59 @@
       .article_wide_center
         %h3= @forum.title
         .forum_controls
-          %a.messageReply_Masterbutton{:href => url_for(:new_topic, :forum => @forum.slug)} New Topic
+          %a.messageReply_Masterbutton{:href => new_topic_path(@forum)} New Topic
 
-        %table.forumtb_post{:width => "100%", :cellspacing => "0"}
-          %thead
-            %tr
-              %th
-              %th Topic
-              %th Posts/Threads
-              %th Last Post
-          %tbody
-            - @forum.topics.each do |topic|
-              %tr
-                %td.forumIcon
-                  %img{:src => "/images/forum_newpost_false.jpg", :alt => "No New Posts"}
-                %td.forumTitle
-                  %p.forumdesc
-                    %a.forumLink{:href => "/forums/#{@forum.slug}/topics/#{topic.slug}"}= topic.title
-                  %p.forumdesc
-                %td.forumPosts
-                  %p.forumdesc
-                    %strong 2 Posts
-                  %p.forumdesc 2 Threads
-                %td.forumLastPost
-                  %p.forumdesc
-                    %a.forumLink{:href => "#"} LG Community Rules
-                  %p.forumdesc.byPost by LG Product Pro 06-18-2009 17:01
+        - unless @forum.forums.empty?
+          .forum_container
+            %table.forumtb_post{:width => "100%", :cellspacing => "0"}
+              %thead
+                %tr
+                  %th
+                  %th Forum
+                  %th Posts/Topics
+                  %th Last Post
+              %tbody
+                - @forum.forums.each do |forum|
+                  %tr
+                    %td.forumIcon
+                      %img{:src => "/images/forum_newpost_false.jpg", :alt => "No New Posts"}
+                    %td.forumTitle
+                      %p.forumdesc
+                        %a.forumLink{:href => forum_path(forum)}= forum.title
+                      %p.forumdesc= forum.description
+                    %td.forumPosts
+                      %p.forumdesc
+                        %strong= "#{forum.posts_count} Posts"
+                      %p.forumdesc= "#{forum.topics_count} Topics"
+                    %td.forumLastPost
+                      %p.forumdesc
+                        %a.forumLink{:href => "#"} LG Community Rules
+                      %p.forumdesc.byPost by LG Product Pro 06-18-2009 17:01
+
+        - unless @forum.topics.empty?
+          .forum_container
+            %table.forumtb_post{:width => "100%", :cellspacing => "0"}
+              %thead
+                %tr
+                  %th
+                  %th Topic
+                  %th Posts
+                  %th Last Post
+              %tbody
+                - @forum.topics.each do |topic|
+                  %tr
+                    %td.forumIcon
+                      %img{:src => "/images/forum_newpost_false.jpg", :alt => "No New Posts"}
+                    %td.forumTitle
+                      %p.forumdesc
+                        %a.forumLink{:href => topic_path(topic)}= topic.title
+                      %p.forumdesc
+                    %td.forumPosts
+                      %p.forumdesc= "#{topic.posts_count} Posts"
+                    %td.forumLastPost
+                      %p.forumdesc
+                        %a.forumLink{:href => "#"} LG Community Rules
+                      %p.forumdesc.byPost by LG Product Pro 06-18-2009 17:01
               
         .clear
 
