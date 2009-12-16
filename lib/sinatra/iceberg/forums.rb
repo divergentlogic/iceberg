@@ -43,7 +43,7 @@ module Sinatra
         ["/forums/new", "/forums/*/new"].each do |new_forum|
           app.get new_forum do
             slugs = split_splat
-            @parent = ::Iceberg::Forum.get_child_from_slugs(slugs)
+            @parent = ::Iceberg::Forum.by_ancestory(slugs)
             @forum = ::Iceberg::Forum.new(:parent => @parent)
             haml :'forums/new'
           end
@@ -51,7 +51,7 @@ module Sinatra
         
         app.get "/forums/*" do |forum|
           slugs = split_splat
-          @forum = ::Iceberg::Forum.get_child_from_slugs(slugs)
+          @forum = ::Iceberg::Forum.by_ancestory(slugs)
           if @forum
             haml :'forums/show'
           else

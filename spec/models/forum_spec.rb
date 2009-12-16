@@ -80,14 +80,14 @@ describe Iceberg::Forum do
       @forum.should == @verizon_forum
     end
     
-    describe "#get_child_from_slugs" do
+    describe "#by_ancestory" do
       it "should retrieve the child given correct slugs" do
-        @forum = Iceberg::Forum.get_child_from_slugs(%w[general carriers verizon])
+        @forum = Iceberg::Forum.by_ancestory(%w[general carriers verizon])
         @forum.should == @verizon_forum
       end
       
       it "should not retrieve the child given incorrect slugs" do
-        @forum = Iceberg::Forum.get_child_from_slugs(%w[carriers general verizon])
+        @forum = Iceberg::Forum.by_ancestory(%w[carriers general verizon])
         @forum.should be_nil
       end
     end

@@ -31,7 +31,7 @@ class Iceberg::Forum
       all(options.merge!({:order => [:position]}))
     end
     
-    def get_child_from_slugs(slugs)
+    def by_ancestory(slugs)
       while !slugs.empty?
         slug = slugs.shift
         child = if child

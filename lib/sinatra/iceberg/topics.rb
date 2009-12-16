@@ -16,7 +16,7 @@ module Sinatra
         
         def get_forum
           slugs = split_splat
-          @forum = ::Iceberg::Forum.get_child_from_slugs(slugs)
+          @forum = ::Iceberg::Forum.by_ancestory(slugs)
           halt 404 unless @forum
         end
       end
