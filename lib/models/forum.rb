@@ -12,6 +12,7 @@ class Iceberg::Forum
   property :updated_at,       DateTime
   property :last_updated_at,  DateTime
   property :last_post_id,     Integer
+  property :allow_topics,     Boolean,  :default => true
   
   has n, :topics
   has n, :posts, :through => :topics

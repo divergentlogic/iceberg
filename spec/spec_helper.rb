@@ -8,6 +8,7 @@ require 'spec'
 require 'spec/autorun'
 require 'spec/interop/test'
 require 'rack/test'
+require 'webrat'
 require 'factory_girl'
 
 Dir[File.expand_path(File.join(File.dirname(__FILE__), 'support', '**', '*.rb'))].each {|f| require f}
@@ -23,6 +24,7 @@ Spec::Runner.configure do |config|
   end
     
   config.include(Rack::Test::Methods)
+  config.include(Webrat::Matchers)
   config.include(CustomMatchers)
   
   config.include(SinatraMore::AssetTagHelpers)

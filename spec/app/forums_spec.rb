@@ -25,4 +25,20 @@ describe "getting /forums" do
     get "/forums/not-a-slug"
     last_response.should be_not_found
   end
+  
+  it "should display link to create a new topic if the forum allows topics" do
+    @forum = Factory.build(:forum, :title => "Fun Stuff", :parent => @root, :allow_topics => true)
+    @forum.save
+    
+    get "/forums/root/fun-stuff"
+    last_response.should have_selector(".forum_controls > a:contains('New Topic')")
+  end
+  
+  it "should not display link to create a new topic if the forum does not allows topics" do
+    @forum = Factory.build(:forum, :title => "Fun Stuff", :parent => @root, :allow_topics => false)
+    @forum.save
+    
+    get "/forums/root/fun-stuff"
+    last_response.should_not have_selector(".forum_controls > a:contains('New Topic')")
+  end
 end

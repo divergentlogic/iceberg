@@ -57,6 +57,14 @@ describe Iceberg::Forum do
       @forum.topics_count.should == 1
       @forum.posts_count.should == 1
     end
+    
+    it "should fail if the forum does not allow topics" do
+      @forum = Factory.build(:forum, :allow_topics => false)
+      @forum.save
+
+      @topic = @forum.post_topic(nil, {:title => "Hello there", :message => "Welcome to my topic"})
+      @topic.should error_on(:forum)
+    end
   end
   
   describe "tree" do

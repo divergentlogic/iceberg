@@ -13,8 +13,10 @@
       .article_wide_top
       .article_wide_center
         %h3= @forum.title
-        .forum_controls
-          %a.messageReply_Masterbutton{:href => new_topic_path(@forum)} New Topic
+
+        - if @forum.allow_topics?
+          .forum_controls
+            %a.messageReply_Masterbutton{:href => new_topic_path(@forum)} New Topic
 
         - unless @forum.forums.empty?
           .forum_container

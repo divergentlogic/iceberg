@@ -20,8 +20,10 @@ class Iceberg::Topic
   has n, :posts
   belongs_to :last_post, 'Iceberg::Post'
   
-  validates_present   :message, :on => :create
-  validates_is_unique :title, :scope => :forum_id, :message => "A topic with that title has been posted in this forum already; maybe you'd like to post under that topic instead?"
+  validates_present     :message, :on => :create
+  validates_present     :forum
+  validates_is_unique   :title, :scope => :forum_id, :message => "A topic with that title has been posted in this forum already; maybe you'd like to post under that topic instead?"
+  validates_with_method :forum, :method => :validate_forum_allows_topics
   
   before  :valid?,  :set_slug
   after   :create,  :set_post
@@ -42,5 +44,12 @@ protected
       :message => message
     })
   end
-  
+
+  def validate_forum_allows_topics
+    if forum && forum.allow_topics?
+      true
+    else
+      [false, "This forum does not allow topics"]
+    end
+  end
 end

@@ -20,6 +20,9 @@
               = forum.title
               %span
                 %a{:href => new_forum_path(forum)} (Add new sub-forum)
+            - if forum.allow_topics?
+              .forum_controls
+                %a.messageReply_Masterbutton{:href => new_topic_path(forum)} New Topic
             - unless forum.forums.empty?
               .forum_container
                 %table.forumtb{:width => "100%", :cellspacing => "0"}
