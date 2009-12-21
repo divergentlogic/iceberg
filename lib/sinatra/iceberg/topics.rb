@@ -35,7 +35,7 @@ module Sinatra
           # TODO add author
           # @forum.topics.post(current_user, params['iceberg-topic'])
           @topic = @forum.post_topic(nil, params['iceberg-topic'])
-          unless @topic.new_record?
+          unless @topic.new?
             redirect forum_path(@forum)
           else
             haml :'topics/new'
