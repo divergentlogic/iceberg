@@ -25,7 +25,7 @@
                 %a.messageReply_Masterbutton{:href => new_topic_path(forum)} New Topic
             - unless forum.forums.empty?
               .forum_container
-                %table.forumtb{:width => "100%", :cellspacing => "0"}
+                %table.forumtb{:id => "forum-#{forum.slug}", :width => "100%", :cellspacing => "0"}
                   %thead
                     %tr
                       %th

@@ -20,7 +20,7 @@
 
         - unless @forum.forums.empty?
           .forum_container
-            %table.forumtb_post{:width => "100%", :cellspacing => "0"}
+            %table.forumtb_post{:id => "forum-#{@forum.slug}", :width => "100%", :cellspacing => "0"}
               %thead
                 %tr
                   %th
