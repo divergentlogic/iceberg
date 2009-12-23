@@ -1,29 +1,18 @@
 module Sinatra
   module Iceberg
     module Topics
+      
       module Helpers
-        def topics_path(forum)
-          "/forums/#{forum.ancestory_path}/topics"
-        end
-        
-        def topic_path(topic)
-          "/forums/#{topic.forum.ancestory_path}/topics/#{topic.slug}"
-        end
-        
-        def new_topic_path(forum)
-          "/forums/#{forum.ancestory_path}/topics/new"
-        end
-        
         def get_forum
           slugs = split_splat
           @forum = ::Iceberg::Forum.by_ancestory(slugs)
           halt 404 unless @forum
         end
       end
-
+      
       def self.registered(app)
         app.helpers Helpers
-
+        
         app.get "/forums/*/topics/new" do
           get_forum
           @topic = @forum.topics.new
@@ -52,6 +41,7 @@ module Sinatra
           end
         end
       end
+      
     end
   end
 end

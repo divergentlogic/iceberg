@@ -1,23 +1,8 @@
 module Sinatra
   module Iceberg
     module Posts
-      module Helpers
-        def new_post_path(topic, post=nil)
-          if post
-            "/forums/#{topic.forum.ancestory_path}/topics/#{topic.slug}/reply/#{post.id}"
-          else
-            "/forums/#{topic.forum.ancestory_path}/topics/#{topic.slug}/reply"
-          end
-        end
-        
-        def posts_path(post)
-          new_post_path(post.topic, post)
-        end
-      end
-
+      
       def self.registered(app)
-        app.helpers Helpers
-
         ["/forums/*/topics/:topic/reply", "/forums/*/topics/:topic/reply/:post"].each do |path|
           app.get path do
             slugs = split_splat
@@ -42,6 +27,7 @@ module Sinatra
           end
         end
       end
+      
     end
   end
 end

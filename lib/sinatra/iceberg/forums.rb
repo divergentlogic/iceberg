@@ -1,31 +1,8 @@
 module Sinatra
   module Iceberg
     module Forums
-      module Helpers
-        def forums_path
-          "/forums"
-        end
-
-        def forum_path(forum=nil)
-          if forum
-            "/forums/#{forum.ancestory_path}"
-          else
-            forums_path
-          end
-        end
-
-        def new_forum_path(forum=nil)
-          if forum
-            "/forums/#{forum.ancestory_path}/new"
-          else
-            "/forums/new"
-          end
-        end
-      end
 
       def self.registered(app)
-        app.helpers Helpers
-
         app.get "/forums" do
           @forums = ::Iceberg::Forum.ordered(:parent_id => nil)
           haml :'forums/index'
@@ -59,6 +36,7 @@ module Sinatra
           end
         end
       end
+      
     end
   end
 end

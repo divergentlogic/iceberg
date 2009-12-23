@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe Sinatra::Iceberg::Forums::Helpers do
+describe Iceberg::Helpers::Visuals do
   before(:each) do
     @root     = Factory.build(:forum, :title => "Root")
     @root.save

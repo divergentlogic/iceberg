@@ -1,10 +1,11 @@
-module Sinatra
-  module Iceberg
-    module Helpers
+module Iceberg
+  module Helpers
+    module Visuals
+      
       def breadcrumbs(forum_or_topic, options={})
         separator = options.delete(:separator) || ' > '
         wrap_with_tag = options.delete(:wrap_with_tag)
-        
+
         links = []
         current = if forum_or_topic.is_a?(::Iceberg::Topic)
           links << link_to(forum_or_topic.title, topic_path(forum_or_topic))
@@ -21,9 +22,6 @@ module Sinatra
         links.join(h(separator))
       end
       
-      def split_splat
-        params[:splat] ? params[:splat].first.split('/') : []
-      end
     end
   end
 end

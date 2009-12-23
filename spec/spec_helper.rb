@@ -33,10 +33,10 @@ Spec::Runner.configure do |config|
   config.include(SinatraMore::OutputHelpers)
   config.include(SinatraMore::TagHelpers)
   config.include(SinatraMore::RoutingHelpers)
-  config.include(Sinatra::Iceberg::Helpers)
-  config.include(Sinatra::Iceberg::Forums::Helpers)
-  config.include(Sinatra::Iceberg::Topics::Helpers)
-  config.include(Sinatra::Iceberg::Posts::Helpers)
+
+  config.include(Iceberg::Helpers::Paths)
+  config.include(Iceberg::Helpers::Utilities)
+  config.include(Iceberg::Helpers::Visuals)
   
   config.before(:each) do
     DataMapper.setup(:default, 'sqlite3::memory:')
