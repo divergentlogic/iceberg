@@ -1,5 +1,5 @@
-module Sinatra
-  module Iceberg
+module Iceberg
+  module Routes
     module Topics
       
       module Helpers
