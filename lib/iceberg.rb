@@ -4,6 +4,8 @@ require File.expand_path(File.dirname(__FILE__) + '/../sinatra_more/lib/sinatra_
 
 require 'haml'
 
+require 'rack-flash'
+
 require 'dm-core'
 require 'dm-types'
 require 'dm-aggregates'
@@ -30,8 +32,10 @@ require File.expand_path(File.dirname(__FILE__)+'/mixins/external_layout')
 
 module Iceberg
   class App < Sinatra::Base
+    use Rack::Flash
+    
     include Mixins::ExternalLayout
-        
+    
     set :views, File.dirname(__FILE__) + '/views'
     
     helpers Iceberg::Helpers::Paths

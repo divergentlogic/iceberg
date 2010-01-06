@@ -10,6 +10,7 @@ begin
     gem.email = "christopher.durtschi@gmail.com"
     gem.homepage = "http://github.com/robotapocalypse/iceberg"
     gem.authors = ["Christopher Durtschi"]
+    gem.add_dependency "rack-flash"
     gem.add_development_dependency "rspec"
     files = `git ls-files`.split("\n").sort.reject{ |file| file =~ /^\./ }.reject { |file| file =~ /^doc/ }
     %w[sinatra_more].each do |dir|
