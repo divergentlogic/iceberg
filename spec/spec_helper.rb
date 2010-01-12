@@ -20,7 +20,10 @@ Iceberg::App.set :logging, false
 
 Spec::Runner.configure do |config|
   def app
-    Iceberg::App
+    @app ||= Rack::Builder.app do
+      use Rack::Session::Cookie
+      run Iceberg::App
+    end
   end
     
   config.include(Rack::Test::Methods)
