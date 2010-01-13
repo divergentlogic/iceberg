@@ -9,6 +9,7 @@ module Iceberg
         end
         
         app.post "/forums" do
+          authenticate!
           @forum = ::Iceberg::Forum.new(params['iceberg-forum'])
           if @forum.save
             redirect forum_path(@forum.parent)
@@ -17,8 +18,9 @@ module Iceberg
           end
         end
         
-        ["/forums/new", "/forums/*/new"].each do |new_forum|
-          app.get new_forum do
+        ["/forums/new", "/forums/*/new"].each do |path|
+          app.get path do
+            authenticate!
             slugs = split_splat
             @parent = ::Iceberg::Forum.by_ancestory(slugs)
             @forum = ::Iceberg::Forum.new(:parent => @parent)

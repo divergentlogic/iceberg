@@ -5,6 +5,7 @@ module Iceberg
       def self.registered(app)
         ["/forums/*/topics/:topic/reply", "/forums/*/topics/:topic/reply/:post"].each do |path|
           app.get path do
+            authenticate!
             slugs = split_splat
             @forum = ::Iceberg::Forum.by_ancestory(slugs)
             @topic = @forum.topics.first(:slug => params[:topic])
@@ -15,6 +16,7 @@ module Iceberg
         end
         
         app.post "/forums/*/topics/:topic/reply/:post" do
+          authenticate!
           slugs = split_splat
           @forum = ::Iceberg::Forum.by_ancestory(slugs)
           @topic = @forum.topics.first(:slug => params[:topic])

@@ -14,12 +14,14 @@ module Iceberg
         app.helpers Helpers
         
         app.get "/forums/*/topics/new" do
+          authenticate!
           get_forum
           @topic = @forum.topics.new
           haml :'topics/new'
         end
         
         app.post "/forums/*/topics" do
+          authenticate!
           get_forum
           # TODO add author
           # @forum.topics.post(current_user, params['iceberg-topic'])

@@ -4,6 +4,7 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'iceberg'
 require 'sinatra'
+require 'warden'
 require 'spec'
 require 'spec/autorun'
 require 'spec/interop/test'
@@ -19,9 +20,28 @@ Iceberg::App.set :raise_errors, true
 Iceberg::App.set :logging, false
 
 Spec::Runner.configure do |config|
+  class User
+    attr_accessor :id, :email
+    
+    def initialize(id, email)
+      @id = id
+      @email = email
+    end
+  end
+  
+  Warden::Strategies.add(:test) do
+    def authenticate!
+      success!(User.new(1, 'test@example.com'))
+    end
+  end
+  
   def app
     @app ||= Rack::Builder.app do
       use Rack::Session::Cookie
+      use Warden::Manager do |manager|
+        manager.default_strategies :test
+        manager.failure_app = lambda {|env| [401, {"Content-Type" => "text/plain"}, ["Fail!"]]}
+      end
       run Iceberg::App
     end
   end
