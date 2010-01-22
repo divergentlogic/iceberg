@@ -10,15 +10,15 @@ begin
     gem.email = "christopher.durtschi@gmail.com"
     gem.homepage = "http://github.com/robotapocalypse/iceberg"
     gem.authors = ["Christopher Durtschi"]
-    gem.add_dependency "rack-flash"
+    gem.add_dependency 'rack', '=1.0.1'
+    gem.add_dependency 'rack-flash', '=0.1.1'
+    gem.add_dependency 'sinatra', '=0.9.4'
+    gem.add_dependency 'dm-core', '=0.10.2'
+    gem.add_dependency 'dm-more', '0.10.2'
+    gem.add_dependency 'data_objects', '=0.10.1'
+    gem.add_dependency 'do_mysql', '=0.10.1'
     gem.add_development_dependency "rspec"
     files = `git ls-files`.split("\n").sort.reject{ |file| file =~ /^\./ }.reject { |file| file =~ /^doc/ }
-    %w[sinatra_more].each do |dir|
-      files.delete(dir)
-      FileUtils.chdir(dir)
-      files.concat(`git ls-files`.split("\n").sort.reject{ |file| file =~ /^\./ }.reject { |file| file =~ /^doc/ }.map {|file| "#{dir}/#{file}"})
-      FileUtils.chdir('..')
-    end
     gem.files = files
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
