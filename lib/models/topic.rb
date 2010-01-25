@@ -7,7 +7,7 @@ class Iceberg::Topic
   property :sticky,           Integer,  :default => 0
   property :locked,           Boolean
   property :posts_count,      Integer,  :default => 0
-  property :hits,             Integer,  :default => 0
+  property :view_count,       Integer,  :default => 0
   property :created_at,       DateTime
   property :updated_at,       DateTime
   property :last_updated_at,  DateTime
