@@ -6,17 +6,20 @@ class Iceberg::Forum
   property :slug,             Slug,     :length => (1..250)
   property :description,      String,   :length => (1..500)
   property :parent_id,        Integer
+  property :position,         Integer,  :default => 0
   property :topics_count,     Integer,  :default => 0
   property :posts_count,      Integer,  :default => 0
   property :created_at,       DateTime
   property :updated_at,       DateTime
   property :last_updated_at,  DateTime
+  property :last_topic_id,    Integer
   property :last_post_id,     Integer
   property :allow_topics,     Boolean,  :default => true
   
   has n, :topics
   has n, :posts, :through => :topics
-  belongs_to :last_post, 'Iceberg::Post'
+  belongs_to :last_topic, 'Iceberg::Topic'
+  belongs_to :last_post,  'Iceberg::Post'
   
   validates_present   :title, :description
   validates_is_unique :title, :scope => :parent_id, :message => "There's already a forum with that title"
