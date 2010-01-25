@@ -2,14 +2,14 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Iceberg::Topic do
   before(:each) do
-    @forum = Factory.build(:forum)
-    @forum.save
+    @board = Factory.build(:board)
+    @board.save
   end
   
   # describe "#post" do
-  #   it "should create a topic with a post and update topic and forum" do
+  #   it "should create a topic with a post and update topic and board" do
   #     # TODO add author
-  #     @topic = @forum.topics.post(nil, {:title => "Hello there", :message => "Welcome to my topic"})
+  #     @topic = @board.topics.post(nil, {:title => "Hello there", :message => "Welcome to my topic"})
   #     @topic.id.should_not be_nil
   #     # @topic.
   #   end

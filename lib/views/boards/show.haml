@@ -1,0 +1,79 @@
+#single_container
+  #single_container_top
+  #single_container_center
+    %h2 Forums
+    %p.breadCrumb= breadcrumbs(@board)
+
+    %form#contentSearch.search{:method => "get", :action => ""}
+      %p.fields
+        %input#s2{:type => "text", :value => "Search Forum", :name => "s2", :onfocus => "if (this.value == 'Search Forum') {this.value = '';}", :onblur => "if (this.value == '') {this.value = 'Search Forum';}"}
+        %button.go_button{:type => "submit", :name => "submit"} GO
+
+    #article_wide
+      .article_wide_top
+      .article_wide_center
+        %h3= @board.title
+
+        - if @board.allow_topics?
+          .board_controls
+            %a.messageReply_Masterbutton{:href => new_topic_path(@board)} New Topic
+
+        - unless @board.boards.empty?
+          .board_container
+            %table.boardtb_post{:id => "board-#{@board.slug}", :width => "100%", :cellspacing => "0"}
+              %thead
+                %tr
+                  %th
+                  %th Forum
+                  %th Posts/Topics
+                  %th Last Post
+              %tbody
+                - @board.boards.each do |board|
+                  %tr
+                    %td.boardIcon
+                      %img{:src => "/images/board_newpost_false.jpg", :alt => "No New Posts"}
+                    %td.boardTitle
+                      %p.boarddesc
+                        %a.boardLink{:href => board_path(board)}= board.title
+                      %p.boarddesc= board.description
+                    %td.boardPosts
+                      %p.boarddesc
+                        %strong= "#{board.posts_count} Posts"
+                      %p.boarddesc= "#{board.topics_count} Topics"
+                    %td.boardLastPost
+                      %p.boarddesc
+                        %a.boardLink{:href => "#"} LG Community Rules
+                      %p.boarddesc.byPost by LG Product Pro 06-18-2009 17:01
+
+        - unless @board.topics.empty?
+          .board_container
+            %table.boardtb_post{:width => "100%", :cellspacing => "0"}
+              %thead
+                %tr
+                  %th
+                  %th Topic
+                  %th Posts
+                  %th Last Post
+              %tbody
+                - @board.topics.each do |topic|
+                  %tr
+                    %td.boardIcon
+                      %img{:src => "/images/board_newpost_false.jpg", :alt => "No New Posts"}
+                    %td.boardTitle
+                      %p.boarddesc
+                        %a.boardLink{:href => topic_path(topic)}= topic.title
+                      %p.boarddesc
+                    %td.boardPosts
+                      %p.boarddesc= "#{topic.posts_count} Posts"
+                    %td.boardLastPost
+                      %p.boarddesc
+                        %a.boardLink{:href => "#"} LG Community Rules
+                      %p.boarddesc.byPost by LG Product Pro 06-18-2009 17:01
+              
+        .clear
+
+      .article_wide_bottom
+
+    .clear
+
+  #single_container_bottom

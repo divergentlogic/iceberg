@@ -2,31 +2,31 @@ module Iceberg
   module Helpers
     module Paths
       
-      def forums_path
-        "/forums"
+      def boards_path
+        "/boards"
       end
 
-      def forum_path(forum=nil)
-        if forum
-          "/forums/#{forum.ancestory_path}"
+      def board_path(board=nil)
+        if board
+          "/boards/#{board.ancestory_path}"
         else
-          forums_path
+          boards_path
         end
       end
 
-      def new_forum_path(forum=nil)
-        if forum
-          "/forums/#{forum.ancestory_path}/new"
+      def new_board_path(board=nil)
+        if board
+          "/boards/#{board.ancestory_path}/new"
         else
-          "/forums/new"
+          "/boards/new"
         end
       end
       
       def new_post_path(topic, post=nil)
         if post
-          "/forums/#{topic.forum.ancestory_path}/topics/#{topic.slug}/reply/#{post.id}"
+          "/boards/#{topic.board.ancestory_path}/topics/#{topic.slug}/reply/#{post.id}"
         else
-          "/forums/#{topic.forum.ancestory_path}/topics/#{topic.slug}/reply"
+          "/boards/#{topic.board.ancestory_path}/topics/#{topic.slug}/reply"
         end
       end
       
@@ -34,16 +34,16 @@ module Iceberg
         new_post_path(post.topic, post)
       end
       
-      def topics_path(forum)
-        "/forums/#{forum.ancestory_path}/topics"
+      def topics_path(board)
+        "/boards/#{board.ancestory_path}/topics"
       end
       
       def topic_path(topic)
-        "/forums/#{topic.forum.ancestory_path}/topics/#{topic.slug}"
+        "/boards/#{topic.board.ancestory_path}/topics/#{topic.slug}"
       end
       
-      def new_topic_path(forum)
-        "/forums/#{forum.ancestory_path}/topics/new"
+      def new_topic_path(board)
+        "/boards/#{board.ancestory_path}/topics/new"
       end
       
     end

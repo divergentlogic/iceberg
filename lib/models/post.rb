@@ -8,7 +8,7 @@ class Iceberg::Post
   property :updated_at, DateTime
   
   belongs_to :topic
-  belongs_to :forum
+  belongs_to :board
   # belongs_to :author, 'Iceberg::User'
   
   is :tree, :order => :created_at
@@ -20,7 +20,7 @@ class Iceberg::Post
       # post.author = author
       post.parent = self
       post.topic = self.topic
-      post.forum = self.forum
+      post.board = self.board
     end
   end
   
@@ -30,17 +30,18 @@ protected
     # TODO add author attributes
     topic.attributes = {
       :last_post => self,
-      :last_updated_at => self.updated_at,
+      :last_updated_at => updated_at,
       :posts_count => topic.posts.count
     }
     topic.save
-    forum.attributes = {
+    board.attributes = {
       :last_post => self,
-      :last_updated_at => self.updated_at,
-      :posts_count => forum.posts.count,
-      :topics_count => forum.topics.count
+      :last_topic => topic,
+      :last_updated_at => updated_at,
+      :posts_count => board.posts.count,
+      :topics_count => board.topics.count
     }
-    forum.save
+    board.save
   end
   
 end

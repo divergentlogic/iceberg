@@ -21,11 +21,11 @@ require File.expand_path(File.dirname(__FILE__)+'/helpers/paths')
 require File.expand_path(File.dirname(__FILE__)+'/helpers/utilities')
 require File.expand_path(File.dirname(__FILE__)+'/helpers/visuals')
 
-require File.expand_path(File.dirname(__FILE__)+'/routes/forums')
+require File.expand_path(File.dirname(__FILE__)+'/routes/boards')
 require File.expand_path(File.dirname(__FILE__)+'/routes/topics')
 require File.expand_path(File.dirname(__FILE__)+'/routes/posts')
 
-require File.expand_path(File.dirname(__FILE__)+'/models/forum')
+require File.expand_path(File.dirname(__FILE__)+'/models/board')
 require File.expand_path(File.dirname(__FILE__)+'/models/topic')
 require File.expand_path(File.dirname(__FILE__)+'/models/post')
 

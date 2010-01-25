@@ -14,16 +14,16 @@ class Iceberg::Topic
   property :last_post_id,     Integer
   attr_accessor :message
   
-  belongs_to :forum
+  belongs_to :board
   # belongs_to :author, 'Iceberg::User'
   # belongs_to :last_author, 'Iceberg::User'
   has n, :posts
   belongs_to :last_post, 'Iceberg::Post'
   
   validates_present     :message, :on => :create
-  validates_present     :forum
-  validates_is_unique   :title, :scope => :forum_id, :message => "A topic with that title has been posted in this forum already; maybe you'd like to post under that topic instead?"
-  validates_with_method :forum, :method => :validate_forum_allows_topics
+  validates_present     :board
+  validates_is_unique   :title, :scope => :board_id, :message => "A topic with that title has been posted in this board already; maybe you'd like to post under that topic instead?"
+  validates_with_method :board, :method => :validate_board_allows_topics
   
   before  :valid?,  :set_slug
   after   :create,  :set_post
@@ -39,17 +39,17 @@ protected
   def set_post
     # TODO set author
     posts.create({
-      :forum => forum,
+      :board => board,
       # :author => author,
       :message => message
     })
   end
 
-  def validate_forum_allows_topics
-    if forum && forum.allow_topics?
+  def validate_board_allows_topics
+    if board && board.allow_topics?
       true
     else
-      [false, "This forum does not allow topics"]
+      [false, "This board does not allow topics"]
     end
   end
 end

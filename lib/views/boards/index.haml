@@ -5,7 +5,7 @@
       Forums
       - if signed_in?
         %span
-          %a{:href => new_forum_path} (Add new root forum)
+          %a{:href => new_board_path} (Add new root board)
         
     %form#contentSearch.search{:method => "get", :action => ""}
       %p.fields
@@ -13,21 +13,21 @@
         %button.go_button{:type => "submit", :name => "submit"} GO
     
     #article_white
-      - @forums.each do |forum|
+      - @boards.each do |board|
         .article_white_container
           .article_white_top
           .article_white_center
             %h3
-              = forum.title
+              = board.title
               - if signed_in?
                 %span
-                  %a{:href => new_forum_path(forum)} (Add new sub-forum)
-              - if forum.allow_topics?
-                .forum_controls
-                  %a.messageReply_Masterbutton{:href => new_topic_path(forum)} New Topic
-            - unless forum.forums.empty?
-              .forum_container
-                %table.forumtb{:id => "forum-#{forum.slug}", :width => "100%", :cellspacing => "0"}
+                  %a{:href => new_board_path(board)} (Add new sub-board)
+              - if board.allow_topics?
+                .board_controls
+                  %a.messageReply_Masterbutton{:href => new_topic_path(board)} New Topic
+            - unless board.boards.empty?
+              .board_container
+                %table.boardtb{:id => "board-#{board.slug}", :width => "100%", :cellspacing => "0"}
                   %thead
                     %tr
                       %th
@@ -35,26 +35,26 @@
                       %th Posts/Topics
                       %th Last Post
                   %tbody
-                    - forum.forums.each do |forum|
+                    - board.boards.each do |board|
                       %tr
-                        %td.forumIcon
-                          %img{:src => "/images/forum_newpost_false.jpg", :alt => "No New Posts"}
-                        %td.forumTitle
-                          %p.forumdesc
-                            %a.forumLink{:href => "/forums/#{forum.ancestory_path}"}= forum.title
-                          %p.forumdesc= forum.description
-                        %td.forumPosts
-                          %p.forumdesc
-                            %strong= "#{forum.posts_count} Posts"
-                          %p.forumdesc= "#{forum.topics_count} Topics"
-                        %td.forumLastPost
-                          %p.forumdesc
-                            %a.forumLink{:href => "#"} LG Community Rules
-                          %p.forumdesc.byPost by LG Product Pro 06-18-2009 17:01
+                        %td.boardIcon
+                          %img{:src => "/images/board_newpost_false.jpg", :alt => "No New Posts"}
+                        %td.boardTitle
+                          %p.boarddesc
+                            %a.boardLink{:href => "/boards/#{board.ancestory_path}"}= board.title
+                          %p.boarddesc= board.description
+                        %td.boardPosts
+                          %p.boarddesc
+                            %strong= "#{board.posts_count} Posts"
+                          %p.boarddesc= "#{board.topics_count} Topics"
+                        %td.boardLastPost
+                          %p.boarddesc
+                            %a.boardLink{:href => "#"} LG Community Rules
+                          %p.boarddesc.byPost by LG Product Pro 06-18-2009 17:01
 
-              - unless forum.topics.empty?
-                .forum_container
-                  %table.forumtb{:width => "100%", :cellspacing => "0"}
+              - unless board.topics.empty?
+                .board_container
+                  %table.boardtb{:width => "100%", :cellspacing => "0"}
                     %thead
                       %tr
                         %th
@@ -62,18 +62,18 @@
                         %th Posts
                         %th Last Post
                     %tbody
-                      - forum.topics.each do |topic|
+                      - board.topics.each do |topic|
                         %tr
-                          %td.forumIcon
-                            %img{:src => "/images/forum_newpost_false.jpg", :alt => "No New Posts"}
-                          %td.forumTitle
-                            %a.forumLink{:href => "/forums/#{topic.forum.ancestory_path}/topics/#{topic.slug}"}= topic.title
-                          %td.forumPosts
-                            %p.forumdesc= "#{topic.posts_count} Posts"
-                          %td.forumLastPost
-                            %p.forumdesc
-                              %a.forumLink{:href => "#"} LG Community Rules
-                            %p.forumdesc.byPost by LG Product Pro 06-18-2009 17:01
+                          %td.boardIcon
+                            %img{:src => "/images/board_newpost_false.jpg", :alt => "No New Posts"}
+                          %td.boardTitle
+                            %a.boardLink{:href => "/boards/#{topic.board.ancestory_path}/topics/#{topic.slug}"}= topic.title
+                          %td.boardPosts
+                            %p.boarddesc= "#{topic.posts_count} Posts"
+                          %td.boardLastPost
+                            %p.boarddesc
+                              %a.boardLink{:href => "#"} LG Community Rules
+                            %p.boarddesc.byPost by LG Product Pro 06-18-2009 17:01
 
             .clear
           .article_white_bottom

@@ -1,4 +1,4 @@
-class Iceberg::Forum
+class Iceberg::Board
   include DataMapper::Resource
   
   property :id,               Serial
@@ -22,11 +22,11 @@ class Iceberg::Forum
   belongs_to :last_post,  'Iceberg::Post'
   
   validates_present   :title, :description
-  validates_is_unique :title, :scope => :parent_id, :message => "There's already a forum with that title"
+  validates_is_unique :title, :scope => :parent_id, :message => "There's already a board with that title"
   
   is :list, :scope => [:parent_id]
   is :tree, :order => :position
-  alias_method :forums, :children
+  alias_method :boards, :children
   
   before :valid?, :set_slug
   
@@ -51,7 +51,7 @@ class Iceberg::Forum
   
   def post_topic(author, attributes={})
     topic = Iceberg::Topic.new(attributes)
-    topic.forum = self
+    topic.board = self
     # topic.author = author
     # topic.last_author = author
     topic.save
