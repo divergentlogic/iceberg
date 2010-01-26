@@ -108,7 +108,7 @@ class TestFormHelpers < Test::Unit::TestCase
   context 'for #label_tag method' do
     should "display label tag in ruby" do
       actual_html = label_tag(:username, :class => 'long-label', :caption => "Nickname")
-      assert_has_tag(:label, :for => 'username', :class => 'long-label', :content => "Nickname: ") { actual_html }
+      assert_has_tag(:label, :for => 'username', :class => 'long-label', :content => "Nickname") { actual_html }
     end
 
     should "display label tag in erb for simple form" do
@@ -187,7 +187,18 @@ class TestFormHelpers < Test::Unit::TestCase
   context 'for #text_area_tag method' do
     should "display text area in ruby" do
       actual_html = text_area_tag(:about, :class => 'long')
-      assert_has_tag(:textarea, :class => "long", :name => 'about') { actual_html }
+      assert_has_tag(:textarea, :class => "long", :content => '', :name => 'about') { actual_html }
+    end
+    
+    should "display text area in ruby with specified content" do
+      actual_html = text_area_tag(:about, :value => "a test")
+      assert_has_tag(:textarea, :content => "a test", :name => 'about') { actual_html }
+    end
+    
+    should "display text area in ruby with no content with closing tag" do
+      actual_html = text_area_tag(:about)
+      assert_has_tag(:textarea, :content => "", :name => 'about') { actual_html }
+      assert_equal '<textarea name="about"></textarea>', actual_html
     end
 
     should "display text area in erb" do

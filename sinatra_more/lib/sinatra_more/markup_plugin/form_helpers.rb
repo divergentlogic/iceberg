@@ -55,7 +55,7 @@ module SinatraMore
     # label_tag :username, :class => 'long-label'
     # label_tag :username, :class => 'long-label' do ... end
     def label_tag(name, options={}, &block)
-      options.reverse_merge!(:caption => name.to_s.titleize, :for => name)
+      options.reverse_merge!(:caption => "#{name.to_s.titleize}: ", :for => name)
       caption_text = options.delete(:caption)
       if block_given? # label with inner content
         label_content = caption_text + capture_html(&block)
@@ -80,10 +80,10 @@ module SinatraMore
     end
 
     # Constructs a text area input from the given options
-    # text_area_tag :username, :class => 'long'
+    # text_area_tag :username, :class => 'long', :value => "Demo?"
     def text_area_tag(name, options={})
       options.reverse_merge!(:name => name)
-      content_tag(:textarea, '', options)
+      content_tag(:textarea, options.delete(:value).to_s, options)
     end
 
     # Constructs a password field input from the given options

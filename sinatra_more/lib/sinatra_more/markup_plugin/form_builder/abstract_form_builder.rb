@@ -15,7 +15,7 @@ class AbstractFormBuilder
 
   # f.label :username, :caption => "Nickname"
   def label(field, options={})
-    options.reverse_merge!(:caption => field.to_s.titleize)
+    options.reverse_merge!(:caption => "#{field.to_s.titleize}: ")
     @template.label_tag(field_id(field), options)
   end
 
@@ -55,8 +55,8 @@ class AbstractFormBuilder
     unchecked_value = options.delete(:uncheck_value) || '0'
     options.reverse_merge!(:id => field_id(field), :value => '1')
     options.merge!(:checked => true) if values_matches_field?(field, options[:value])
-    html = @template.check_box_tag field_name(field), options
-    html << hidden_field(field, :value => unchecked_value, :id => nil)
+    html = hidden_field(field, :value => unchecked_value, :id => nil)
+    html << @template.check_box_tag(field_name(field), options)
   end
 
   # f.radio_button :gender, :value => 'male'
