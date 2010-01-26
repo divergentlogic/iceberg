@@ -49,12 +49,12 @@ describe Iceberg::Board do
       @post.message.should == "Welcome to my topic"
       
       @topic.last_post.should == @post
-      @topic.last_updated_at.should == @post.updated_at
+      @topic.last_updated_at.to_s.should == @post.updated_at.to_s
       @topic.posts_count.should == 1
       
       @board.last_post.should == @post
       @board.last_topic.should == @topic
-      @board.last_updated_at.should == @post.updated_at
+      @board.last_updated_at.to_s.should == @post.updated_at.to_s
       @board.topics_count.should == 1
       @board.posts_count.should == 1
     end
