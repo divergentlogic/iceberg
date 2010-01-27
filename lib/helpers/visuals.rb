@@ -22,6 +22,10 @@ module Iceberg
         links.join(h(separator))
       end
       
+      def quote_post(post)
+        post.message
+      end
+      
     end
   end
 end

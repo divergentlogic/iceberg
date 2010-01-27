@@ -22,12 +22,17 @@ module Iceberg
         end
       end
       
-      def new_post_path(topic, post=nil)
+      def new_post_path(topic, post=nil, quote=false)
+        quote_query = "?quote=true" if quote
         if post
-          "/boards/#{topic.board.ancestory_path}/topics/#{topic.slug}/reply/#{post.id}"
+          "/boards/#{topic.board.ancestory_path}/topics/#{topic.slug}/reply/#{post.id}#{quote_query}"
         else
-          "/boards/#{topic.board.ancestory_path}/topics/#{topic.slug}/reply"
+          "/boards/#{topic.board.ancestory_path}/topics/#{topic.slug}/reply#{quote_query}"
         end
+      end
+      
+      def new_quoted_post_path(topic, post=nil)
+        new_post_path(topic, post, true)
       end
       
       def posts_path(post)

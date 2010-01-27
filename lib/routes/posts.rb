@@ -11,6 +11,9 @@ module Iceberg
             @topic = @board.topics.first(:slug => params[:topic])
             @parent = params[:post] ? @topic.posts.first(:id => params[:post]) : @topic.posts.first
             @post = @topic.posts.new(:parent => @parent)
+            if params[:quote] == "true"
+              @post.message = quote_post(@parent)
+            end
             haml :'posts/new'
           end
         end
