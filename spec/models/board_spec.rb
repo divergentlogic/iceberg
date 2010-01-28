@@ -38,20 +38,30 @@ describe Iceberg::Board do
   end
   
   describe "#post_topic" do
-    it "should create a topic with a post and update topic and board" do
-      @board = Factory.build(:board)
-      @board.save
+    before(:each) do
+      @board = Factory.create(:board)
       # TODO add author
       @topic = @board.post_topic(nil, {:title => "Hello there", :message => "Welcome to my topic"})
-      @board.reload
-      
+    end
+    
+    it "should create a topic" do
+      @topic.title.should == "Hello there"
+    end
+    
+    it "should create a post" do
       @post = @topic.posts.first
       @post.message.should == "Welcome to my topic"
-      
+    end
+    
+    it "should update the topic cache" do
+      @post = @topic.posts.first
       @topic.last_post.should == @post
       @topic.last_updated_at.to_s.should == @post.updated_at.to_s
       @topic.posts_count.should == 1
-      
+    end
+    
+    it "should update the board cache" do
+      @post = @topic.posts.first
       @board.last_post.should == @post
       @board.last_topic.should == @topic
       @board.last_updated_at.to_s.should == @post.updated_at.to_s
@@ -60,11 +70,10 @@ describe Iceberg::Board do
     end
     
     it "should fail if the board does not allow topics" do
-      @board = Factory.build(:board, :allow_topics => false)
-      @board.save
-
-      @topic = @board.post_topic(nil, {:title => "Hello there", :message => "Welcome to my topic"})
-      @topic.should error_on(:board)
+      board = Factory.create(:board, :allow_topics => false)
+      # TODO add author
+      topic = board.post_topic(nil, {:title => "Hello there", :message => "Welcome to my topic"})
+      topic.should error_on(:board)
     end
   end
   

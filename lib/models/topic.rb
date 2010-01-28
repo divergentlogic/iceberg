@@ -11,14 +11,13 @@ class Iceberg::Topic
   property :created_at,       DateTime
   property :updated_at,       DateTime
   property :last_updated_at,  DateTime
-  property :last_post_id,     Integer
   attr_accessor :message
   
   belongs_to :board
   # belongs_to :author, 'Iceberg::User'
   # belongs_to :last_author, 'Iceberg::User'
   has n, :posts
-  belongs_to :last_post, 'Iceberg::Post'
+  belongs_to :last_post, :model => 'Iceberg::Post', :required => false
   
   validates_present     :message, :on => :create
   validates_present     :board
@@ -27,6 +26,29 @@ class Iceberg::Topic
   
   before  :valid?,  :set_slug
   after   :create,  :set_post
+  
+  def move_to(board)
+    unless self.board == board
+      old = self.board
+      self.board = board
+      if save
+        board.update_cache
+        old.update_cache
+        return true
+      end
+    end
+    return false
+  end
+  
+  def update_cache
+    # TODO add author attributes
+    last_post = posts.first(:order => [:updated_at.desc])
+    
+    self.last_post_id     = last_post ? last_post.id : nil
+    self.last_updated_at  = last_post ? last_post.updated_at : nil
+    self.posts_count      = posts.count
+    save
+  end
 
 protected
 

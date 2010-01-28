@@ -12,14 +12,12 @@ class Iceberg::Board
   property :created_at,       DateTime
   property :updated_at,       DateTime
   property :last_updated_at,  DateTime
-  property :last_topic_id,    Integer
-  property :last_post_id,     Integer
   property :allow_topics,     Boolean,  :default => true
   
   has n, :topics
   has n, :posts, :through => :topics
-  belongs_to :last_topic, 'Iceberg::Topic'
-  belongs_to :last_post,  'Iceberg::Post'
+  belongs_to :last_topic, :model => 'Iceberg::Topic', :required => false
+  belongs_to :last_post,  :model => 'Iceberg::Post',  :required => false
   
   validates_present   :title, :description
   validates_is_unique :title, :scope => :parent_id, :message => "There's already a board with that title"
@@ -56,6 +54,19 @@ class Iceberg::Board
     # topic.last_author = author
     topic.save
     topic
+  end
+  
+  def update_cache
+    # TODO add author attributes
+    last_post   = posts.first(:order => [:updated_at.desc])
+    last_topic  = topics.first(:order => [:last_updated_at.desc])
+    
+    self.last_topic_id    = last_topic ? last_topic.id : nil
+    self.last_post_id     = last_post ? last_post.id : nil
+    self.last_updated_at  = last_post ? last_post.updated_at : nil
+    self.topics_count     = topics.count
+    self.posts_count      = posts.count
+    save
   end
   
   def ancestory

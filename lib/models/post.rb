@@ -27,21 +27,8 @@ class Iceberg::Post
 protected
 
   def update_caches
-    # TODO add author attributes
-    topic.attributes = {
-      :last_post => self,
-      :last_updated_at => updated_at,
-      :posts_count => topic.posts.count
-    }
-    topic.save
-    board.attributes = {
-      :last_post => self,
-      :last_topic => topic,
-      :last_updated_at => updated_at,
-      :posts_count => board.posts.count,
-      :topics_count => board.topics.count
-    }
-    board.save
+    topic.update_cache
+    board.update_cache
   end
   
 end
