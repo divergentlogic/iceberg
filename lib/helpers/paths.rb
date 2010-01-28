@@ -51,6 +51,10 @@ module Iceberg
         "/boards/#{board.ancestory_path}/topics/new"
       end
       
+      def move_topic_path(topic)
+        "/topics/#{topic.id}/move"
+      end
+      
     end
   end
 end

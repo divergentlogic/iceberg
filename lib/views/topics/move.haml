@@ -1,0 +1,7 @@
+%h1= @topic.board.title
+%h2= @topic.title
+- form_for(@topic, move_topic_path(@topic)) do |f|
+  = f.error_messages
+  = f.label :board_id, :caption => 'Board'
+  = f.select :board_id, :collection => @boards, :fields => [:title, :id]
+  = f.submit 'Move'

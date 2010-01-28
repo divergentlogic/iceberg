@@ -42,6 +42,31 @@ module Iceberg
             404
           end
         end
+        
+        app.get %r{/topics/([1-9][0-9]*)/move} do |id|
+          @topic = Iceberg::Topic.get(id)
+          if @topic
+            @boards = Iceberg::Board.all(:id.not => @topic.board.id, :allow_topics => true)
+            haml :'topics/move'
+          else
+            404
+          end
+        end
+        
+        app.post %r{/topics/([1-9][0-9]*)/move} do |id|
+          @topic = Iceberg::Topic.get(id)
+          if @topic
+            board = Iceberg::Board.get(params['iceberg-topic']['board_id'])
+            if @topic.move_to(board)
+              redirect topic_path(@topic)
+            else
+              haml :'topics/move'
+            end
+          else
+            404
+          end
+        end
+        
       end
       
     end

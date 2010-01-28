@@ -165,7 +165,7 @@ module SinatraMore
       option_items.collect do |caption, value|
         value ||= caption
         content_tag(:option, caption, :value => value, :selected => selected_value.to_s =~ /#{value}|#{caption}/)
-      end
+      end.join("\n")
     end
 
     # returns the hidden method field for 'put' and 'delete' forms
