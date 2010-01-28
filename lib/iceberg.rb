@@ -1,6 +1,6 @@
 require 'sinatra/base'
 require File.expand_path(File.dirname(__FILE__) + '/../sinatra_more/lib/sinatra_more/markup_plugin')
-require File.expand_path(File.dirname(__FILE__) + '/../sinatra_more/lib/sinatra_more/routing_plugin')
+require File.expand_path(File.dirname(__FILE__) + '/../sinatra_more/lib/sinatra_more/render_plugin')
 
 require 'haml'
 
@@ -45,6 +45,7 @@ module Iceberg
     helpers Iceberg::Helpers::Visuals
 
     register SinatraMore::MarkupPlugin
+    register SinatraMore::RenderPlugin
     
     register Iceberg::Routes::Posts
     register Iceberg::Routes::Topics

@@ -6,7 +6,7 @@ module Iceberg
           private
           
           def render(engine, data, options={}, locals={}, &block)
-            unless options[:layout]
+            if options[:layout].nil?
               options.merge!({:layout => self.options.external_layout}) if self.options.respond_to?(:external_layout) && self.options.external_layout
             end
             super(engine, data, options, locals, &block)

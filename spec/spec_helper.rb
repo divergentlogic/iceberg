@@ -55,7 +55,7 @@ Spec::Runner.configure do |config|
   config.include(SinatraMore::FormatHelpers)
   config.include(SinatraMore::OutputHelpers)
   config.include(SinatraMore::TagHelpers)
-  config.include(SinatraMore::RoutingHelpers)
+  config.include(SinatraMore::RenderHelpers)
 
   config.include(Iceberg::Helpers::Paths)
   config.include(Iceberg::Helpers::Utilities)
