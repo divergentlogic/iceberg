@@ -18,6 +18,7 @@ begin
     gem.add_dependency 'data_objects', '=0.10.1'
     gem.add_dependency 'do_mysql', '=0.10.1'
     gem.add_development_dependency "rspec"
+    gem.add_development_dependency "be_valid_asset"
     files = `git ls-files`.split("\n").sort.reject{ |file| file =~ /^\./ }.reject { |file| file =~ /^doc/ }
     gem.files = files
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings

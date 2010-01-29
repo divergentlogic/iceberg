@@ -32,6 +32,17 @@ module Iceberg
             haml :'topics/new'
           end
         end
+
+        app.get "/boards/*/topics/:topic.atom" do
+          get_board
+          @topic = @board.topics.first(:slug => params[:topic])
+          if @topic
+            headers['Content-Type'] = 'application/atom+xml'
+            builder :'topics/show', :layout => false
+          else
+            404
+          end
+        end
         
         app.get "/boards/*/topics/:topic" do
           get_board

@@ -99,4 +99,84 @@ describe Iceberg::Routes::Topics do
       end
     end
   end
+  
+  describe "viewing the ATOM feed" do
+    before(:each) do
+      @board = Factory.create(:board, :title => "Board")
+      # TODO add author
+      
+      Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 6, 0, 0))
+      @topic = @board.post_topic(nil, {:title => "Topic", :message => "First post"})
+      @post1 = @topic.posts.first
+      
+      Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 7, 0, 0))
+      @post2 = @post1.reply(nil, {:message => "Second post"})
+      @post2.save
+      
+      Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 8, 0, 0))
+      @post3 = @post2.reply(nil, {:message => "Third post"})
+      @post3.save
+    end
+    
+    it "should be successful" do
+      get "/boards/board/topics/topic.atom"
+      last_response.should be_ok
+    end
+    
+    it "should return 404 if the board doesn't exist" do
+      get "/boards/does-not-exist/topics/topic.atom"
+      last_response.should be_not_found
+    end
+    
+    it "should return 404 if the topic doesn't exist" do
+      get "/boards/board/topics/does-not-exist.atom"
+      last_response.should be_not_found
+    end
+    
+    it "should have the ATOM Content Type set" do
+      get "/boards/board/topics/topic.atom"
+      last_response.headers['Content-Type'].should == 'application/atom+xml'
+    end
+    
+    it "should be a valid ATOM feed" do
+      get "/boards/board/topics/topic.atom"
+      last_response.body.should be_valid_atom
+    end
+    
+    it "should have an entry for the first post" do
+      get "/boards/board/topics/topic.atom"
+      
+      last_response.body.should have_xpath("//feed/entry[1]/title[contains(text(), 'Topic')]")
+      last_response.body.should have_xpath("//feed/entry[1]/link[@href='http://example.org/boards/board/topics/topic#1'][@rel='alternate'][@type='text/html']")
+      last_response.body.should have_xpath("//feed/entry[1]/id[contains(text(), 'http://example.org/boards/board/topics/topic#1')]")
+      last_response.body.should have_xpath("//feed/entry[1]/updated[contains(text(), '2010-01-01T06:00:00Z')]")
+      # TODO add author
+      last_response.body.should have_xpath("//feed/entry[1]/author/name")
+      last_response.body.should have_xpath("//feed/entry[1]/content[@type='html'][contains(text(), 'First post')]")
+    end
+    
+    it "should have an entry for the second post" do
+      get "/boards/board/topics/topic.atom"
+    
+      last_response.body.should have_xpath("//feed/entry[2]/title[contains(text(), 'Topic')]")
+      last_response.body.should have_xpath("//feed/entry[2]/link[@href='http://example.org/boards/board/topics/topic#2'][@rel='alternate'][@type='text/html']")
+      last_response.body.should have_xpath("//feed/entry[2]/id[contains(text(), 'http://example.org/boards/board/topics/topic#2')]")
+      last_response.body.should have_xpath("//feed/entry[2]/updated[contains(text(), '2010-01-01T07:00:00Z')]")
+      # TODO add author
+      last_response.body.should have_xpath("//feed/entry[2]/author/name")
+      last_response.body.should have_xpath("//feed/entry[2]/content[@type='html'][contains(text(), 'Second post')]")
+    end
+    
+    it "should have an entry for the third post" do
+      get "/boards/board/topics/topic.atom"
+    
+      last_response.body.should have_xpath("//feed/entry[3]/title[contains(text(), 'Topic')]")
+      last_response.body.should have_xpath("//feed/entry[3]/link[@href='http://example.org/boards/board/topics/topic#3'][@rel='alternate'][@type='text/html']")
+      last_response.body.should have_xpath("//feed/entry[3]/id[contains(text(), 'http://example.org/boards/board/topics/topic#3')]")
+      last_response.body.should have_xpath("//feed/entry[3]/updated[contains(text(), '2010-01-01T08:00:00Z')]")
+      # TODO add author
+      last_response.body.should have_xpath("//feed/entry[3]/author/name")
+      last_response.body.should have_xpath("//feed/entry[3]/content[@type='html'][contains(text(), 'Third post')]")
+    end
+  end
 end

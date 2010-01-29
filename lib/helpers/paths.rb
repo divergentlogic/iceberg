@@ -39,12 +39,32 @@ module Iceberg
         new_post_path(post.topic, post)
       end
       
+      def post_path(post)
+        "#{topic_path(post.topic)}##{post.id}"
+      end
+      
+      def post_url(post)
+        "http://#{request.host}#{post_path(post)}"
+      end
+      
       def topics_path(board)
         "/boards/#{board.ancestory_path}/topics"
       end
       
       def topic_path(topic)
         "/boards/#{topic.board.ancestory_path}/topics/#{topic.slug}"
+      end
+      
+      def topic_url(topic)
+        "http://#{request.host}#{topic_path(topic)}"
+      end
+      
+      def topic_atom_path(topic)
+        "#{topic_path(topic)}.atom"
+      end
+      
+      def topic_atom_url(topic)
+        "http://#{request.host}#{topic_atom_path(topic)}"
       end
       
       def new_topic_path(board)
