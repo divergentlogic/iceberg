@@ -28,6 +28,17 @@ module Iceberg
           end
         end
         
+        app.get "/boards/*.atom" do
+          slugs = split_splat
+          @board = ::Iceberg::Board.by_ancestory(slugs)
+          if @board && @board.allow_topics?
+            headers['Content-Type'] = 'application/atom+xml'
+            builder :'boards/show', :layout => false
+          else
+            404
+          end
+        end
+        
         app.get "/boards/*" do |board|
           slugs = split_splat
           @board = ::Iceberg::Board.by_ancestory(slugs)

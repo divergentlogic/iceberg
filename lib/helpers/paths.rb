@@ -13,6 +13,14 @@ module Iceberg
           boards_path
         end
       end
+      
+      def board_url(board=nil)
+        "http://#{request.host}#{board_path(board)}"
+      end
+      
+      def board_atom_url(board=nil)
+        "#{board_url(board)}.atom"
+      end
 
       def new_board_path(board=nil)
         if board
