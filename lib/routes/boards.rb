@@ -1,6 +1,6 @@
 module Iceberg
   module Routes
-    module Forums
+    module Boards
 
       def self.registered(app)
         app.get "/boards" do

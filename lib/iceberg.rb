@@ -49,6 +49,6 @@ module Iceberg
     
     register Iceberg::Routes::Posts
     register Iceberg::Routes::Topics
-    register Iceberg::Routes::Forums
+    register Iceberg::Routes::Boards
   end
 end
