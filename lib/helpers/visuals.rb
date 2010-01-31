@@ -2,6 +2,9 @@ module Iceberg
   module Helpers
     module Visuals
       
+      include Rack::Utils
+      alias_method :h, :escape_html
+      
       def breadcrumbs(board_or_topic, options={})
         separator = options.delete(:separator) || ' > '
         wrap_with_tag = options.delete(:wrap_with_tag)
