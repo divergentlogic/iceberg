@@ -4,7 +4,6 @@ module Iceberg
       
       def self.registered(app)
         app.get :new_post do
-          authenticate!
           slugs = split_splat
           @board = ::Iceberg::Board.by_ancestory(slugs)
           @topic = @board.topics.first(:slug => params[:topic])
@@ -17,7 +16,6 @@ module Iceberg
         end
         
         app.post :posts do
-          authenticate!
           slugs = split_splat
           @board = ::Iceberg::Board.by_ancestory(slugs)
           @topic = @board.topics.first(:slug => params[:topic])

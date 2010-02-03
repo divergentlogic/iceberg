@@ -9,7 +9,6 @@ module Iceberg
         end
         
         app.post :boards do
-          authenticate!
           @board = ::Iceberg::Board.new(params['iceberg-board'])
           if @board.save
             redirect path_for(:board, @board.parent)
@@ -19,7 +18,6 @@ module Iceberg
         end
         
         app.get :new_board do
-          authenticate!
           slugs = split_splat
           @parent = ::Iceberg::Board.by_ancestory(slugs)
           @board = ::Iceberg::Board.new(:parent => @parent)

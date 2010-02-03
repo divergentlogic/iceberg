@@ -3,9 +3,8 @@
   #single_container_center
     %h2
       Forums
-      - if signed_in?
-        %span
-          %a{:href => path_for(:new_board)} (Add new root board)
+      %span
+        %a{:href => path_for(:new_board)} (Add new root board)
         
     %form#contentSearch.search{:method => "get", :action => ""}
       %p.fields
@@ -19,9 +18,8 @@
           .article_white_center
             %h3
               = board.title
-              - if signed_in?
-                %span
-                  %a{:href => path_for(:new_board, board)} (Add new sub-board)
+              %span
+                %a{:href => path_for(:new_board, board)} (Add new sub-board)
               - if board.allow_topics?
                 .board_controls
                   %a.messageReply_Masterbutton{:href => path_for(:new_topic, board)} New Topic

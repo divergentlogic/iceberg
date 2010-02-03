@@ -16,7 +16,6 @@ require 'dm-is-tree'
 
 module Iceberg; end
 
-require File.expand_path(File.dirname(__FILE__)+'/helpers/authentication')
 require File.expand_path(File.dirname(__FILE__)+'/helpers/utilities')
 require File.expand_path(File.dirname(__FILE__)+'/helpers/visuals')
 
@@ -45,7 +44,6 @@ module Iceberg
     register SinatraMore::MarkupPlugin
     register SinatraMore::RenderPlugin
     
-    helpers Iceberg::Helpers::Authentication
     helpers Iceberg::Helpers::Utilities
     helpers Iceberg::Helpers::Visuals
     
