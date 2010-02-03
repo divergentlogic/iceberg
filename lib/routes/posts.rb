@@ -3,22 +3,20 @@ module Iceberg
     module Posts
       
       def self.registered(app)
-        ["/boards/*/topics/:topic/reply", "/boards/*/topics/:topic/reply/:post"].each do |path|
-          app.get path do
-            authenticate!
-            slugs = split_splat
-            @board = ::Iceberg::Board.by_ancestory(slugs)
-            @topic = @board.topics.first(:slug => params[:topic])
-            @parent = params[:post] ? @topic.posts.first(:id => params[:post]) : @topic.posts.first
-            @post = @topic.posts.new(:parent => @parent)
-            if params[:quote] == "true"
-              @post.message = quote_post(@parent)
-            end
-            haml :'posts/new'
+        app.get :new_post do
+          authenticate!
+          slugs = split_splat
+          @board = ::Iceberg::Board.by_ancestory(slugs)
+          @topic = @board.topics.first(:slug => params[:topic])
+          @parent = params[:post] ? @topic.posts.first(:id => params[:post]) : @topic.posts.first
+          @post = @topic.posts.new(:parent => @parent)
+          if params[:quote] == "true"
+            @post.message = quote_post(@parent)
           end
+          haml :'posts/new'
         end
         
-        app.post "/boards/*/topics/:topic/reply/:post" do
+        app.post :posts do
           authenticate!
           slugs = split_splat
           @board = ::Iceberg::Board.by_ancestory(slugs)
@@ -26,7 +24,7 @@ module Iceberg
           @parent = @topic.posts.first(:id => params[:post])
           @post = @parent.reply(nil, params['iceberg-post']) # TODO: add author
           if @post.save
-            redirect topic_path(@topic)
+            redirect path_for(:topic, @topic)
           else
             haml :'posts/new'
           end

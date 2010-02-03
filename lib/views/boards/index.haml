@@ -5,7 +5,7 @@
       Forums
       - if signed_in?
         %span
-          %a{:href => new_board_path} (Add new root board)
+          %a{:href => path_for(:new_board)} (Add new root board)
         
     %form#contentSearch.search{:method => "get", :action => ""}
       %p.fields
@@ -21,10 +21,10 @@
               = board.title
               - if signed_in?
                 %span
-                  %a{:href => new_board_path(board)} (Add new sub-board)
+                  %a{:href => path_for(:new_board, board)} (Add new sub-board)
               - if board.allow_topics?
                 .board_controls
-                  %a.messageReply_Masterbutton{:href => new_topic_path(board)} New Topic
+                  %a.messageReply_Masterbutton{:href => path_for(:new_topic, board)} New Topic
             - unless board.boards.empty?
               .board_container
                 %table.boardtb{:id => "board-#{board.slug}", :width => "100%", :cellspacing => "0"}
@@ -67,7 +67,7 @@
                           %td.boardIcon
                             %img{:src => "/images/board_newpost_false.jpg", :alt => "No New Posts"}
                           %td.boardTitle
-                            %a.boardLink{:href => "/boards/#{topic.board.ancestory_path}/topics/#{topic.slug}"}= topic.title
+                            %a.boardLink{:href => path_for(:topic, topic)}= topic.title
                           %td.boardPosts
                             %p.boarddesc= "#{topic.posts_count} Posts"
                           %td.boardLastPost

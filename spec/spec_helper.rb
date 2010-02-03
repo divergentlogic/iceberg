@@ -51,17 +51,6 @@ Spec::Runner.configure do |config|
   config.include(Webrat::Matchers)
   config.include(CustomMatchers)
   
-  config.include(SinatraMore::AssetTagHelpers)
-  config.include(SinatraMore::FormHelpers)
-  config.include(SinatraMore::FormatHelpers)
-  config.include(SinatraMore::OutputHelpers)
-  config.include(SinatraMore::TagHelpers)
-  config.include(SinatraMore::RenderHelpers)
-
-  config.include(Iceberg::Helpers::Paths)
-  config.include(Iceberg::Helpers::Utilities)
-  config.include(Iceberg::Helpers::Visuals)
-  
   config.before(:each) do
     DataMapper.setup(:default, 'sqlite3::memory:')
     DataMapper.auto_migrate!

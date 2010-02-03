@@ -16,7 +16,7 @@
 
         - if @board.allow_topics?
           .board_controls
-            %a.messageReply_Masterbutton{:href => new_topic_path(@board)} New Topic
+            %a.messageReply_Masterbutton{:href => path_for(:new_topic, @board)} New Topic
 
         - unless @board.boards.empty?
           .board_container
@@ -34,7 +34,7 @@
                       %img{:src => "/images/board_newpost_false.jpg", :alt => "No New Posts"}
                     %td.boardTitle
                       %p.boarddesc
-                        %a.boardLink{:href => board_path(board)}= board.title
+                        %a.boardLink{:href => path_for(:board, board)}= board.title
                       %p.boarddesc= board.description
                     %td.boardPosts
                       %p.boarddesc
@@ -61,7 +61,7 @@
                       %img{:src => "/images/board_newpost_false.jpg", :alt => "No New Posts"}
                     %td.boardTitle
                       %p.boarddesc
-                        %a.boardLink{:href => topic_path(topic)}= topic.title
+                        %a.boardLink{:href => path_for(:topic, topic)}= topic.title
                       %p.boarddesc
                     %td.boardPosts
                       %p.boarddesc= "#{topic.posts_count} Posts"

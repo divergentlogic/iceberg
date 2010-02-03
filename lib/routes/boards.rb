@@ -3,32 +3,30 @@ module Iceberg
     module Boards
 
       def self.registered(app)
-        app.get "/boards" do
+        app.get :boards do
           @boards = ::Iceberg::Board.ordered(:parent_id => nil)
           haml :'boards/index'
         end
         
-        app.post "/boards" do
+        app.post :boards do
           authenticate!
           @board = ::Iceberg::Board.new(params['iceberg-board'])
           if @board.save
-            redirect board_path(@board.parent)
+            redirect path_for(:board, @board.parent)
           else
             haml :'boards/new'
           end
         end
         
-        ["/boards/new", "/boards/*/new"].each do |path|
-          app.get path do
-            authenticate!
-            slugs = split_splat
-            @parent = ::Iceberg::Board.by_ancestory(slugs)
-            @board = ::Iceberg::Board.new(:parent => @parent)
-            haml :'boards/new'
-          end
+        app.get :new_board do
+          authenticate!
+          slugs = split_splat
+          @parent = ::Iceberg::Board.by_ancestory(slugs)
+          @board = ::Iceberg::Board.new(:parent => @parent)
+          haml :'boards/new'
         end
         
-        app.get "/boards/*.atom" do
+        app.get :board_atom do
           slugs = split_splat
           @board = ::Iceberg::Board.by_ancestory(slugs)
           if @board && @board.allow_topics?
@@ -39,7 +37,7 @@ module Iceberg
           end
         end
         
-        app.get "/boards/*" do |board|
+        app.get :board do |board|
           slugs = split_splat
           @board = ::Iceberg::Board.by_ancestory(slugs)
           if @board

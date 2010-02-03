@@ -14,8 +14,8 @@
       .article_wide_center
         %h3= @topic.title
         .board_controls
-          %a.messageReply_Masterbutton{:href => new_topic_path(@topic.board)} New Topic
-          %a.messageReply_Masterbutton{:href => new_post_path(@topic)} Post Reply
+          %a.messageReply_Masterbutton{:href => path_for(:new_topic, @topic.board)} New Topic
+          %a.messageReply_Masterbutton{:href => path_for(:new_post, @topic)} Post Reply
 
         .board_container
           %table.boardtb_post{:width => "100%", :cellspacing => "0"}
@@ -30,8 +30,8 @@
                     %p.boardDate= post.created_at
                   %td.boardMessage
                     .board_controls
-                      %a.messageReply_button{:href => "#"} Quote
-                      %a.messageReply_button{:href => new_post_path(@topic, post)} Reply
+                      %a.messageReply_button{:href => path_for(:new_post, @topic, post, {:query => {"quoted" => "true"}})} Quote
+                      %a.messageReply_button{:href => path_for(:new_post, @topic, post)} Reply
                 %tr
                   %td.messageUser{:valign => 'top'}
                     %h4 LG Product Pro
