@@ -1,32 +1,47 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe Iceberg::Helpers::Visuals do
-  before(:each) do
-    @root     = Factory.build(:board, :title => "Root")
-    @root.save
-    @general  = Factory.build(:board, :title => "General", :parent => @root)
-    @general.save
-    @carriers = Factory.build(:board, :title => "Carriers", :parent => @root)
-    @carriers.save
-    @att      = Factory.build(:board, :title => "AT&T", :parent => @carriers)
-    @att.save
-    @sprint   = Factory.build(:board, :title => "Sprint", :parent => @carriers)
-    @sprint.save
-    @verizon  = Factory.build(:board, :title => "Verizon", :parent => @carriers)
-    @verizon.save
+class Breadcrumb < Iceberg::App
+  get %r{/breadcrumbs/(board|topic)/([1-9][0-9]*)} do |type, id|
+    item = type == 'board' ? ::Iceberg::Board.get(id) : ::Iceberg::Topic.get(id)
+    options = {}
+    options[:separator]     = params[:separator]            if params[:separator]
+    options[:wrap_with_tag] = params[:wrap_with_tag].to_sym if params[:wrap_with_tag]
+    breadcrumbs(item, options)
   end
-  
+end
+
+describe Iceberg::Helpers::Visuals do
   describe "#breadcrumbs" do
-    it "should display a trail of links" do
-      breadcrumbs(@verizon).should == %{<a href="/boards">Index</a> &gt; <a href="/boards/root">Root</a> &gt; <a href="/boards/root/carriers">Carriers</a> &gt; <a href="/boards/root/carriers/verizon">Verizon</a>}
+    before(:each) do
+      @app = Rack::Builder.app do
+        use Rack::Session::Cookie
+        run Breadcrumb
+      end
+      
+      @root     = Factory.create(:board, :title => "Root")
+      @animals  = Factory.create(:board, :title => "Animals", :parent => @root)
+      @bears    = Factory.create(:board, :title => "Bears",   :parent => @animals)
+      @topic    = @bears.post_topic(nil, :title => "Watch out", :message => "Bears will eat your face off")
+    end
+    
+    it "should display a trail of links for a board" do
+      get "/breadcrumbs/board/#{@bears.id}"
+      last_response.body.should == %{<a href="/boards">Index</a> &gt; <a href="/boards/root">Root</a> &gt; <a href="/boards/root/animals">Animals</a> &gt; <a href="/boards/root/animals/bears">Bears</a>}
+    end
+    
+    it "should display a trail of links for a topic" do
+      get "/breadcrumbs/topic/#{@topic.id}"
+      last_response.body.should == %{<a href="/boards">Index</a> &gt; <a href="/boards/root">Root</a> &gt; <a href="/boards/root/animals">Animals</a> &gt; <a href="/boards/root/animals/bears">Bears</a> &gt; <a href="/boards/root/animals/bears/topics/watch-out">Watch out</a>}
     end
     
     it "should display a trail of links with the supplied separator" do
-      breadcrumbs(@verizon, :separator => " | ").should == %{<a href="/boards">Index</a> | <a href="/boards/root">Root</a> | <a href="/boards/root/carriers">Carriers</a> | <a href="/boards/root/carriers/verizon">Verizon</a>}
+      get "/breadcrumbs/board/#{@animals.id}?separator=+%7C+"
+      last_response.body.should == %{<a href="/boards">Index</a> | <a href="/boards/root">Root</a> | <a href="/boards/root/animals">Animals</a>}
     end
     
     it "should wrap links in supplied tag" do
-      breadcrumbs(@verizon, :separator => "", :wrap_with_tag => :li).should == %{<li><a href="/boards">Index</a></li><li><a href="/boards/root">Root</a></li><li><a href="/boards/root/carriers">Carriers</a></li><li><a href="/boards/root/carriers/verizon">Verizon</a></li>}
+      get "/breadcrumbs/board/#{@animals.id}?separator=&wrap_with_tag=li"
+      last_response.body.should == %{<li><a href="/boards">Index</a></li><li><a href="/boards/root">Root</a></li><li><a href="/boards/root/animals">Animals</a></li>}
     end
   end
 end
