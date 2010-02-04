@@ -1,3 +1,8 @@
+gem_env = "#{File.dirname(__FILE__)}/../vendor/gems/environment.rb"
+if File.exists?(gem_env)
+  require gem_env
+end
+
 require 'sinatra/base'
 require File.expand_path(File.dirname(__FILE__) + '/../sinatra_more/lib/sinatra_more/markup_plugin')
 require File.expand_path(File.dirname(__FILE__) + '/../sinatra_more/lib/sinatra_more/render_plugin')
