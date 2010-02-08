@@ -4,11 +4,11 @@ describe Iceberg::Routes::Topics do
   describe "moving a topic" do
     before(:each) do
       @original_board = Factory.create(:board, :title => "Original Board")
-      # TODO add author
-      @topic = @original_board.post_topic(nil, {:title => "My Topic", :message => "Move me"})
-      @valid_board1 = Factory.create(:board, :title => "Valid Board 1")
-      @valid_board2 = Factory.create(:board, :title => "Valid Board 2")
-      @invalid_board = Factory.create(:board, :title => "Invalid Board", :allow_topics => false)
+      @author         = Iceberg::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      @topic          = @original_board.post_topic(@author, {:title => "My Topic", :message => "Move me"})
+      @valid_board1   = Factory.create(:board, :title => "Valid Board 1")
+      @valid_board2   = Factory.create(:board, :title => "Valid Board 2")
+      @invalid_board  = Factory.create(:board, :title => "Invalid Board", :allow_topics => false)
     end
     
     describe "GET" do
