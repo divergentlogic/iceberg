@@ -11,11 +11,10 @@ class Iceberg::Topic
   property :created_at,       DateTime
   property :updated_at,       DateTime
   property :last_updated_at,  DateTime
-  attr_accessor :message
+
+  attr_accessor :author, :message
   
   belongs_to :board
-  # belongs_to :author, 'Iceberg::User'
-  # belongs_to :last_author, 'Iceberg::User'
   has n, :posts
   belongs_to :last_post, :model => 'Iceberg::Post', :required => false
   
@@ -59,10 +58,9 @@ protected
   end
   
   def set_post
-    # TODO set author
     posts.create({
       :board => board,
-      # :author => author,
+      :author => author,
       :message => message
     })
   end

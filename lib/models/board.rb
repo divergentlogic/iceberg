@@ -49,9 +49,8 @@ class Iceberg::Board
   
   def post_topic(author, attributes={})
     topic = Iceberg::Topic.new(attributes)
-    topic.board = self
-    # topic.author = author
-    # topic.last_author = author
+    topic.board   = self
+    topic.author  = author
     topic.save
     topic
   end
