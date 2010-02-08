@@ -40,8 +40,8 @@ describe Iceberg::Board do
   describe "#post_topic" do
     before(:each) do
       @board = Factory.create(:board)
-      # TODO add author
-      @topic = @board.post_topic(nil, {:title => "Hello there", :message => "Welcome to my topic"})
+      @author = Blank.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      @topic = @board.post_topic(@author, {:title => "Hello there", :message => "Welcome to my topic"})
     end
     
     it "should create a topic" do
@@ -55,24 +55,29 @@ describe Iceberg::Board do
     
     it "should update the topic cache" do
       @post = @topic.posts.first
-      @topic.last_post.should == @post
-      @topic.last_updated_at.to_s.should == @post.updated_at.to_s
-      @topic.posts_count.should == 1
+      @topic.last_post.should                   == @post
+      @topic.last_updated_at.to_s.should        == @post.updated_at.to_s
+      @topic.last_author_id.should              == 1
+      @topic.last_author_name.should            == "Billy Gnosis"
+      @topic.last_author_ip_address.to_s.should == "127.0.0.1"
+      @topic.posts_count.should                 == 1
     end
     
     it "should update the board cache" do
       @post = @topic.posts.first
-      @board.last_post.should == @post
-      @board.last_topic.should == @topic
-      @board.last_updated_at.to_s.should == @post.updated_at.to_s
-      @board.topics_count.should == 1
-      @board.posts_count.should == 1
+      @board.last_post.should                   == @post
+      @board.last_topic.should                  == @topic
+      @board.last_updated_at.to_s.should        == @post.updated_at.to_s
+      @board.last_author_id.should              == 1
+      @board.last_author_name.should            == "Billy Gnosis"
+      @board.last_author_ip_address.to_s.should == "127.0.0.1"
+      @board.topics_count.should                == 1
+      @board.posts_count.should                 == 1
     end
     
     it "should fail if the board does not allow topics" do
       board = Factory.create(:board, :allow_topics => false)
-      # TODO add author
-      topic = board.post_topic(nil, {:title => "Hello there", :message => "Welcome to my topic"})
+      topic = board.post_topic(@author, {:title => "Hello there", :message => "Welcome to my topic"})
       topic.should error_on(:board)
     end
   end

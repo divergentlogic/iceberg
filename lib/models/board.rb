@@ -1,18 +1,21 @@
 class Iceberg::Board
   include DataMapper::Resource
   
-  property :id,               Serial
-  property :title,            String,   :length => (1..250)
-  property :slug,             Slug,     :length => (1..250)
-  property :description,      String,   :length => (1..500)
-  property :parent_id,        Integer
-  property :position,         Integer,  :default => 0
-  property :topics_count,     Integer,  :default => 0
-  property :posts_count,      Integer,  :default => 0
-  property :created_at,       DateTime
-  property :updated_at,       DateTime
-  property :last_updated_at,  DateTime
-  property :allow_topics,     Boolean,  :default => true
+  property :id,                     Serial
+  property :title,                  String,   :length => (1..250)
+  property :slug,                   Slug,     :length => (1..250)
+  property :description,            String,   :length => (1..500)
+  property :parent_id,              Integer
+  property :position,               Integer,  :default => 0
+  property :topics_count,           Integer,  :default => 0
+  property :posts_count,            Integer,  :default => 0
+  property :created_at,             DateTime
+  property :updated_at,             DateTime
+  property :last_updated_at,        DateTime
+  property :last_author_id,         Integer
+  property :last_author_name,       String
+  property :last_author_ip_address, IPAddress
+  property :allow_topics,           Boolean,  :default => true
   
   has n, :topics
   has n, :posts, :through => :topics
@@ -56,15 +59,17 @@ class Iceberg::Board
   end
   
   def update_cache
-    # TODO add author attributes
     last_post   = posts.first(:order => [:updated_at.desc])
     last_topic  = topics.first(:order => [:last_updated_at.desc])
     
-    self.last_topic_id    = last_topic ? last_topic.id : nil
-    self.last_post_id     = last_post ? last_post.id : nil
-    self.last_updated_at  = last_post ? last_post.updated_at : nil
-    self.topics_count     = topics.count
-    self.posts_count      = posts.count
+    self.last_topic_id          = last_topic ? last_topic.id : nil
+    self.last_post_id           = last_post ? last_post.id : nil
+    self.last_updated_at        = last_post ? last_post.updated_at : nil
+    self.last_author_id         = last_post ? last_post.author_id : nil
+    self.last_author_name       = last_post ? last_post.author_name : nil
+    self.last_author_ip_address = last_post ? last_post.author_ip_address : nil
+    self.topics_count           = topics.count
+    self.posts_count            = posts.count
     save
   end
   

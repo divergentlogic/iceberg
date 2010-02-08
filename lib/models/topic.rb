@@ -1,16 +1,19 @@
 class Iceberg::Topic
   include DataMapper::Resource
   
-  property :id,               Serial
-  property :title,            String,   :length => (1..250)
-  property :slug,             Slug,     :length => (1..250)
-  property :sticky,           Integer,  :default => 0
-  property :locked,           Boolean
-  property :posts_count,      Integer,  :default => 0
-  property :view_count,       Integer,  :default => 0
-  property :created_at,       DateTime
-  property :updated_at,       DateTime
-  property :last_updated_at,  DateTime
+  property :id,                     Serial
+  property :title,                  String,   :length => (1..250)
+  property :slug,                   Slug,     :length => (1..250)
+  property :sticky,                 Integer,  :default => 0
+  property :locked,                 Boolean
+  property :posts_count,            Integer,  :default => 0
+  property :view_count,             Integer,  :default => 0
+  property :created_at,             DateTime
+  property :updated_at,             DateTime
+  property :last_updated_at,        DateTime
+  property :last_author_id,         Integer
+  property :last_author_name,       String
+  property :last_author_ip_address, IPAddress
 
   attr_accessor :author, :message
   
@@ -40,12 +43,14 @@ class Iceberg::Topic
   end
   
   def update_cache
-    # TODO add author attributes
     last_post = posts.first(:order => [:updated_at.desc])
     
-    self.last_post_id     = last_post ? last_post.id : nil
-    self.last_updated_at  = last_post ? last_post.updated_at : nil
-    self.posts_count      = posts.count
+    self.last_post_id           = last_post ? last_post.id : nil
+    self.last_updated_at        = last_post ? last_post.updated_at : nil
+    self.last_author_id         = last_post ? last_post.author_id : nil
+    self.last_author_name       = last_post ? last_post.author_name : nil
+    self.last_author_ip_address = last_post ? last_post.author_ip_address : nil
+    self.posts_count            = posts.count
     save
   end
 
