@@ -17,8 +17,8 @@ class Iceberg::Post
   
   is :tree, :order => :created_at
   
-  after :create,  :set_author_attributes
-  after :save,    :update_caches
+  before  :create,  :set_author_attributes
+  after   :create,  :update_caches
   
   def reply(author, attributes)
     returning self.class.new(attributes) do |post| # FIXME should be posts.create ?

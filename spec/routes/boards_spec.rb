@@ -3,18 +3,12 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe Iceberg::Routes::Boards do
   describe "getting /boards" do
     before(:each) do
-      @root     = Factory.build(:board, :title => "Root")
-      @root.save
-      @general  = Factory.build(:board, :title => "General", :parent => @root)
-      @general.save
-      @carriers = Factory.build(:board, :title => "Carriers", :parent => @root)
-      @carriers.save
-      @att      = Factory.build(:board, :title => "AT&T", :parent => @carriers)
-      @att.save
-      @sprint   = Factory.build(:board, :title => "Sprint", :parent => @carriers)
-      @sprint.save
-      @verizon  = Factory.build(:board, :title => "Verizon", :parent => @carriers)
-      @verizon.save
+      @root     = Factory.create(:board, :title => "Root")
+      @general  = Factory.create(:board, :title => "General", :parent => @root)
+      @carriers = Factory.create(:board, :title => "Carriers", :parent => @root)
+      @att      = Factory.create(:board, :title => "AT&T", :parent => @carriers)
+      @sprint   = Factory.create(:board, :title => "Sprint", :parent => @carriers)
+      @verizon  = Factory.create(:board, :title => "Verizon", :parent => @carriers)
     end
   
     it "should retrieve the index page" do
@@ -46,19 +40,20 @@ describe Iceberg::Routes::Boards do
 
   describe "viewing the ATOM feed" do
     before(:each) do
-      @root   = Factory.create(:board, :title => "Root", :allow_topics => false)
-      @board  = Factory.create(:board, :title => "Board", :parent => @root)
+      @root     = Factory.create(:board, :title => "Root", :allow_topics => false)
+      @board    = Factory.create(:board, :title => "Board", :parent => @root)
+      @author1  = Iceberg::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      @author2  = Iceberg::Author.new(:id => 2, :name => "Brett Gurewitz", :ip_address => "127.0.0.1")
       
-      # TODO add author
       Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 6, 0, 0))
-      @topic1 = @board.post_topic(nil, :title => "Topic 1", :message => "First post for Topic 1")
+      @topic1 = @board.post_topic(@author1, :title => "Topic 1", :message => "First post for Topic 1")
       
       Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 7, 0, 0))
-      @topic2 = @board.post_topic(nil, :title => "Topic 2", :message => "First post for Topic 2")
+      @topic2 = @board.post_topic(@author1, :title => "Topic 2", :message => "First post for Topic 2")
       @post1  = @topic2.posts.first
       
       Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 8, 0, 0))
-      @post2  = @post1.reply(nil, :message => "Second post for Topic 2")
+      @post2  = @post1.reply(@author2, :message => "Second post for Topic 2")
       @post2.save
     end
     
@@ -94,8 +89,7 @@ describe Iceberg::Routes::Boards do
       last_response.body.should have_xpath("//feed/entry[1]/link[@href='http://example.org/boards/root/board/topics/topic-1'][@rel='alternate'][@type='text/html']")
       last_response.body.should have_xpath("//feed/entry[1]/id[contains(text(), 'http://example.org/boards/root/board/topics/topic-1')]")
       last_response.body.should have_xpath("//feed/entry[1]/updated[contains(text(), '2010-01-01T06:00:00Z')]")
-      # TODO add author
-      last_response.body.should have_xpath("//feed/entry[1]/author/name")
+      last_response.body.should have_xpath("//feed/entry[1]/author/name[contains(text(), 'Billy Gnosis')]")
       last_response.body.should have_xpath("//feed/entry[1]/content[@type='html'][contains(text(), 'First post for Topic 1')]")
     end
     
@@ -106,8 +100,7 @@ describe Iceberg::Routes::Boards do
       last_response.body.should have_xpath("//feed/entry[2]/link[@href='http://example.org/boards/root/board/topics/topic-2'][@rel='alternate'][@type='text/html']")
       last_response.body.should have_xpath("//feed/entry[2]/id[contains(text(), 'http://example.org/boards/root/board/topics/topic-2')]")
       last_response.body.should have_xpath("//feed/entry[2]/updated[contains(text(), '2010-01-01T08:00:00Z')]")
-      # TODO add author
-      last_response.body.should have_xpath("//feed/entry[2]/author/name")
+      last_response.body.should have_xpath("//feed/entry[2]/author/name[contains(text(), 'Brett Gurewitz')]")
       last_response.body.should have_xpath("//feed/entry[2]/content[@type='html'][contains(text(), 'Second post for Topic 2')]")
     end
   end

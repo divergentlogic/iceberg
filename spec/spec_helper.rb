@@ -19,21 +19,6 @@ Iceberg::App.set :run, false
 Iceberg::App.set :raise_errors, true
 Iceberg::App.set :logging, false
 
-class Blank
-  instance_methods.each { |m| undef_method m unless m =~ /^__/ || m =~ /^class$/ || m =~ /^respond_to?/ }
-  
-  def initialize(table)
-    throw ArgumentError.new("must be a hash") unless table.is_a?(Hash)
-    defs = table.map do |k, v|
-      "attr_accessor :#{k.to_s}"
-    end
-    self.class.class_eval defs.join("\n")
-    table.each do |k, v|
-      __send__(:"#{k}=", v)
-    end
-  end
-end
-
 Spec::Runner.configure do |config|
   def app
     @app ||= Rack::Builder.app do

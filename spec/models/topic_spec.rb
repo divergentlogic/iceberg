@@ -3,13 +3,13 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe Iceberg::Topic do
   describe "#move_to" do
     before(:each) do
-      @old_board = Factory.create(:board, :title => "Old Board")
-      @new_board = Factory.create(:board, :title => "New Board")
-      @invalid_board = Factory.create(:board, :title => "Invalid Board", :allow_topics => false)
+      @old_board      = Factory.create(:board, :title => "Old Board")
+      @new_board      = Factory.create(:board, :title => "New Board")
+      @invalid_board  = Factory.create(:board, :title => "Invalid Board", :allow_topics => false)
 
-      @author = Blank.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
-      @topic = @old_board.post_topic(@author, {:title => "Mover and Shaker", :message => "Move me"})
-      @post = @topic.posts.first
+      @author = Iceberg::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      @topic  = @old_board.post_topic(@author, {:title => "Mover and Shaker", :message => "Move me"})
+      @post   = @topic.posts.first
     end
     
     it "should begin with a sane state" do

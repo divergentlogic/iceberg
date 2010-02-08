@@ -38,6 +38,18 @@ require File.expand_path(File.dirname(__FILE__)+'/plugins/named_route_plugin')
 require File.expand_path(File.dirname(__FILE__)+'/mixins/external_layout')
 
 module Iceberg
+  class Author
+    if defined? id
+      undef id
+    end
+    attr_accessor :id, :name, :ip_address
+    def initialize(values)
+      @id         = values[:id]
+      @name       = values[:name]
+      @ip_address = values[:ip_address]
+    end
+  end
+  
   class App < Sinatra::Base
     use Rack::Flash
     
@@ -51,6 +63,11 @@ module Iceberg
     
     helpers Iceberg::Helpers::Utilities
     helpers Iceberg::Helpers::Visuals
+    helpers do
+      def current_author
+        Author.new(:id => nil, :name => "Anonymous", :ip_address => request.ip)
+      end
+    end
     
     register Iceberg::Routes
     register Iceberg::Routes::Posts

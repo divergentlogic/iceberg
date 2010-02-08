@@ -12,8 +12,7 @@ xml.feed(:xmlns => "http://www.w3.org/2005/Atom") do
       xml.id url_for(:post, post)
       xml.updated post.updated_at.utc.strftime("%Y-%m-%dT%H:%M:%SZ")
       xml.author do
-        # TODO add author
-        xml.name "Name"
+        xml.name post.author_name
       end
       xml.content(post.message, :type => "html")
     end

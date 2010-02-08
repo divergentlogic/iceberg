@@ -39,9 +39,9 @@ describe Iceberg::Board do
   
   describe "#post_topic" do
     before(:each) do
-      @board = Factory.create(:board)
-      @author = Blank.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
-      @topic = @board.post_topic(@author, {:title => "Hello there", :message => "Welcome to my topic"})
+      @board  = Factory.create(:board)
+      @author = Iceberg::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      @topic  = @board.post_topic(@author, {:title => "Hello there", :message => "Welcome to my topic"})
     end
     
     it "should create a topic" do

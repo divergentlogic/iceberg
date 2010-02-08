@@ -102,19 +102,21 @@ describe Iceberg::Routes::Topics do
   
   describe "viewing the ATOM feed" do
     before(:each) do
-      @board = Factory.create(:board, :title => "Board")
-      # TODO add author
-      
+      @board    = Factory.create(:board, :title => "Board")
+      @author1  = Iceberg::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      @author2  = Iceberg::Author.new(:id => 2, :name => "Brett Gurewitz", :ip_address => "192.168.1.1")
+      @author3  = Iceberg::Author.new(:id => 3, :name => "Greg Graffin", :ip_address => "55.55.55.55")
+
       Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 6, 0, 0))
-      @topic = @board.post_topic(nil, {:title => "Topic", :message => "First post"})
+      @topic = @board.post_topic(@author1, {:title => "Topic", :message => "First post"})
       @post1 = @topic.posts.first
       
       Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 7, 0, 0))
-      @post2 = @post1.reply(nil, {:message => "Second post"})
+      @post2 = @post1.reply(@author2, {:message => "Second post"})
       @post2.save
       
       Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 8, 0, 0))
-      @post3 = @post2.reply(nil, {:message => "Third post"})
+      @post3 = @post2.reply(@author3, {:message => "Third post"})
       @post3.save
     end
     
@@ -150,32 +152,29 @@ describe Iceberg::Routes::Topics do
       last_response.body.should have_xpath("//feed/entry[1]/link[@href='http://example.org/boards/board/topics/topic#1'][@rel='alternate'][@type='text/html']")
       last_response.body.should have_xpath("//feed/entry[1]/id[contains(text(), 'http://example.org/boards/board/topics/topic#1')]")
       last_response.body.should have_xpath("//feed/entry[1]/updated[contains(text(), '2010-01-01T06:00:00Z')]")
-      # TODO add author
-      last_response.body.should have_xpath("//feed/entry[1]/author/name")
+      last_response.body.should have_xpath("//feed/entry[1]/author/name[contains(text(), 'Billy Gnosis')]")
       last_response.body.should have_xpath("//feed/entry[1]/content[@type='html'][contains(text(), 'First post')]")
     end
     
     it "should have an entry for the second post" do
       get "/boards/board/topics/topic.atom"
-    
+      
       last_response.body.should have_xpath("//feed/entry[2]/title[contains(text(), 'Topic')]")
       last_response.body.should have_xpath("//feed/entry[2]/link[@href='http://example.org/boards/board/topics/topic#2'][@rel='alternate'][@type='text/html']")
       last_response.body.should have_xpath("//feed/entry[2]/id[contains(text(), 'http://example.org/boards/board/topics/topic#2')]")
       last_response.body.should have_xpath("//feed/entry[2]/updated[contains(text(), '2010-01-01T07:00:00Z')]")
-      # TODO add author
-      last_response.body.should have_xpath("//feed/entry[2]/author/name")
+      last_response.body.should have_xpath("//feed/entry[2]/author/name[contains(text(), 'Brett Gurewitz')]")
       last_response.body.should have_xpath("//feed/entry[2]/content[@type='html'][contains(text(), 'Second post')]")
     end
     
     it "should have an entry for the third post" do
       get "/boards/board/topics/topic.atom"
-    
+      
       last_response.body.should have_xpath("//feed/entry[3]/title[contains(text(), 'Topic')]")
       last_response.body.should have_xpath("//feed/entry[3]/link[@href='http://example.org/boards/board/topics/topic#3'][@rel='alternate'][@type='text/html']")
       last_response.body.should have_xpath("//feed/entry[3]/id[contains(text(), 'http://example.org/boards/board/topics/topic#3')]")
       last_response.body.should have_xpath("//feed/entry[3]/updated[contains(text(), '2010-01-01T08:00:00Z')]")
-      # TODO add author
-      last_response.body.should have_xpath("//feed/entry[3]/author/name")
+      last_response.body.should have_xpath("//feed/entry[3]/author/name[contains(text(), 'Greg Graffin')]")
       last_response.body.should have_xpath("//feed/entry[3]/content[@type='html'][contains(text(), 'Third post')]")
     end
   end

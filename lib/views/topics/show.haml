@@ -34,7 +34,7 @@
                       %a.messageReply_button{:href => path_for(:new_post, @topic, post)} Reply
                 %tr
                   %td.messageUser{:valign => 'top'}
-                    %h4 LG Product Pro
+                    %h4= post.author_name
                     %p Moderator
                     .user_viewstats
                       %p

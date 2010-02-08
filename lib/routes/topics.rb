@@ -21,9 +21,7 @@ module Iceberg
         
         app.post :topics do
           get_board
-          # TODO add author
-          # @board.topics.post(current_user, params['iceberg-topic'])
-          @topic = @board.post_topic(nil, params['iceberg-topic'])
+          @topic = @board.post_topic(current_author, params['iceberg-topic'])
           unless @topic.new?
             redirect path_for(:board, @board)
           else

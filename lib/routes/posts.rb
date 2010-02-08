@@ -20,7 +20,7 @@ module Iceberg
           @board = ::Iceberg::Board.by_ancestory(slugs)
           @topic = @board.topics.first(:slug => params[:topic])
           @parent = @topic.posts.first(:id => params[:post])
-          @post = @parent.reply(nil, params['iceberg-post']) # TODO: add author
+          @post = @parent.reply(current_author, params['iceberg-post'])
           if @post.save
             redirect path_for(:topic, @topic)
           else
