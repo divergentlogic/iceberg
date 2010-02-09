@@ -1,12 +1,26 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Iceberg::Topic do
+  describe "updating the title" do
+    before(:each) do
+      @board = Factory.create(:board)
+      @topic = @board.post_topic(nil, :title => "Topic", :message => "First Post")
+    end
+    
+    it "should not change the slug" do
+      @topic.title = "New Title"
+      @topic.save
+      @topic.title.should == "New Title"
+      @topic.slug.should  == "topic"
+    end
+  end
+  
   describe "#move_to" do
     before(:each) do
       @old_board      = Factory.create(:board, :title => "Old Board")
       @new_board      = Factory.create(:board, :title => "New Board")
       @invalid_board  = Factory.create(:board, :title => "Invalid Board", :allow_topics => false)
-
+  
       @author = Iceberg::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
       @topic  = @old_board.post_topic(@author, {:title => "Mover and Shaker", :message => "Move me"})
       @post   = @topic.posts.first
@@ -21,7 +35,7 @@ describe Iceberg::Topic do
       @old_board.last_author_ip_address.to_s.should == "127.0.0.1"
       @old_board.topics_count.should                == 1
       @old_board.posts_count.should                 == 1
-
+  
       @new_board.last_post.should               be_nil
       @new_board.last_topic.should              be_nil
       @new_board.last_updated_at.should         be_nil

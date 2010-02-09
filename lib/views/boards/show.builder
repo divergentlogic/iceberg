@@ -5,7 +5,7 @@ xml.feed(:xmlns => "http://www.w3.org/2005/Atom") do
   xml.link(:href => url_for(:board_atom, @board), :rel => "self", :type => "application/atom+xml")
   xml.updated @board.last_updated_at.utc.strftime("%Y-%m-%dT%H:%M:%SZ")
   xml.id url_for(:board_atom, @board)
-  @board.topics.each do |topic|
+  @board.topics(:order => [:created_at.desc]).each do |topic|
     xml.entry do
       xml.title topic.title
       xml.link(:href => url_for(:topic, topic), :rel => "alternate", :type => "text/html")

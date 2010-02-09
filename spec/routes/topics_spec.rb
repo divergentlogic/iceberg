@@ -1,6 +1,100 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Iceberg::Routes::Topics do
+  describe "editing a topic" do
+    before(:each) do
+      @board  = Factory.create(:board, :title => "Board")
+      @author = Iceberg::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      @topic  = @board.post_topic(@author, :title => "Topic", :message => "First Post")
+    end
+    
+    describe "GET" do
+      it "should be successful" do
+        get "/topics/#{@topic.id}/edit"
+        last_response.should be_ok
+      end
+      
+      it "should not match on non numeric parameters" do
+        get "/topics/something-non-numeric/edit"
+        last_response.should be_not_found
+      end
+      
+      it "should not match on IDs that begin with 0" do
+        get "/topics/01/edit"
+        last_response.should be_not_found
+      end
+      
+      it "should return 404 if the topic is not found" do
+        get "/topics/99999999/edit"
+        last_response.should be_not_found
+      end
+      
+      it "should have a form posting to the update topic path" do
+        get "/topics/#{@topic.id}/edit"
+        last_response.body.should have_xpath("//form[@action='/topics/#{@topic.id}/update'][@method='post']")
+      end
+      
+      it "should have a hidden field for the PUT method" do
+        get "/topics/#{@topic.id}/edit"
+        last_response.body.should have_xpath("//form/input[@name='_method'][@type='hidden'][@value='put']")
+      end
+      
+      it "should have a text field for the title" do
+        get "/topics/#{@topic.id}/edit"
+        last_response.body.should have_xpath("//form/input[@name='iceberg-topic[title]'][@type='text'][@value='Topic']")
+      end
+      
+      it "should have a checkbox for locking" do
+        get "/topics/#{@topic.id}/edit"
+        last_response.body.should have_xpath("//form/input[@name='iceberg-topic[locked]'][@type='checkbox'][@value='1']")
+        last_response.body.should have_xpath("//form/input[@name='iceberg-topic[locked]'][@type='hidden'][@value='0']")
+      end
+      
+      it "should have a text field for stickiness" do
+        get "/topics/#{@topic.id}/edit"
+        last_response.body.should have_xpath("//form/input[@name='iceberg-topic[sticky]'][@type='text'][@value='0']")
+      end
+    end
+    
+    describe "PUT" do
+      it "should be successful" do
+        put "/topics/#{@topic.id}/update", {'iceberg-topic' => {'title' => 'New Title', 'sticky' => '2', 'locked' => '1'}}
+        follow_redirect!
+        last_response.should be_ok
+      end
+      
+      it "should not match on non numeric parameters" do
+        put "/topics/something-non-numeric/update"
+        last_response.should be_not_found
+      end
+      
+      it "should not match on IDs that begin with 0" do
+        put "/topics/01/update"
+        last_response.should be_not_found
+      end
+      
+      it "should return 404 if the topic is not found" do
+        put "/topics/99999999/update"
+        last_response.should be_not_found
+      end
+      
+      it "should redirect to the topic page if successful" do
+        put "/topics/#{@topic.id}/update", {'iceberg-topic' => {'title' => 'New Title', 'sticky' => '2', 'locked' => '1'}}
+        follow_redirect!
+        last_request.path.should  == "/boards/board/topics/topic"
+        last_response.body.should contain('New Title')
+      end
+      
+      it "should render the edit form with errors if the update is unsuccessful" do
+        @board.post_topic(@author, :title => "New Title", :message => "There will be a conflict")
+        put "/topics/#{@topic.id}/update", {'iceberg-topic' => {'title' => 'New Title', 'sticky' => '2', 'locked' => '1'}}
+        last_request.path.should  == "/topics/#{@topic.id}/update"
+        last_response.body.should have_xpath("//form[@action='/topics/#{@topic.id}/update'][@method='post']")
+        last_response.body.should contain("A topic with that title has been posted in this board already; maybe you'd like to post under that topic instead?")
+      end
+    end
+  end
+  
   describe "moving a topic" do
     before(:each) do
       @original_board = Factory.create(:board, :title => "Original Board")
@@ -144,19 +238,19 @@ describe Iceberg::Routes::Topics do
       get "/boards/board/topics/topic.atom"
       last_response.body.should be_valid_atom
     end
-    
-    it "should have an entry for the first post" do
+
+    it "should display the third post first" do
       get "/boards/board/topics/topic.atom"
       
       last_response.body.should have_xpath("//feed/entry[1]/title[contains(text(), 'Topic')]")
-      last_response.body.should have_xpath("//feed/entry[1]/link[@href='http://example.org/boards/board/topics/topic#1'][@rel='alternate'][@type='text/html']")
-      last_response.body.should have_xpath("//feed/entry[1]/id[contains(text(), 'http://example.org/boards/board/topics/topic#1')]")
-      last_response.body.should have_xpath("//feed/entry[1]/updated[contains(text(), '2010-01-01T06:00:00Z')]")
-      last_response.body.should have_xpath("//feed/entry[1]/author/name[contains(text(), 'Billy Gnosis')]")
-      last_response.body.should have_xpath("//feed/entry[1]/content[@type='html'][contains(text(), 'First post')]")
+      last_response.body.should have_xpath("//feed/entry[1]/link[@href='http://example.org/boards/board/topics/topic#3'][@rel='alternate'][@type='text/html']")
+      last_response.body.should have_xpath("//feed/entry[1]/id[contains(text(), 'http://example.org/boards/board/topics/topic#3')]")
+      last_response.body.should have_xpath("//feed/entry[1]/updated[contains(text(), '2010-01-01T08:00:00Z')]")
+      last_response.body.should have_xpath("//feed/entry[1]/author/name[contains(text(), 'Greg Graffin')]")
+      last_response.body.should have_xpath("//feed/entry[1]/content[@type='html'][contains(text(), 'Third post')]")
     end
     
-    it "should have an entry for the second post" do
+    it "should display the second post in the middle" do
       get "/boards/board/topics/topic.atom"
       
       last_response.body.should have_xpath("//feed/entry[2]/title[contains(text(), 'Topic')]")
@@ -167,15 +261,15 @@ describe Iceberg::Routes::Topics do
       last_response.body.should have_xpath("//feed/entry[2]/content[@type='html'][contains(text(), 'Second post')]")
     end
     
-    it "should have an entry for the third post" do
+    it "should display the first post last" do
       get "/boards/board/topics/topic.atom"
       
       last_response.body.should have_xpath("//feed/entry[3]/title[contains(text(), 'Topic')]")
-      last_response.body.should have_xpath("//feed/entry[3]/link[@href='http://example.org/boards/board/topics/topic#3'][@rel='alternate'][@type='text/html']")
-      last_response.body.should have_xpath("//feed/entry[3]/id[contains(text(), 'http://example.org/boards/board/topics/topic#3')]")
-      last_response.body.should have_xpath("//feed/entry[3]/updated[contains(text(), '2010-01-01T08:00:00Z')]")
-      last_response.body.should have_xpath("//feed/entry[3]/author/name[contains(text(), 'Greg Graffin')]")
-      last_response.body.should have_xpath("//feed/entry[3]/content[@type='html'][contains(text(), 'Third post')]")
+      last_response.body.should have_xpath("//feed/entry[3]/link[@href='http://example.org/boards/board/topics/topic#1'][@rel='alternate'][@type='text/html']")
+      last_response.body.should have_xpath("//feed/entry[3]/id[contains(text(), 'http://example.org/boards/board/topics/topic#1')]")
+      last_response.body.should have_xpath("//feed/entry[3]/updated[contains(text(), '2010-01-01T06:00:00Z')]")
+      last_response.body.should have_xpath("//feed/entry[3]/author/name[contains(text(), 'Billy Gnosis')]")
+      last_response.body.should have_xpath("//feed/entry[3]/content[@type='html'][contains(text(), 'First post')]")
     end
   end
 end

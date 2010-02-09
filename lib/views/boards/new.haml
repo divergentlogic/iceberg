@@ -1,47 +1,20 @@
-#single_container
-  #single_container_top
-  #single_container_center
-    %h2 Forums
-    %p.breadCrumb= breadcrumbs(@parent)
-
-    %form#contentSearch.search{:method => "get", :action => ""}
-      %p.fields
-        %input#s2{:type => "text", :value => "Search Forum", :name => "s2", :onfocus => "if (this.value == 'Search Forum') {this.value = '';}", :onblur => "if (this.value == '') {this.value = 'Search Forum';}"}
-        %button.go_button{:type => "submit", :name => "submit"} GO
-
-    #article_wide
-      .article_wide_top
-      .article_wide_center
-        - if @parent
-          %h3= "Add a Sub-Forum to #{@parent.title}"
-        - else
-          %h3 Create New Forum
-        - form_for(@board, boards_path) do |f|
-          .board_container
-            - if @parent
-              = f.hidden_field :parent_id
-            %table.boardtb_post{:width => "100%", :cellspacing => "0"}
-              %tr.messageHeader
-                %td{:colspan => 2}
-              %tr
-                %td.messageDef{:valign => "top"}
-                  %p.bold= f.label :title, :caption => "Title:"
-                %td.newMessage{:valign => "top"}
-                  = f.text_field :title
-              %tr
-                %td.messageDef{:valign => "top"}
-                  %p.bold= f.label :description, :caption => "Description:"
-                %td.newMessage{:valign => "top"}
-                  = f.text_area :description
-            
-          .board_controls
-            %a.messageReply_Masterbutton{:href => board_path(@parent)} Cancel
-            %input.messageReply_Masterbutton{:type => 'submit', :value => 'Create Forum'}
-
-        .clear
-
-      .article_wide_bottom
-              
-    .clear
-
-  #single_container_bottom
+- if @parent
+  %h1= "Add a Sub-Board to #{@parent.title}"
+- else
+  %h1 Create New Board
+- form_for(@board, path_for(:boards)) do |f|
+  - if @parent
+    = f.hidden_field :parent_id
+    
+  = f.error_messages
+  
+  = f.label :title, :caption => "Title"
+  = f.text_field :title
+  
+  = f.label :description, :caption => "Description"
+  = f.text_area :description
+  
+  = f.label :allow_topics, :caption => "Allow Topics?"
+  = f.check_box :allow_topics
+  
+  = f.submit 'Create'

@@ -50,6 +50,28 @@ module Iceberg
           end
         end
         
+        app.get :edit_topic do |id|
+          @topic = Iceberg::Topic.get(id)
+          if @topic
+            haml :'topics/edit'
+          else
+            404
+          end
+        end
+        
+        app.put :update_topic do |id|
+          @topic = Iceberg::Topic.get(id)
+          if @topic
+            if @topic.update(params['iceberg-topic'])
+              redirect path_for(:topic, @topic)
+            else
+              haml :'topics/edit'
+            end
+          else
+            404
+          end
+        end
+        
         app.get :move_topic do |id|
           @topic = Iceberg::Topic.get(id)
           if @topic

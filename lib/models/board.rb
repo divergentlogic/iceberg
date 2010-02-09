@@ -17,12 +17,12 @@ class Iceberg::Board
   property :last_author_ip_address, IPAddress
   property :allow_topics,           Boolean,  :default => true
   
-  has n, :topics
+  has n, :topics, :order => [:sticky.desc, :created_at.desc]
   has n, :posts, :through => :topics
   belongs_to :last_topic, :model => 'Iceberg::Topic', :required => false
   belongs_to :last_post,  :model => 'Iceberg::Post',  :required => false
   
-  validates_present   :title, :description
+  validates_present   :title, :slug, :description
   validates_is_unique :title, :scope => :parent_id, :message => "There's already a board with that title"
   
   is :list, :scope => [:parent_id]

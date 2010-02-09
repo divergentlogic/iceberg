@@ -1,0 +1,15 @@
+- form_for(@topic, path_for(:update_topic, @topic)) do |f|
+  = hidden_form_method_field('put')
+  
+  = f.error_messages
+  
+  = f.label :title, :caption => 'Title'
+  = f.text_field :title
+  
+  = f.label :locked, :caption => 'Locked'
+  = f.check_box :locked
+  
+  = f.label :sticky, :caption => 'Sticky'
+  = f.text_field :sticky
+  
+  = f.submit 'Update'

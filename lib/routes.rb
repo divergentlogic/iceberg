@@ -14,6 +14,20 @@ module Iceberg
         end
       end
       
+      app.register_route(:edit_board) do
+        path %r{/boards/([1-9][0-9]*)/edit/?}
+        generate do |board|
+          "/boards/#{board.id}/edit"
+        end
+      end
+      
+      app.register_route(:update_board) do
+        path %r{/boards/([1-9][0-9]*)/update/?}
+        generate do |board|
+          "/boards/#{board.id}/update"
+        end
+      end
+      
       app.register_route(:board) do
         path "/boards/*"
         generate do |board|
@@ -53,6 +67,20 @@ module Iceberg
         path "/boards/*/topics/new/?"
         generate do |board|
           "/boards/#{board.ancestory_path}/topics/new"
+        end
+      end
+      
+      app.register_route(:edit_topic) do
+        path %r{/topics/([1-9][0-9]*)/edit/?}
+        generate do |topic|
+          "/topics/#{topic.id}/edit"
+        end
+      end
+      
+      app.register_route(:update_topic) do
+        path %r{/topics/([1-9][0-9]*)/update/?}
+        generate do |topic|
+          "/topics/#{topic.id}/update"
         end
       end
       
