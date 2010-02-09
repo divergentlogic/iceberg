@@ -22,7 +22,7 @@ class Iceberg::Topic
   belongs_to :last_post, :model => 'Iceberg::Post', :required => false
   
   validates_present     :message, :on => :create
-  validates_present     :board
+  validates_present     :board, :title, :slug
   validates_is_unique   :title, :scope => :board_id, :message => "A topic with that title has been posted in this board already; maybe you'd like to post under that topic instead?"
   validates_with_method :board, :method => :validate_board_allows_topics
   

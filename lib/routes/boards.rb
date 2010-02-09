@@ -20,8 +20,34 @@ module Iceberg
         app.get :new_board do
           slugs = split_splat
           @parent = ::Iceberg::Board.by_ancestory(slugs)
-          @board = ::Iceberg::Board.new(:parent => @parent)
-          haml :'boards/new'
+          if (!slugs.empty? && @parent) || slugs.empty?
+            @board = ::Iceberg::Board.new(:parent => @parent)
+            haml :'boards/new'
+          else
+            404
+          end
+        end
+        
+        app.get :edit_board do |id|
+          @board = ::Iceberg::Board.get(id)
+          if @board
+            haml :'boards/edit'
+          else
+            404
+          end
+        end
+        
+        app.put :update_board do |id|
+          @board = ::Iceberg::Board.get(id)
+          if @board
+            if @board.update(params['iceberg-board'])
+              redirect path_for(:board, @board)
+            else
+              haml :'boards/edit'
+            end
+          else
+            404
+          end
         end
         
         app.get :board_atom do

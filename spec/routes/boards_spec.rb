@@ -90,7 +90,7 @@ describe Iceberg::Routes::Boards do
   
   describe "edit board" do
     before(:each) do
-      @board = Factory.build(:board, :title => "Board", :description => "First board")
+      @board = Factory.build(:board, :title => "Board", :description => "First board", :allow_topics => true)
       @board.save
     end
     
@@ -143,7 +143,41 @@ describe Iceberg::Routes::Boards do
     end
     
     describe "PUT" do
+      it "should be successful" do
+        put "/boards/#{@board.id}/update", {'iceberg-board' => {'title' => 'New Board', 'description' => 'My new board', 'allow_topics' => 0}}
+        follow_redirect!
+        last_response.should be_ok
+      end
       
+      it "should not match on non numeric parameters" do
+        put "/boards/something-non-numeric/update"
+        last_response.should be_not_found
+      end
+      
+      it "should not match on IDs that begin with 0" do
+        put "/boards/01/update"
+        last_response.should be_not_found
+      end
+      
+      it "should return 404 if the board is not found" do
+        put "/boards/99999999/update"
+        last_response.should be_not_found
+      end
+      
+      it "should redirect to the board page if successful" do
+        put "/boards/#{@board.id}/update", {'iceberg-board' => {'title' => 'New Board', 'description' => 'My new board', 'allow_topics' => 0}}
+        follow_redirect!
+        last_request.path.should  == "/boards/board"
+        last_response.body.should contain('New Board')
+      end
+      
+      it "should render the edit form with errors if the update is unsuccessful" do
+        @new_board = Factory.create(:board, :title => 'New Board', :description => 'There will be a conflict with title')
+        put "/boards/#{@board.id}/update", {'iceberg-board' => {'title' => 'New Board', 'description' => 'My new board', 'allow_topics' => 0}}
+        last_request.path.should  == "/boards/#{@board.id}/update"
+        last_response.body.should have_xpath("//form[@action='/boards/#{@board.id}/update'][@method='post']")
+        last_response.body.should contain("There's already a board with that title")
+      end
     end
   end
   

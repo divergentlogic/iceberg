@@ -23,6 +23,17 @@ describe Iceberg::Board do
     @board.slug.should == "i-have-5-dollars"
   end
   
+  it "should not change the slug if the title is updated" do
+    @board = Factory.build(:board, :title => "Here is a title")
+    @board.save
+    @board.slug.should == "here-is-a-title"
+    
+    @board.title = "New Title"
+    @board.save
+    @board.title.should == "New Title"
+    @board.slug.should  == "here-is-a-title"
+  end
+  
   it "should have unique titles at the same level in the tree" do
     @board = Factory.create(:board, :title => "Hello world")
     @fail = Factory.build(:board, :title => "Hello world")
