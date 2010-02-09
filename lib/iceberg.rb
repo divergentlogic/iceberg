@@ -51,6 +51,7 @@ module Iceberg
   end
   
   class App < Sinatra::Base
+    use Rack::MethodOverride
     use Rack::Flash
     
     include Mixins::ExternalLayout

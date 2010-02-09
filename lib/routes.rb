@@ -56,6 +56,20 @@ module Iceberg
         end
       end
       
+      app.register_route(:edit_topic) do
+        path %r{/topics/([1-9][0-9]*)/edit/?}
+        generate do |topic|
+          "/topics/#{topic.id}/edit"
+        end
+      end
+      
+      app.register_route(:update_topic) do
+        path %r{/topics/([1-9][0-9]*)/update/?}
+        generate do |topic|
+          "/topics/#{topic.id}/update"
+        end
+      end
+      
       app.register_route(:move_topic) do
         path %r{/topics/([1-9][0-9]*)/move/?}
         generate do |topic|
