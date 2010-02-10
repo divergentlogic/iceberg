@@ -214,9 +214,9 @@ describe Iceberg::Routes::Boards do
       end
       
       it "should display topics stickiest first" do
-        @root.post_topic(nil, :title => "Topic 1")
-        @root.post_topic(nil, :title => "Topic 2", :sticky => 2)
-        @root.post_topic(nil, :title => "Topic 3", :sticky => 1)
+        @root.post_topic(nil, :title => "Topic 1", :message => "First")
+        @root.post_topic(nil, :title => "Topic 2", :message => "Second", :sticky => 2)
+        @root.post_topic(nil, :title => "Topic 3", :message => "Third", :sticky => 1)
         
         get "/boards/root"
         last_response.body.should have_xpath("//table/tbody/tr[1]/td/a[contains(text(), 'Topic 2')]")

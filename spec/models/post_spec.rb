@@ -41,6 +41,15 @@ describe Iceberg::Post do
       @board.topics_count.should                == 1
       @board.posts_count.should                 == 2
     end
+    
+    it "should not be successful if the topic is locked" do
+      @topic.locked = true
+      @topic.save
+      
+      reply = @post2.reply(@author1, :message => "Can't post to a locked topic")
+      reply.save.should be_false
+      reply.should error_on(:topic)
+    end
   end
   
   describe "author" do

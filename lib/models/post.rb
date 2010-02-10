@@ -17,6 +17,9 @@ class Iceberg::Post
   
   is :tree, :order => :created_at
   
+  validates_present     :message, :board, :topic
+  validates_with_method :topic, :method => :validate_topic_is_unlocked
+  
   before  :create,  :set_author_attributes
   after   :create,  :update_caches
   
@@ -42,6 +45,14 @@ protected
   def update_caches
     topic.update_cache
     board.update_cache
+  end
+  
+  def validate_topic_is_unlocked
+    if topic && !topic.locked?
+      true
+    else
+      [false, "This topic has been locked"]
+    end
   end
   
 end
