@@ -1,6 +1,7 @@
 gem_env = "#{File.dirname(__FILE__)}/../vendor/gems/environment.rb"
 if File.exists?(gem_env)
   require gem_env
+  Bundler.require_env
 end
 
 require 'sinatra/base'
