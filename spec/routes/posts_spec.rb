@@ -1,23 +1,34 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Iceberg::Routes::Posts do
-  describe "getting a new post" do
+  describe "replying to a post" do
     before(:each) do
-      @board = Factory.build(:board, :title => "Board")
-      @board.save
-      
-      @topic = @board.post_topic(nil, {:title => "Topic", :message => "Discuss"})
-      @post = @topic.posts.first
+      @board  = Factory.create(:board, :title => "Board")
+      @author = Iceberg::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      @topic  = @board.post_topic(@author, {:title => "Topic", :message => "Discuss"})
+      @post   = @topic.posts.first
     end
     
-    it "should be successful without quoting" do
-      get "/boards/board/topics/topic/reply/#{@post.id}"
+    it "should be successful with a topic without quoting" do
+      get "/topics/#{@topic.id}/posts/reply"
       last_response.should be_ok
       last_response.body.should_not have_selector("textarea:contains('Discuss')")
     end
     
-    it "should be successful with quoting" do
-      get "/boards/board/topics/topic/reply/#{@post.id}?quote=true"
+    it "should be successful with a topic with quoting" do
+      get "/topics/#{@topic.id}/posts/reply?quote=true"
+      last_response.should be_ok
+      last_response.body.should have_selector("textarea:contains('Discuss')")
+    end
+    
+    it "should be successful with a post without quoting" do
+      get "/topics/#{@topic.id}/posts/#{@post.id}/reply"
+      last_response.should be_ok
+      last_response.body.should_not have_selector("textarea:contains('Discuss')")
+    end
+    
+    it "should be successful with a post with quoting" do
+      get "/topics/#{@topic.id}/posts/#{@post.id}/reply?quote=true"
       last_response.should be_ok
       last_response.body.should have_selector("textarea:contains('Discuss')")
     end
@@ -25,13 +36,12 @@ describe Iceberg::Routes::Posts do
   
   describe "creating a new post" do
     before(:each) do
-      @board = Factory.build(:board, :title => "Board")
-      @board.save
+      @board  = Factory.create(:board, :title => "Board")
+      @author = Iceberg::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      @topic  = @board.post_topic(@author, {:title => "Topic", :message => "Discuss"})
+      @post   = @topic.posts.first
       
-      @topic = @board.post_topic(nil, {:title => "Topic", :message => "Discuss"})
-      @post = @topic.posts.first
-      
-      post "/boards/board/topics/topic/reply/#{@post.id}", {'iceberg-post' => {'message' => 'Yo Dawg'}}
+      post "/posts/#{@post.id}", {'iceberg-post' => {'message' => 'Yo Dawg'}}
       follow_redirect!
     end
     

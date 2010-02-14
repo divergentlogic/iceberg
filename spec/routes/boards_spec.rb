@@ -14,22 +14,32 @@ describe Iceberg::Routes::Boards do
       end
       
       it "should be successful with a parent" do
-        get "/boards/root/new"
+        get "/boards/#{@root.id}/new"
         last_response.should be_ok
       end
       
+      it "should not match on non numeric parameters" do
+        get "/boards/something-non-numeric/new"
+        last_response.should be_not_found
+      end
+      
+      it "should not match on IDs that begin with 0" do
+        get "/boards/01/new"
+        last_response.should be_not_found
+      end
+      
       it "should return not found if the parent doesn't exist" do
-        get "/boards/some/ancestory/path/new"
+        get "/boards/99999/new"
         last_response.should be_not_found
       end
       
       it "should have a form posting to the boards path" do
-        get "/boards/root/new"
+        get "/boards/#{@root.id}/new"
         last_response.body.should have_xpath("//form[@action='/boards'][@method='post']")
       end
       
       it "should have a hidden field for the parent ID if parent exists" do
-        get "/boards/root/new"
+        get "/boards/#{@root.id}/new"
         last_response.body.should have_xpath("//form/input[@name='iceberg-board[parent_id]'][@type='hidden'][@value='#{@root.id}']")
       end
       
@@ -39,17 +49,17 @@ describe Iceberg::Routes::Boards do
       end
       
       it "should have a text field for the title" do
-        get "/boards/root/new"
+        get "/boards/#{@root.id}/new"
         last_response.body.should have_xpath("//form/input[@name='iceberg-board[title]'][@type='text']")
       end
       
       it "should have a text area for the descriptions" do
-        get "/boards/root/new"
+        get "/boards/#{@root.id}/new"
         last_response.body.should have_xpath("//form/textarea[@name='iceberg-board[description]']")
       end
       
       it "should have a checkbox for allowing topics" do
-        get "/boards/root/new"
+        get "/boards/#{@root.id}/new"
         last_response.body.should have_xpath("//form/input[@name='iceberg-board[allow_topics]'][@type='checkbox'][@value='1'][@checked='checked']")
         last_response.body.should have_xpath("//form/input[@name='iceberg-board[allow_topics]'][@type='hidden'][@value='0']")
       end
@@ -117,7 +127,7 @@ describe Iceberg::Routes::Boards do
       
       it "should have a form posting to the update board path" do
         get "/boards/#{@board.id}/edit"
-        last_response.body.should have_xpath("//form[@action='/boards/#{@board.id}/update'][@method='post']")
+        last_response.body.should have_xpath("//form[@action='/boards/#{@board.id}'][@method='post']")
       end
       
       it "should have a hidden field for the PUT method" do
@@ -144,28 +154,28 @@ describe Iceberg::Routes::Boards do
     
     describe "PUT" do
       it "should be successful" do
-        put "/boards/#{@board.id}/update", {'iceberg-board' => {'title' => 'New Board', 'description' => 'My new board', 'allow_topics' => 0}}
+        put "/boards/#{@board.id}", {'iceberg-board' => {'title' => 'New Board', 'description' => 'My new board', 'allow_topics' => 0}}
         follow_redirect!
         last_response.should be_ok
       end
       
       it "should not match on non numeric parameters" do
-        put "/boards/something-non-numeric/update"
+        put "/boards/something-non-numeric"
         last_response.should be_not_found
       end
       
       it "should not match on IDs that begin with 0" do
-        put "/boards/01/update"
+        put "/boards/01"
         last_response.should be_not_found
       end
       
       it "should return 404 if the board is not found" do
-        put "/boards/99999999/update"
+        put "/boards/99999999"
         last_response.should be_not_found
       end
       
       it "should redirect to the board page if successful" do
-        put "/boards/#{@board.id}/update", {'iceberg-board' => {'title' => 'New Board', 'description' => 'My new board', 'allow_topics' => 0}}
+        put "/boards/#{@board.id}", {'iceberg-board' => {'title' => 'New Board', 'description' => 'My new board', 'allow_topics' => 0}}
         follow_redirect!
         last_request.path.should  == "/boards/board"
         last_response.body.should contain('New Board')
@@ -173,9 +183,9 @@ describe Iceberg::Routes::Boards do
       
       it "should render the edit form with errors if the update is unsuccessful" do
         @new_board = Factory.create(:board, :title => 'New Board', :description => 'There will be a conflict with title')
-        put "/boards/#{@board.id}/update", {'iceberg-board' => {'title' => 'New Board', 'description' => 'My new board', 'allow_topics' => 0}}
-        last_request.path.should  == "/boards/#{@board.id}/update"
-        last_response.body.should have_xpath("//form[@action='/boards/#{@board.id}/update'][@method='post']")
+        put "/boards/#{@board.id}", {'iceberg-board' => {'title' => 'New Board', 'description' => 'My new board', 'allow_topics' => 0}}
+        last_request.path.should  == "/boards/#{@board.id}"
+        last_response.body.should have_xpath("//form[@action='/boards/#{@board.id}'][@method='post']")
         last_response.body.should contain("There's already a board with that title")
       end
     end

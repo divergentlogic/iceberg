@@ -67,7 +67,7 @@ module Iceberg
     helpers Iceberg::Helpers::Visuals
     helpers do
       def current_author
-        Author.new(:id => nil, :name => "Anonymous", :ip_address => request.ip)
+        Iceberg::Author.new(:id => nil, :name => "Anonymous", :ip_address => request.ip)
       end
     end
     

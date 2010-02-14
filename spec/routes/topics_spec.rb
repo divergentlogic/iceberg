@@ -31,7 +31,7 @@ describe Iceberg::Routes::Topics do
       
       it "should have a form posting to the update topic path" do
         get "/topics/#{@topic.id}/edit"
-        last_response.body.should have_xpath("//form[@action='/topics/#{@topic.id}/update'][@method='post']")
+        last_response.body.should have_xpath("//form[@action='/topics/#{@topic.id}'][@method='post']")
       end
       
       it "should have a hidden field for the PUT method" do
@@ -58,28 +58,28 @@ describe Iceberg::Routes::Topics do
     
     describe "PUT" do
       it "should be successful" do
-        put "/topics/#{@topic.id}/update", {'iceberg-topic' => {'title' => 'New Title', 'sticky' => '2', 'locked' => '1'}}
+        put "/topics/#{@topic.id}", {'iceberg-topic' => {'title' => 'New Title', 'sticky' => '2', 'locked' => '1'}}
         follow_redirect!
         last_response.should be_ok
       end
       
       it "should not match on non numeric parameters" do
-        put "/topics/something-non-numeric/update"
+        put "/topics/something-non-numeric"
         last_response.should be_not_found
       end
       
       it "should not match on IDs that begin with 0" do
-        put "/topics/01/update"
+        put "/topics/01"
         last_response.should be_not_found
       end
       
       it "should return 404 if the topic is not found" do
-        put "/topics/99999999/update"
+        put "/topics/99999999"
         last_response.should be_not_found
       end
       
       it "should redirect to the topic page if successful" do
-        put "/topics/#{@topic.id}/update", {'iceberg-topic' => {'title' => 'New Title', 'sticky' => '2', 'locked' => '1'}}
+        put "/topics/#{@topic.id}", {'iceberg-topic' => {'title' => 'New Title', 'sticky' => '2', 'locked' => '1'}}
         follow_redirect!
         last_request.path.should  == "/boards/board/topics/topic"
         last_response.body.should contain('New Title')
@@ -87,9 +87,9 @@ describe Iceberg::Routes::Topics do
       
       it "should render the edit form with errors if the update is unsuccessful" do
         @board.post_topic(@author, :title => "New Title", :message => "There will be a conflict")
-        put "/topics/#{@topic.id}/update", {'iceberg-topic' => {'title' => 'New Title', 'sticky' => '2', 'locked' => '1'}}
-        last_request.path.should  == "/topics/#{@topic.id}/update"
-        last_response.body.should have_xpath("//form[@action='/topics/#{@topic.id}/update'][@method='post']")
+        put "/topics/#{@topic.id}", {'iceberg-topic' => {'title' => 'New Title', 'sticky' => '2', 'locked' => '1'}}
+        last_request.path.should  == "/topics/#{@topic.id}"
+        last_response.body.should have_xpath("//form[@action='/topics/#{@topic.id}'][@method='post']")
         last_response.body.should contain("A topic with that title has been posted in this board already; maybe you'd like to post under that topic instead?")
       end
     end

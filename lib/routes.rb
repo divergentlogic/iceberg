@@ -8,10 +8,15 @@ module Iceberg
       end
       
       app.register_route(:new_board) do
-        path ["/boards/new/?", "/boards/*/new/?"]
+        path %r{/boards/([1-9][0-9]*/)?new/?}
         generate do |board|
-          board ? "/boards/#{board.ancestory_path}/new" : "/boards/new"
+          board ? "/boards/#{board.id}/new" : "/boards/new"
         end
+      end
+      
+      app.register_route(:create_board) do
+        path      "/boards/?"
+        generate  "/boards"
       end
       
       app.register_route(:edit_board) do
@@ -22,9 +27,9 @@ module Iceberg
       end
       
       app.register_route(:update_board) do
-        path %r{/boards/([1-9][0-9]*)/update/?}
+        path %r{/boards/([1-9][0-9]*)/?}
         generate do |board|
-          "/boards/#{board.id}/update"
+          "/boards/#{board.id}"
         end
       end
       
@@ -64,9 +69,16 @@ module Iceberg
       end
       
       app.register_route(:new_topic) do
-        path "/boards/*/topics/new/?"
+        path %r{/boards/([1-9][0-9]*)/topics/new/?}
         generate do |board|
-          "/boards/#{board.ancestory_path}/topics/new"
+          "/boards/#{board.id}/topics/new"
+        end
+      end
+      
+      app.register_route(:create_topic) do
+        path  %r{/boards/([1-9][0-9]*)/topics/?}
+        generate do |board|
+          "/boards/#{board.id}/topics"
         end
       end
       
@@ -78,9 +90,9 @@ module Iceberg
       end
       
       app.register_route(:update_topic) do
-        path %r{/topics/([1-9][0-9]*)/update/?}
+        path %r{/topics/([1-9][0-9]*)/?}
         generate do |topic|
-          "/topics/#{topic.id}/update"
+          "/topics/#{topic.id}"
         end
       end
       
@@ -92,20 +104,20 @@ module Iceberg
       end
       
       app.register_route(:new_post) do
-        path ["/boards/*/topics/:topic/reply/?", "/boards/*/topics/:topic/reply/:post/?"]
+        path %r{/topics/([1-9][0-9]*)/posts/([1-9][0-9]*/)?reply/?}
         generate do |topic, post|
           if post
-            "/boards/#{topic.board.ancestory_path}/topics/#{topic.slug}/reply/#{post.id}"
+            "/topics/#{topic.id}/posts/#{post.id}/reply"
           else
-            "/boards/#{topic.board.ancestory_path}/topics/#{topic.slug}/reply"
+            "/topics/#{topic.id}/posts/reply"
           end
         end
       end
 
-      app.register_route(:posts) do
-        path "/boards/*/topics/:topic/reply/:post"
+      app.register_route(:create_post) do
+        path %r{/posts/([1-9][0-9]*)/?}
         generate do |post|
-          "/boards/#{post.topic.board.ancestory_path}/topics/#{post.topic.slug}/reply/#{post.id}"
+          "/posts/#{post.id}"
         end
       end
 

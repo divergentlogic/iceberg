@@ -1,38 +1,7 @@
-#single_container
-  #single_container_top
-  #single_container_center
-    %h2 Forums
-    %p.breadCrumb= breadcrumbs(@topic)
-
-    %form#contentSearch.search{:method => "get", :action => ""}
-      %p.fields
-        %input#s2{:type => "text", :value => "Search Forum", :name => "s2", :onfocus => "if (this.value == 'Search Forum') {this.value = '';}", :onblur => "if (this.value == '') {this.value = 'Search Forum';}"}
-        %button.go_button{:type => "submit", :name => "submit"} GO
-
-    #article_wide
-      .article_wide_top
-      .article_wide_center
-        %h3 Post Reply
-        - form_for(@post, path_for(:posts, @parent)) do |f|
-          .board_container
-            = f.error_messages
-            %table.boardtb_post{:width => "100%", :cellspacing => "0"}
-              %tr.messageHeader
-                %td{:colspan => 2}
-              %tr
-                %td.messageDef{:valign => "top"}
-                  %p.bold= f.label :message, :caption => "Message:"
-                %td.newMessage{:valign => "top"}
-                  = f.text_area :message
-            
-          .board_controls
-            %a.messageReply_Masterbutton{:href => path_for(:topic, @topic)} Cancel
-            %input.messageReply_Masterbutton{:type => 'submit', :value => 'Post Reply'}
-
-        .clear
-
-      .article_wide_bottom
-              
-    .clear
-
-  #single_container_bottom
+- form_for(@post, path_for(:create_post, @parent)) do |f|
+  = f.error_messages
+  
+  = f.label :message, :caption => "Message:"
+  = f.text_area :message
+  
+  = f.submit 'Reply'

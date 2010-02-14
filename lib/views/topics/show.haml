@@ -1,58 +1,26 @@
-#single_container
-  #single_container_top
-  #single_container_center
-    %h2 Forums
-    %p.breadCrumb= breadcrumbs(@topic)
-    
-    %form#contentSearch.search{:method => "get", :action => ""}
-      %p.fields
-        %input#s2{:type => "text", :value => "Search Forum", :name => "s2", :onfocus => "if (this.value == 'Search Forum') {this.value = '';}", :onblur => "if (this.value == '') {this.value = 'Search Forum';}"}
-        %button.go_button{:type => "submit", :name => "submit"} GO
-    
-    #article_wide
-      .article_wide_top
-      .article_wide_center
-        %h3= @topic.title
-        .board_controls
-          %a.messageReply_Masterbutton{:href => path_for(:new_topic, @topic.board)} New Topic
-          %a.messageReply_Masterbutton{:href => path_for(:new_post, @topic)} Post Reply
+%h1= @topic.title
 
-        .board_container
-          %table.boardtb_post{:width => "100%", :cellspacing => "0"}
-            %thead
-              %tr
-                %th Author
-                %th Message
-            %tbody
-              - @topic.posts.each do |post|
-                %tr.messageHeader
-                  %td.boardAuthor
-                    %p.boardDate= post.created_at
-                  %td.boardMessage
-                    .board_controls
-                      %a.messageReply_button{:href => path_for(:new_post, @topic, post, {:query => {"quoted" => "true"}})} Quote
-                      %a.messageReply_button{:href => path_for(:new_post, @topic, post)} Reply
-                %tr
-                  %td.messageUser{:valign => 'top'}
-                    %h4= post.author_name
-                    %p Moderator
-                    .user_viewstats
-                      %p
-                        %a{:href => "#"}
-                          %img{:src => "/images/thumbsUp.gif", :alt => "Thumbs Up"}
-                        %a{:href => "#"}
-                          %img{:src => "/images/thumbsDown.gif", :alt => "Thumbs Down"}
-                      %hr
-                      %p Join Date: Jul 2009
-                      %p Location: Dallas, Tx
-                      %p Posts: 1,385
-                      %p Repuation: 426
-                  %td.messageBody{:valign => "top"}= post.message
-              
-        .clear
+= breadcrumbs(@topic)
 
-      .article_wide_bottom
+%a{:href => path_for(:new_topic, @topic.board)} New Topic
+%a{:href => path_for(:new_post, @topic)} Post Reply
 
-    .clear
-
-  #single_container_bottom
+%table
+  %thead
+    %tr
+      %th Date
+      %th Author
+      %th Message
+      %th Reply
+      %th Quote
+  %tbody
+    - @topic.posts.each do |post|
+      %tr
+      %tr
+        %td= post.created_at
+        %td= post.author_name
+        %td= post.message
+        %td
+          %a{:href => path_for(:new_post, @topic, post)} Reply
+        %td
+          %a{:href => path_for(:new_post, @topic, post, {:query => {"quoted" => "true"}})} Quote

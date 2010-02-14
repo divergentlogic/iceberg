@@ -8,7 +8,7 @@ module Iceberg
           haml :'boards/index'
         end
         
-        app.post :boards do
+        app.post :create_board do
           @board = ::Iceberg::Board.new(params['iceberg-board'])
           if @board.save
             redirect path_for(:board, @board.parent)
@@ -17,15 +17,11 @@ module Iceberg
           end
         end
         
-        app.get :new_board do
-          slugs = split_splat
-          @parent = ::Iceberg::Board.by_ancestory(slugs)
-          if (!slugs.empty? && @parent) || slugs.empty?
-            @board = ::Iceberg::Board.new(:parent => @parent)
-            haml :'boards/new'
-          else
-            404
-          end
+        app.get :new_board do |id|
+          @parent = Iceberg::Board.get(id.to_i)
+          halt 404 if id && @parent.nil?
+          @board = ::Iceberg::Board.new(:parent => @parent)
+          haml :'boards/new'
         end
         
         app.get :edit_board do |id|
@@ -33,7 +29,7 @@ module Iceberg
           if @board
             haml :'boards/edit'
           else
-            404
+            halt 404
           end
         end
         
@@ -46,7 +42,7 @@ module Iceberg
               haml :'boards/edit'
             end
           else
-            404
+            halt 404
           end
         end
         
@@ -57,7 +53,7 @@ module Iceberg
             headers['Content-Type'] = 'application/atom+xml'
             builder :'boards/show', :layout => false
           else
-            404
+            halt 404
           end
         end
         
@@ -67,7 +63,7 @@ module Iceberg
           if @board
             haml :'boards/show'
           else
-            404
+            halt 404
           end
         end
       end

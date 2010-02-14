@@ -13,14 +13,18 @@ module Iceberg
       def self.registered(app)
         app.helpers Helpers
         
-        app.get :new_topic do
-          get_board
-          @topic = @board.topics.new
-          haml :'topics/new'
+        app.get :new_topic do |board_id|
+          @board = Iceberg::Board.get(board_id)
+          if @board
+            @topic = @board.topics.new
+            haml :'topics/new'
+          else
+            halt 404
+          end
         end
         
-        app.post :topics do
-          get_board
+        app.post :create_topic do |board_id|
+          @board = Iceberg::Board.get!(board_id)
           @topic = @board.post_topic(current_author, params['iceberg-topic'])
           unless @topic.new?
             redirect path_for(:board, @board)
@@ -36,7 +40,7 @@ module Iceberg
             headers['Content-Type'] = 'application/atom+xml'
             builder :'topics/show', :layout => false
           else
-            404
+            halt 404
           end
         end
         
@@ -46,7 +50,7 @@ module Iceberg
           if @topic
             haml :'topics/show'
           else
-            404
+            halt 404
           end
         end
         
@@ -55,7 +59,7 @@ module Iceberg
           if @topic
             haml :'topics/edit'
           else
-            404
+            halt 404
           end
         end
         
@@ -68,7 +72,7 @@ module Iceberg
               haml :'topics/edit'
             end
           else
-            404
+            halt 404
           end
         end
         
@@ -78,7 +82,7 @@ module Iceberg
             @boards = Iceberg::Board.all(:id.not => @topic.board.id, :allow_topics => true)
             haml :'topics/move'
           else
-            404
+            halt 404
           end
         end
         
@@ -92,7 +96,7 @@ module Iceberg
               haml :'topics/move'
             end
           else
-            404
+            halt 404
           end
         end
         
