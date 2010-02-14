@@ -15,12 +15,9 @@ module Iceberg
         
         app.get :new_topic do |board_id|
           @board = Iceberg::Board.get(board_id)
-          if @board
-            @topic = @board.topics.new
-            haml :'topics/new'
-          else
-            halt 404
-          end
+          halt 404 unless @board
+          @topic = @board.topics.new
+          haml :'topics/new'
         end
         
         app.post :create_topic do |board_id|
@@ -36,67 +33,49 @@ module Iceberg
         app.get :topic_atom do
           get_board
           @topic = @board.topics.first(:slug => params[:topic])
-          if @topic
-            headers['Content-Type'] = 'application/atom+xml'
-            builder :'topics/show', :layout => false
-          else
-            halt 404
-          end
+          halt 404 unless @topic
+          headers['Content-Type'] = 'application/atom+xml'
+          builder :'topics/show', :layout => false
         end
         
         app.get :topic do
           get_board
           @topic = @board.topics.first(:slug => params[:topic])
-          if @topic
-            haml :'topics/show'
-          else
-            halt 404
-          end
+          halt 404 unless @topic
+          haml :'topics/show'
         end
         
         app.get :edit_topic do |id|
           @topic = Iceberg::Topic.get(id)
-          if @topic
-            haml :'topics/edit'
-          else
-            halt 404
-          end
+          halt 404 unless @topic
+          haml :'topics/edit'
         end
         
         app.put :update_topic do |id|
           @topic = Iceberg::Topic.get(id)
-          if @topic
-            if @topic.update(params['iceberg-topic'])
-              redirect path_for(:topic, @topic)
-            else
-              haml :'topics/edit'
-            end
+          halt 404 unless @topic
+          if @topic.update(params['iceberg-topic'])
+            redirect path_for(:topic, @topic)
           else
-            halt 404
+            haml :'topics/edit'
           end
         end
         
         app.get :move_topic do |id|
           @topic = Iceberg::Topic.get(id)
-          if @topic
-            @boards = Iceberg::Board.all(:id.not => @topic.board.id, :allow_topics => true)
-            haml :'topics/move'
-          else
-            halt 404
-          end
+          halt 404 unless @topic
+          @boards = Iceberg::Board.all(:id.not => @topic.board.id, :allow_topics => true)
+          haml :'topics/move'
         end
         
         app.post :move_topic do |id|
           @topic = Iceberg::Topic.get(id)
-          if @topic
-            board = Iceberg::Board.get(params['iceberg-topic']['board_id'])
-            if @topic.move_to(board)
-              redirect path_for(:topic, @topic)
-            else
-              haml :'topics/move'
-            end
+          halt 404 unless @topic
+          board = Iceberg::Board.get(params['iceberg-topic']['board_id'])
+          if @topic.move_to(board)
+            redirect path_for(:topic, @topic)
           else
-            halt 404
+            haml :'topics/move'
           end
         end
         

@@ -26,45 +26,31 @@ module Iceberg
         
         app.get :edit_board do |id|
           @board = ::Iceberg::Board.get(id)
-          if @board
-            haml :'boards/edit'
-          else
-            halt 404
-          end
+          halt 404 unless @board
+          haml :'boards/edit'
         end
         
         app.put :update_board do |id|
           @board = ::Iceberg::Board.get(id)
-          if @board
-            if @board.update(params['iceberg-board'])
-              redirect path_for(:board, @board)
-            else
-              haml :'boards/edit'
-            end
+          halt 404 unless @board
+          if @board.update(params['iceberg-board'])
+            redirect path_for(:board, @board)
           else
-            halt 404
+            haml :'boards/edit'
           end
         end
         
         app.get :board_atom do
-          slugs = split_splat
-          @board = ::Iceberg::Board.by_ancestory(slugs)
-          if @board && @board.allow_topics?
-            headers['Content-Type'] = 'application/atom+xml'
-            builder :'boards/show', :layout => false
-          else
-            halt 404
-          end
+          @board = ::Iceberg::Board.by_ancestory(split_splat)
+          halt 404 unless @board && @board.allow_topics?
+          headers['Content-Type'] = 'application/atom+xml'
+          builder :'boards/show', :layout => false
         end
         
         app.get :board do |board|
-          slugs = split_splat
-          @board = ::Iceberg::Board.by_ancestory(slugs)
-          if @board
-            haml :'boards/show'
-          else
-            halt 404
-          end
+          @board = ::Iceberg::Board.by_ancestory(split_splat)
+          halt 404 unless @board
+          haml :'boards/show'
         end
       end
       
