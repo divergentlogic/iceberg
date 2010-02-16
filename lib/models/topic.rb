@@ -51,7 +51,7 @@ class Iceberg::Topic
     self.last_author_name       = last_post ? last_post.author_name : nil
     self.last_author_ip_address = last_post ? last_post.author_ip_address : nil
     self.posts_count            = posts.count
-    save
+    save! # Don't save up the chain
   end
 
 protected

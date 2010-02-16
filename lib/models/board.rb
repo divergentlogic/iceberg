@@ -70,7 +70,7 @@ class Iceberg::Board
     self.last_author_ip_address = last_post ? last_post.author_ip_address : nil
     self.topics_count           = topics.count
     self.posts_count            = posts.count
-    save
+    save! # Don't save up the chain
   end
   
   def ancestory
