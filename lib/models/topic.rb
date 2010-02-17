@@ -15,7 +15,7 @@ class Iceberg::Topic
   property :last_author_name,       String
   property :last_author_ip_address, IPAddress
 
-  attr_accessor :author, :message
+  attr_accessor :author, :message, :existing_topic
   
   belongs_to :board
   has n, :posts
@@ -27,6 +27,7 @@ class Iceberg::Topic
   validates_with_method :board, :method => :validate_board_allows_topics
   
   before  :valid?,  :set_slug
+  after   :valid?,  :set_existing_topic
   after   :create,  :set_post
   
   def move_to(board)
@@ -68,6 +69,12 @@ protected
       :author => author,
       :message => message
     })
+  end
+  
+  def set_existing_topic
+    if errors.on(:title)
+      self.existing_topic = self.class.first(:title => title)
+    end
   end
 
   def validate_board_allows_topics
