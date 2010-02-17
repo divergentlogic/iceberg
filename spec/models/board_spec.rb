@@ -50,9 +50,14 @@ describe Iceberg::Board do
   
   describe "#post_topic" do
     before(:each) do
+      Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 1, 0, 0))
       @board  = Factory.create(:board)
       @author = Iceberg::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
       @topic  = @board.post_topic(@author, {:title => "Hello there", :message => "Welcome to my topic"})
+      @post   = @topic.posts.first
+      
+      @board.reload
+      @topic.reload
     end
     
     it "should create a topic" do
@@ -60,12 +65,10 @@ describe Iceberg::Board do
     end
     
     it "should create a post" do
-      @post = @topic.posts.first
       @post.message.should == "Welcome to my topic"
     end
     
     it "should update the topic cache" do
-      @post = @topic.posts.first
       @topic.last_post.should                   == @post
       @topic.last_updated_at.to_s.should        == @post.updated_at.to_s
       @topic.last_author_id.should              == 1
@@ -75,7 +78,6 @@ describe Iceberg::Board do
     end
     
     it "should update the board cache" do
-      @post = @topic.posts.first
       @board.last_post.should                   == @post
       @board.last_topic.should                  == @topic
       @board.last_updated_at.to_s.should        == @post.updated_at.to_s
@@ -84,6 +86,61 @@ describe Iceberg::Board do
       @board.last_author_ip_address.to_s.should == "127.0.0.1"
       @board.topics_count.should                == 1
       @board.posts_count.should                 == 1
+    end
+    
+    describe "creating another post" do
+      before(:each) do
+        Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 2, 0, 0))
+        @new_author = Iceberg::Author.new(:id => 2, :name => "Mickey Mouse", :ip_address => "192.168.1.1")
+        @new_post   = @post.reply(@new_author, :message => "Hello there")
+        @new_post.save
+        
+        @topic.reload
+        @board.reload
+      end
+      
+      it "should update the topic cache" do
+        @topic.last_post.should                   == @new_post
+        @topic.last_updated_at.to_s.should        == @new_post.updated_at.to_s
+        @topic.last_author_id.should              == 2
+        @topic.last_author_name.should            == "Mickey Mouse"
+        @topic.last_author_ip_address.to_s.should == "192.168.1.1"
+        @topic.posts_count.should                 == 2
+      end
+
+      it "should update the board cache" do
+        @board.last_post.should                   == @new_post
+        @board.last_topic.should                  == @topic
+        @board.last_updated_at.to_s.should        == @new_post.updated_at.to_s
+        @board.last_author_id.should              == 2
+        @board.last_author_name.should            == "Mickey Mouse"
+        @board.last_author_ip_address.to_s.should == "192.168.1.1"
+        @board.topics_count.should                == 1
+        @board.posts_count.should                 == 2
+      end
+    end
+    
+    describe "creating another topic" do
+      before(:each) do
+        Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 2, 0, 0))
+        @new_author = Iceberg::Author.new(:id => 2, :name => "Mickey Mouse", :ip_address => "192.168.1.1")
+        @new_topic  = @board.post_topic(@new_author, :title => "New Topic", :message => "Hello there")
+        @new_post   = @new_topic.posts.first
+        
+        @new_topic.reload
+        @board.reload
+      end
+      
+      it "should update the board cache" do
+        @board.last_post.should                   == @new_post
+        @board.last_topic.should                  == @new_topic
+        @board.last_updated_at.to_s.should        == @new_post.updated_at.to_s
+        @board.last_author_id.should              == 2
+        @board.last_author_name.should            == "Mickey Mouse"
+        @board.last_author_ip_address.to_s.should == "192.168.1.1"
+        @board.topics_count.should                == 2
+        @board.posts_count.should                 == 2
+      end
     end
     
     it "should fail if the board does not allow topics" do

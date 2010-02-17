@@ -59,6 +59,7 @@ class Iceberg::Board
   end
   
   def update_cache
+    topics.reload
     last_post   = posts.first(:order => [:updated_at.desc])
     last_topic  = topics.first(:order => [:last_updated_at.desc])
     
@@ -70,7 +71,9 @@ class Iceberg::Board
     self.last_author_ip_address = last_post ? last_post.author_ip_address : nil
     self.topics_count           = topics.count
     self.posts_count            = posts.count
-    save! # Don't save up the chain
+
+    allow_topics? && topics.empty? ? save : save! # Don't save up the chain
+    # TODO - get a better understanding of how associations are saved in DM - this is ugly
   end
   
   def ancestory
