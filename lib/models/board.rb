@@ -1,4 +1,4 @@
-class Iceberg::Board
+class Iceberg::App::Board
   include DataMapper::Resource
   
   property :id,                     Serial
@@ -19,8 +19,8 @@ class Iceberg::Board
   
   has n, :topics, :order => [:sticky.desc, :created_at.desc]
   has n, :posts, :through => :topics
-  belongs_to :last_topic, :model => 'Iceberg::Topic', :required => false
-  belongs_to :last_post,  :model => 'Iceberg::Post',  :required => false
+  belongs_to :last_topic, :model => 'Topic', :required => false
+  belongs_to :last_post,  :model => 'Post',  :required => false
   
   validates_present   :title, :slug, :description
   validates_is_unique :title, :scope => :parent_id, :message => "There's already a board with that title"
@@ -51,7 +51,7 @@ class Iceberg::Board
   end
   
   def post_topic(author, attributes={})
-    topic = Iceberg::Topic.new(attributes)
+    topic = topics.model.new(attributes)
     topic.board   = self
     topic.author  = author
     topic.save

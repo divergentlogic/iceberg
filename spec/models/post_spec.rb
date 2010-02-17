@@ -1,10 +1,10 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe Iceberg::Post do
+describe Iceberg::App::Post do
   describe "reply" do
     before(:each) do
-      @author1  = Iceberg::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
-      @author2  = Iceberg::Author.new(:id => 2, :name => "Brett Gurewitz", :ip_address => "192.168.1.1")
+      @author1  = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      @author2  = Iceberg::App::Author.new(:id => 2, :name => "Brett Gurewitz", :ip_address => "192.168.1.1")
       @board    = Factory.create(:board)
       
       Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 6, 0, 0))
@@ -68,7 +68,7 @@ describe Iceberg::Post do
       end
       
       it "should save author attributes if the author is given" do
-        author  = Iceberg::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+        author  = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
         topic   = @board.post_topic(author, :title => "Topic", :message => "Post")
         post    = topic.posts.first
         post.author_id.should               == 1
@@ -78,7 +78,7 @@ describe Iceberg::Post do
       
       describe "partial author attributes" do
         it "should only save id" do
-          author  = Iceberg::Author.new(:id => 1)
+          author  = Iceberg::App::Author.new(:id => 1)
           topic   = @board.post_topic(author, :title => "Topic", :message => "Post")
           post    = topic.posts.first
           post.author_id.should         == 1
@@ -87,7 +87,7 @@ describe Iceberg::Post do
         end
         
         it "should only save name" do
-          author  = Iceberg::Author.new(:name => "Billy Gnosis")
+          author  = Iceberg::App::Author.new(:name => "Billy Gnosis")
           topic   = @board.post_topic(author, :title => "Topic", :message => "Post")
           post    = topic.posts.first
           post.author_id.should         be_nil
@@ -96,7 +96,7 @@ describe Iceberg::Post do
         end
         
         it "should only save IP Address" do
-          author  = Iceberg::Author.new(:ip_address => "127.0.0.1")
+          author  = Iceberg::App::Author.new(:ip_address => "127.0.0.1")
           topic   = @board.post_topic(author, :title => "Topic", :message => "Post")
           post    = topic.posts.first
           post.author_id.should               be_nil
@@ -123,7 +123,7 @@ describe Iceberg::Post do
       end
       
       it "should save author attributes if the author is given" do
-        author  = Iceberg::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+        author  = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
         reply   = @post.reply(author, :message => "Reply")
         reply.save
         reply.author_id.should              == 1
@@ -133,7 +133,7 @@ describe Iceberg::Post do
       
       describe "partial author attributes" do
         it "should only save id" do
-          author  = Iceberg::Author.new(:id => 1)
+          author  = Iceberg::App::Author.new(:id => 1)
           reply   = @post.reply(author, :message => "Reply")
           reply.save
           reply.author_id.should          == 1
@@ -142,7 +142,7 @@ describe Iceberg::Post do
         end
         
         it "should only save name" do
-          author  = Iceberg::Author.new(:name => "Billy Gnosis")
+          author  = Iceberg::App::Author.new(:name => "Billy Gnosis")
           reply   = @post.reply(author, :message => "Reply")
           reply.save
           reply.author_id.should          be_nil
@@ -151,7 +151,7 @@ describe Iceberg::Post do
         end
         
         it "should only save IP Address" do
-          author  = Iceberg::Author.new(:ip_address => "127.0.0.1")
+          author  = Iceberg::App::Author.new(:ip_address => "127.0.0.1")
           reply   = @post.reply(author, :message => "Reply")
           reply.save
           reply.author_id.should              be_nil

@@ -2,7 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 class Breadcrumb < Iceberg::App
   get %r{/breadcrumbs/(board|topic)/([1-9][0-9]*)} do |type, id|
-    item = type == 'board' ? ::Iceberg::Board.get(id) : ::Iceberg::Topic.get(id)
+    item = type == 'board' ? Iceberg::App::Board.get(id) : Iceberg::App::Topic.get(id)
     options = {}
     options[:separator]     = params[:separator]            if params[:separator]
     options[:wrap_with_tag] = params[:wrap_with_tag].to_sym if params[:wrap_with_tag]

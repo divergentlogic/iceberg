@@ -1,10 +1,10 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe Iceberg::Routes::Topics do
+describe "Topics Routes" do
   describe "editing a topic" do
     before(:each) do
       @board  = Factory.create(:board, :title => "Board")
-      @author = Iceberg::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      @author = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
       @topic  = @board.post_topic(@author, :title => "Topic", :message => "First Post")
     end
     
@@ -41,24 +41,24 @@ describe Iceberg::Routes::Topics do
       
       it "should have a text field for the title" do
         get "/topics/#{@topic.id}/edit"
-        last_response.body.should have_xpath("//form/input[@name='iceberg-topic[title]'][@type='text'][@value='Topic']")
+        last_response.body.should have_xpath("//form/input[@name='iceberg-app-topic[title]'][@type='text'][@value='Topic']")
       end
       
       it "should have a checkbox for locking" do
         get "/topics/#{@topic.id}/edit"
-        last_response.body.should have_xpath("//form/input[@name='iceberg-topic[locked]'][@type='checkbox'][@value='1']")
-        last_response.body.should have_xpath("//form/input[@name='iceberg-topic[locked]'][@type='hidden'][@value='0']")
+        last_response.body.should have_xpath("//form/input[@name='iceberg-app-topic[locked]'][@type='checkbox'][@value='1']")
+        last_response.body.should have_xpath("//form/input[@name='iceberg-app-topic[locked]'][@type='hidden'][@value='0']")
       end
       
       it "should have a text field for stickiness" do
         get "/topics/#{@topic.id}/edit"
-        last_response.body.should have_xpath("//form/input[@name='iceberg-topic[sticky]'][@type='text'][@value='0']")
+        last_response.body.should have_xpath("//form/input[@name='iceberg-app-topic[sticky]'][@type='text'][@value='0']")
       end
     end
     
     describe "PUT" do
       it "should be successful" do
-        put "/topics/#{@topic.id}", {'iceberg-topic' => {'title' => 'New Title', 'sticky' => '2', 'locked' => '1'}}
+        put "/topics/#{@topic.id}", {'iceberg-app-topic' => {'title' => 'New Title', 'sticky' => '2', 'locked' => '1'}}
         follow_redirect!
         last_response.should be_ok
       end
@@ -79,7 +79,7 @@ describe Iceberg::Routes::Topics do
       end
       
       it "should redirect to the topic page if successful" do
-        put "/topics/#{@topic.id}", {'iceberg-topic' => {'title' => 'New Title', 'sticky' => '2', 'locked' => '1'}}
+        put "/topics/#{@topic.id}", {'iceberg-app-topic' => {'title' => 'New Title', 'sticky' => '2', 'locked' => '1'}}
         follow_redirect!
         last_request.path.should  == "/boards/board/topics/topic"
         last_response.body.should contain('New Title')
@@ -87,7 +87,7 @@ describe Iceberg::Routes::Topics do
       
       it "should render the edit form with errors if the update is unsuccessful" do
         @board.post_topic(@author, :title => "New Title", :message => "There will be a conflict")
-        put "/topics/#{@topic.id}", {'iceberg-topic' => {'title' => 'New Title', 'sticky' => '2', 'locked' => '1'}}
+        put "/topics/#{@topic.id}", {'iceberg-app-topic' => {'title' => 'New Title', 'sticky' => '2', 'locked' => '1'}}
         last_request.path.should  == "/topics/#{@topic.id}"
         last_response.body.should have_xpath("//form[@action='/topics/#{@topic.id}'][@method='post']")
         last_response.body.should contain("A topic with that title has been posted in this board already; maybe you'd like to post under that topic instead?")
@@ -98,7 +98,7 @@ describe Iceberg::Routes::Topics do
   describe "moving a topic" do
     before(:each) do
       @original_board = Factory.create(:board, :title => "Original Board")
-      @author         = Iceberg::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      @author         = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
       @topic          = @original_board.post_topic(@author, {:title => "My Topic", :message => "Move me"})
       @valid_board1   = Factory.create(:board, :title => "Valid Board 1")
       @valid_board2   = Factory.create(:board, :title => "Valid Board 2")
@@ -160,7 +160,7 @@ describe Iceberg::Routes::Topics do
 
     describe "POST" do
       it "should be successful" do
-        post "/topics/#{@topic.id}/move", {'iceberg-topic' => {'board_id' => @valid_board1.id}}
+        post "/topics/#{@topic.id}/move", {'iceberg-app-topic' => {'board_id' => @valid_board1.id}}
         follow_redirect!
         last_response.should be_ok
       end
@@ -181,12 +181,12 @@ describe Iceberg::Routes::Topics do
       end
       
       it "should not be successful if the board does not allow topics" do
-        post "/topics/#{@topic.id}/move", {'iceberg-topic' => {'board_id' => @invalid_board.id}}
+        post "/topics/#{@topic.id}/move", {'iceberg-app-topic' => {'board_id' => @invalid_board.id}}
         last_response.body.should contain("This board does not allow topics")
       end
       
       it "should redirect to the topic page if successful" do
-        post "/topics/#{@topic.id}/move", {'iceberg-topic' => {'board_id' => @valid_board1.id}}
+        post "/topics/#{@topic.id}/move", {'iceberg-app-topic' => {'board_id' => @valid_board1.id}}
         follow_redirect!
         last_request.path.should == "/boards/valid-board-1/topics/my-topic"
         last_response.body.should contain(@valid_board1.title)
@@ -197,9 +197,9 @@ describe Iceberg::Routes::Topics do
   describe "viewing the ATOM feed" do
     before(:each) do
       @board    = Factory.create(:board, :title => "Board")
-      @author1  = Iceberg::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
-      @author2  = Iceberg::Author.new(:id => 2, :name => "Brett Gurewitz", :ip_address => "192.168.1.1")
-      @author3  = Iceberg::Author.new(:id => 3, :name => "Greg Graffin", :ip_address => "55.55.55.55")
+      @author1  = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      @author2  = Iceberg::App::Author.new(:id => 2, :name => "Brett Gurewitz", :ip_address => "192.168.1.1")
+      @author3  = Iceberg::App::Author.new(:id => 3, :name => "Greg Graffin", :ip_address => "55.55.55.55")
 
       Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 6, 0, 0))
       @topic = @board.post_topic(@author1, {:title => "Topic", :message => "First post"})

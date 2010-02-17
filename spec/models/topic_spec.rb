@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe Iceberg::Topic do
+describe Iceberg::App::Topic do
   describe "updating the title" do
     before(:each) do
       @board = Factory.create(:board)
@@ -22,7 +22,7 @@ describe Iceberg::Topic do
       @invalid_board  = Factory.create(:board, :title => "Invalid Board", :allow_topics => false)
       
       Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 1, 0, 0))
-      @author = Iceberg::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      @author = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
       @topic  = @old_board.post_topic(@author, {:title => "Mover and Shaker", :message => "Move me"})
       @post   = @topic.posts.first
       

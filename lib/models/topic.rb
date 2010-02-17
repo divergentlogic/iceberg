@@ -1,4 +1,4 @@
-class Iceberg::Topic
+class Iceberg::App::Topic
   include DataMapper::Resource
   
   property :id,                     Serial
@@ -19,7 +19,7 @@ class Iceberg::Topic
   
   belongs_to :board
   has n, :posts
-  belongs_to :last_post, :model => 'Iceberg::Post', :required => false
+  belongs_to :last_post, :model => 'Post', :required => false
   
   validates_present     :message, :on => :create
   validates_present     :board, :title, :slug

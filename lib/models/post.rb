@@ -1,6 +1,6 @@
-class Iceberg::Post
+class Iceberg::App::Post
   include DataMapper::Resource
-  
+
   property :id,                 Serial
   property :message,            Text
   property :parent_id,          Integer
@@ -11,18 +11,18 @@ class Iceberg::Post
   property :updated_at,         DateTime
 
   attr_accessor :author
-  
+
   belongs_to :topic
   belongs_to :board
-  
+
   is :tree, :order => :created_at
-  
+
   validates_present     :message, :board, :topic
   validates_with_method :topic, :method => :validate_topic_is_unlocked
-  
+
   before  :create,  :set_author_attributes
   after   :create,  :update_caches
-  
+
   def reply(author, attributes)
     returning self.class.new(attributes) do |post| # FIXME should be posts.create ?
       post.parent = self
@@ -31,7 +31,7 @@ class Iceberg::Post
       post.board  = board
     end
   end
-  
+
 protected
 
   def set_author_attributes
@@ -41,12 +41,12 @@ protected
       self.author_ip_address  = author.ip_address if author.respond_to?(:ip_address)
     end
   end
-  
+
   def update_caches
     topic.update_cache
     board.update_cache
   end
-  
+
   def validate_topic_is_unlocked
     if topic && !topic.locked?
       true
@@ -54,5 +54,5 @@ protected
       [false, "This topic has been locked"]
     end
   end
-  
+
 end

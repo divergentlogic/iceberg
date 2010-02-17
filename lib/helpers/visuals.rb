@@ -10,7 +10,7 @@ module Iceberg
         wrap_with_tag = options.delete(:wrap_with_tag)
         
         links = []
-        current = if board_or_topic.is_a?(::Iceberg::Topic)
+        current = if board_or_topic.is_a?(Iceberg::App::Topic)
           links << link_to(board_or_topic.title, path_for(:topic, board_or_topic))
           board_or_topic.board
         else
