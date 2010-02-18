@@ -1,10 +1,10 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe Iceberg::Routes::Posts do
+describe "Posts Routes" do
   describe "replying to a post" do
     before(:each) do
       @board  = Factory.create(:board, :title => "Board")
-      @author = Iceberg::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      @author = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
       @topic  = @board.post_topic(@author, {:title => "Topic", :message => "Discuss"})
       @post   = @topic.posts.first
     end
@@ -37,11 +37,11 @@ describe Iceberg::Routes::Posts do
   describe "creating a new post" do
     before(:each) do
       @board  = Factory.create(:board, :title => "Board")
-      @author = Iceberg::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      @author = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
       @topic  = @board.post_topic(@author, {:title => "Topic", :message => "Discuss"})
       @post   = @topic.posts.first
       
-      post "/posts/#{@post.id}", {'iceberg-post' => {'message' => 'Yo Dawg'}}
+      post "/posts/#{@post.id}", {'test_app-post' => {'message' => 'Yo Dawg'}}
       follow_redirect!
     end
     

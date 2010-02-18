@@ -23,7 +23,7 @@ Spec::Runner.configure do |config|
   def app
     @app ||= Rack::Builder.app do
       use Rack::Session::Cookie
-      run Iceberg::App
+      run TestApp
     end
   end
     

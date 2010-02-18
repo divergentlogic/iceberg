@@ -1,8 +1,8 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-class Breadcrumb < Iceberg::App
+class TestApp < Iceberg::App
   get %r{/breadcrumbs/(board|topic)/([1-9][0-9]*)} do |type, id|
-    item = type == 'board' ? ::Iceberg::Board.get(id) : ::Iceberg::Topic.get(id)
+    item = type == 'board' ? Board.get(id) : Topic.get(id)
     options = {}
     options[:separator]     = params[:separator]            if params[:separator]
     options[:wrap_with_tag] = params[:wrap_with_tag].to_sym if params[:wrap_with_tag]
@@ -13,11 +13,6 @@ end
 describe Iceberg::Helpers::Visuals do
   describe "#breadcrumbs" do
     before(:each) do
-      @app = Rack::Builder.app do
-        use Rack::Session::Cookie
-        run Breadcrumb
-      end
-      
       @root     = Factory.create(:board, :title => "Root")
       @animals  = Factory.create(:board, :title => "Animals", :parent => @root)
       @bears    = Factory.create(:board, :title => "Bears",   :parent => @animals)
