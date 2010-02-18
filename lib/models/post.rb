@@ -1,15 +1,17 @@
 module Iceberg::Models::Post
+  include DataMapper::Types
+  
   def self.included(base)
     base.class_eval do
       
       include DataMapper::Resource
-
-      property :id,                 DataMapper::Types::Serial
-      property :message,            DataMapper::Types::Text
+      
+      property :id,                 Serial
+      property :message,            Text
       property :parent_id,          Integer
       property :author_id,          Integer
       property :author_name,        String
-      property :author_ip_address,  DataMapper::Types::IPAddress
+      property :author_ip_address,  IPAddress
       property :created_at,         DateTime
       property :updated_at,         DateTime
 

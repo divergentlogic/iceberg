@@ -1,12 +1,14 @@
 module Iceberg::Models::Board
+  include DataMapper::Types
+  
   def self.included(base)
     base.class_eval do
       
       include DataMapper::Resource
-
-      property :id,                     DataMapper::Types::Serial
+      
+      property :id,                     Serial
       property :title,                  String,   :length => (1..250)
-      property :slug,                   DataMapper::Types::Slug,     :length => (1..250)
+      property :slug,                   Slug,     :length => (1..250)
       property :description,            String,   :length => (1..500)
       property :parent_id,              Integer
       property :position,               Integer,  :default => 0
@@ -17,8 +19,8 @@ module Iceberg::Models::Board
       property :last_updated_at,        DateTime
       property :last_author_id,         Integer
       property :last_author_name,       String
-      property :last_author_ip_address, DataMapper::Types::IPAddress
-      property :allow_topics,           DataMapper::Types::Boolean,  :default => true
+      property :last_author_ip_address, IPAddress
+      property :allow_topics,           Boolean,  :default => true
 
       has n, :topics, :order => [:sticky.desc, :created_at.desc]
       has n, :posts, :through => :topics

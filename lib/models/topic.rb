@@ -1,14 +1,16 @@
 module Iceberg::Models::Topic
+  include DataMapper::Types
+
   def self.included(base)
     base.class_eval do
       
       include DataMapper::Resource
-
-      property :id,                     DataMapper::Types::Serial
+      
+      property :id,                     Serial
       property :title,                  String,   :length => (1..250)
-      property :slug,                   DataMapper::Types::Slug,     :length => (1..250)
+      property :slug,                   Slug,     :length => (1..250)
       property :sticky,                 Integer,  :default => 0
-      property :locked,                 DataMapper::Types::Boolean
+      property :locked,                 Boolean
       property :posts_count,            Integer,  :default => 0
       property :view_count,             Integer,  :default => 0
       property :created_at,             DateTime
