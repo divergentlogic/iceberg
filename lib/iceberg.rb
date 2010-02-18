@@ -24,6 +24,8 @@ require File.expand_path(File.dirname(__FILE__)+'/plugins/named_route_plugin')
 require File.expand_path(File.dirname(__FILE__)+'/mixins/external_layout')
 
 module Iceberg
+  module Models; end
+  
   class App < Sinatra::Base
     use Rack::MethodOverride
     use Rack::Flash
@@ -70,5 +72,41 @@ module Iceberg
         Iceberg::App::Author.new(:id => nil, :name => "Anonymous", :ip_address => request.ip)
       end
     end
+    
+    class_inheritable_reader :_models
+    @_models = {}
+    
+    def self.models(*models)
+      _models
+      models.each do |model|
+        _models[model.to_sym] = nil
+      end
+      _models
+    end
+    
+    def self.inherited(base)
+      super
+      class_defs = models.keys.map do |klass|
+        %{class #{klass}
+            include Iceberg::Models::#{klass}
+          end
+          models[:#{klass}] = #{klass}}
+      end
+      base.class_eval(class_defs.join("\n"))
+    end
+    
+    models :Board, :Topic, :Post
+    
+    helpers do
+      def model_for(model)
+        self.class.models[model]
+      end
+      
+      def params_for(model)
+        key = model_for(model).to_s.underscore.gsub('/', '-')
+        params[key]
+      end
+    end
+    
   end
 end

@@ -41,24 +41,24 @@ describe "Topics Routes" do
       
       it "should have a text field for the title" do
         get "/topics/#{@topic.id}/edit"
-        last_response.body.should have_xpath("//form/input[@name='iceberg-app-topic[title]'][@type='text'][@value='Topic']")
+        last_response.body.should have_xpath("//form/input[@name='test_app-topic[title]'][@type='text'][@value='Topic']")
       end
       
       it "should have a checkbox for locking" do
         get "/topics/#{@topic.id}/edit"
-        last_response.body.should have_xpath("//form/input[@name='iceberg-app-topic[locked]'][@type='checkbox'][@value='1']")
-        last_response.body.should have_xpath("//form/input[@name='iceberg-app-topic[locked]'][@type='hidden'][@value='0']")
+        last_response.body.should have_xpath("//form/input[@name='test_app-topic[locked]'][@type='checkbox'][@value='1']")
+        last_response.body.should have_xpath("//form/input[@name='test_app-topic[locked]'][@type='hidden'][@value='0']")
       end
       
       it "should have a text field for stickiness" do
         get "/topics/#{@topic.id}/edit"
-        last_response.body.should have_xpath("//form/input[@name='iceberg-app-topic[sticky]'][@type='text'][@value='0']")
+        last_response.body.should have_xpath("//form/input[@name='test_app-topic[sticky]'][@type='text'][@value='0']")
       end
     end
     
     describe "PUT" do
       it "should be successful" do
-        put "/topics/#{@topic.id}", {'iceberg-app-topic' => {'title' => 'New Title', 'sticky' => '2', 'locked' => '1'}}
+        put "/topics/#{@topic.id}", {'test_app-topic' => {'title' => 'New Title', 'sticky' => '2', 'locked' => '1'}}
         follow_redirect!
         last_response.should be_ok
       end
@@ -79,7 +79,7 @@ describe "Topics Routes" do
       end
       
       it "should redirect to the topic page if successful" do
-        put "/topics/#{@topic.id}", {'iceberg-app-topic' => {'title' => 'New Title', 'sticky' => '2', 'locked' => '1'}}
+        put "/topics/#{@topic.id}", {'test_app-topic' => {'title' => 'New Title', 'sticky' => '2', 'locked' => '1'}}
         follow_redirect!
         last_request.path.should  == "/boards/board/topics/topic"
         last_response.body.should contain('New Title')
@@ -87,7 +87,7 @@ describe "Topics Routes" do
       
       it "should render the edit form with errors if the update is unsuccessful" do
         @board.post_topic(@author, :title => "New Title", :message => "There will be a conflict")
-        put "/topics/#{@topic.id}", {'iceberg-app-topic' => {'title' => 'New Title', 'sticky' => '2', 'locked' => '1'}}
+        put "/topics/#{@topic.id}", {'test_app-topic' => {'title' => 'New Title', 'sticky' => '2', 'locked' => '1'}}
         last_request.path.should  == "/topics/#{@topic.id}"
         last_response.body.should have_xpath("//form[@action='/topics/#{@topic.id}'][@method='post']")
         last_response.body.should contain("A topic with that title has been posted in this board already; maybe you'd like to post under that topic instead?")
@@ -160,7 +160,7 @@ describe "Topics Routes" do
 
     describe "POST" do
       it "should be successful" do
-        post "/topics/#{@topic.id}/move", {'iceberg-app-topic' => {'board_id' => @valid_board1.id}}
+        post "/topics/#{@topic.id}/move", {'test_app-topic' => {'board_id' => @valid_board1.id}}
         follow_redirect!
         last_response.should be_ok
       end
@@ -181,12 +181,12 @@ describe "Topics Routes" do
       end
       
       it "should not be successful if the board does not allow topics" do
-        post "/topics/#{@topic.id}/move", {'iceberg-app-topic' => {'board_id' => @invalid_board.id}}
+        post "/topics/#{@topic.id}/move", {'test_app-topic' => {'board_id' => @invalid_board.id}}
         last_response.body.should contain("This board does not allow topics")
       end
       
       it "should redirect to the topic page if successful" do
-        post "/topics/#{@topic.id}/move", {'iceberg-app-topic' => {'board_id' => @valid_board1.id}}
+        post "/topics/#{@topic.id}/move", {'test_app-topic' => {'board_id' => @valid_board1.id}}
         follow_redirect!
         last_request.path.should == "/boards/valid-board-1/topics/my-topic"
         last_response.body.should contain(@valid_board1.title)

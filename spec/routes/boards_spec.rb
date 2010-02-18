@@ -40,58 +40,58 @@ describe "Boards Routes" do
       
       it "should have a hidden field for the parent ID if parent exists" do
         get "/boards/#{@root.id}/new"
-        last_response.body.should have_xpath("//form/input[@name='iceberg-app-board[parent_id]'][@type='hidden'][@value='#{@root.id}']")
+        last_response.body.should have_xpath("//form/input[@name='test_app-board[parent_id]'][@type='hidden'][@value='#{@root.id}']")
       end
       
       it "should NOT have a hidden field for the parent if there is no parent" do
         get "/boards/new"
-        last_response.body.should_not have_xpath("//form/input[@name='iceberg-app-board[parent_id]'][@type='hidden']")
+        last_response.body.should_not have_xpath("//form/input[@name='test_app-board[parent_id]'][@type='hidden']")
       end
       
       it "should have a text field for the title" do
         get "/boards/#{@root.id}/new"
-        last_response.body.should have_xpath("//form/input[@name='iceberg-app-board[title]'][@type='text']")
+        last_response.body.should have_xpath("//form/input[@name='test_app-board[title]'][@type='text']")
       end
       
       it "should have a text area for the descriptions" do
         get "/boards/#{@root.id}/new"
-        last_response.body.should have_xpath("//form/textarea[@name='iceberg-app-board[description]']")
+        last_response.body.should have_xpath("//form/textarea[@name='test_app-board[description]']")
       end
       
       it "should have a checkbox for allowing topics" do
         get "/boards/#{@root.id}/new"
-        last_response.body.should have_xpath("//form/input[@name='iceberg-app-board[allow_topics]'][@type='checkbox'][@value='1'][@checked='checked']")
-        last_response.body.should have_xpath("//form/input[@name='iceberg-app-board[allow_topics]'][@type='hidden'][@value='0']")
+        last_response.body.should have_xpath("//form/input[@name='test_app-board[allow_topics]'][@type='checkbox'][@value='1'][@checked='checked']")
+        last_response.body.should have_xpath("//form/input[@name='test_app-board[allow_topics]'][@type='hidden'][@value='0']")
       end
     end
     
     describe "POST" do
       it "should be successful" do
-        post "/boards", {'iceberg-app-board' => {'title' => 'New Board', 'description' => 'My new board', 'allow_topics' => 0}}
+        post "/boards", {'test_app-board' => {'title' => 'New Board', 'description' => 'My new board', 'allow_topics' => 0}}
         follow_redirect!
         last_response.should be_ok
       end
 
       it "should be successful with a parent" do
-        post "/boards", {'iceberg-app-board' => {'parent_id' => @root.id, 'title' => 'New Board', 'description' => 'My new board', 'allow_topics' => 1}}
+        post "/boards", {'test_app-board' => {'parent_id' => @root.id, 'title' => 'New Board', 'description' => 'My new board', 'allow_topics' => 1}}
         follow_redirect!
         last_response.should be_ok
       end
       
       it "should redirect to the board index page on success" do
-        post "/boards", {'iceberg-app-board' => {'title' => 'New Board', 'description' => 'My new board', 'allow_topics' => 0}}
+        post "/boards", {'test_app-board' => {'title' => 'New Board', 'description' => 'My new board', 'allow_topics' => 0}}
         follow_redirect!
         last_request.path.should == "/boards"
       end
       
       it "should redirect to the board's parent page if parent is provided" do
-        post "/boards", {'iceberg-app-board' => {'parent_id' => @root.id, 'title' => 'New Board', 'description' => 'My new board', 'allow_topics' => 1}}
+        post "/boards", {'test_app-board' => {'parent_id' => @root.id, 'title' => 'New Board', 'description' => 'My new board', 'allow_topics' => 1}}
         follow_redirect!
         last_request.path.should == "/boards/root"
       end
       
       it "should render the new board page if creation fails" do
-        post "/boards", {'iceberg-app-board' => {'title' => 'Root', 'description' => 'Going to fail', 'allow_topics' => 0}}
+        post "/boards", {'test_app-board' => {'title' => 'Root', 'description' => 'Going to fail', 'allow_topics' => 0}}
         last_request.path.should  == "/boards"
         last_response.body.should contain("There's already a board with that title")
       end
@@ -137,24 +137,24 @@ describe "Boards Routes" do
       
       it "should have a text field for the title" do
         get "/boards/#{@board.id}/edit"
-        last_response.body.should have_xpath("//form/input[@name='iceberg-app-board[title]'][@type='text'][@value='Board']")
+        last_response.body.should have_xpath("//form/input[@name='test_app-board[title]'][@type='text'][@value='Board']")
       end
       
       it "should have a text area for description" do
         get "/boards/#{@board.id}/edit"
-        last_response.body.should have_xpath("//form/textarea[@name='iceberg-app-board[description]'][contains(text(), 'First board')]")
+        last_response.body.should have_xpath("//form/textarea[@name='test_app-board[description]'][contains(text(), 'First board')]")
       end
       
       it "should have a checkbox for allowing topics" do
         get "/boards/#{@board.id}/edit"
-        last_response.body.should have_xpath("//form/input[@name='iceberg-app-board[allow_topics]'][@type='checkbox'][@value='1']")
-        last_response.body.should have_xpath("//form/input[@name='iceberg-app-board[allow_topics]'][@type='hidden'][@value='0']")
+        last_response.body.should have_xpath("//form/input[@name='test_app-board[allow_topics]'][@type='checkbox'][@value='1']")
+        last_response.body.should have_xpath("//form/input[@name='test_app-board[allow_topics]'][@type='hidden'][@value='0']")
       end
     end
     
     describe "PUT" do
       it "should be successful" do
-        put "/boards/#{@board.id}", {'iceberg-app-board' => {'title' => 'New Board', 'description' => 'My new board', 'allow_topics' => 0}}
+        put "/boards/#{@board.id}", {'test_app-board' => {'title' => 'New Board', 'description' => 'My new board', 'allow_topics' => 0}}
         follow_redirect!
         last_response.should be_ok
       end
@@ -175,7 +175,7 @@ describe "Boards Routes" do
       end
       
       it "should redirect to the board page if successful" do
-        put "/boards/#{@board.id}", {'iceberg-app-board' => {'title' => 'New Board', 'description' => 'My new board', 'allow_topics' => 0}}
+        put "/boards/#{@board.id}", {'test_app-board' => {'title' => 'New Board', 'description' => 'My new board', 'allow_topics' => 0}}
         follow_redirect!
         last_request.path.should  == "/boards/board"
         last_response.body.should contain('New Board')
@@ -183,7 +183,7 @@ describe "Boards Routes" do
       
       it "should render the edit form with errors if the update is unsuccessful" do
         @new_board = Factory.create(:board, :title => 'New Board', :description => 'There will be a conflict with title')
-        put "/boards/#{@board.id}", {'iceberg-app-board' => {'title' => 'New Board', 'description' => 'My new board', 'allow_topics' => 0}}
+        put "/boards/#{@board.id}", {'test_app-board' => {'title' => 'New Board', 'description' => 'My new board', 'allow_topics' => 0}}
         last_request.path.should  == "/boards/#{@board.id}"
         last_response.body.should have_xpath("//form[@action='/boards/#{@board.id}'][@method='post']")
         last_response.body.should contain("There's already a board with that title")

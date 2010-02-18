@@ -4,21 +4,21 @@ module Iceberg
     helpers do
       def get_board
         slugs   = split_splat
-        @board  = Board.by_ancestory(slugs)
+        @board  = model_for(:Board).by_ancestory(slugs)
         halt 404 unless @board
       end
     end
     
     get :new_topic do |board_id|
-      @board = Board.get(board_id)
+      @board = model_for(:Board).get(board_id)
       halt 404 unless @board
       @topic = @board.topics.new
       haml :'topics/new'
     end
     
     post :create_topic do |board_id|
-      @board = Board.get!(board_id)
-      @topic = @board.post_topic(current_author, params['iceberg-app-topic'])
+      @board = model_for(:Board).get!(board_id)
+      @topic = @board.post_topic(current_author, params_for(:Topic))
       unless @topic.new?
         redirect path_for(:board, @board)
       else
@@ -42,15 +42,15 @@ module Iceberg
     end
     
     get :edit_topic do |id|
-      @topic = Topic.get(id)
+      @topic = model_for(:Topic).get(id)
       halt 404 unless @topic
       haml :'topics/edit'
     end
     
     put :update_topic do |id|
-      @topic = Topic.get(id)
+      @topic = model_for(:Topic).get(id)
       halt 404 unless @topic
-      if @topic.update(params['iceberg-app-topic'])
+      if @topic.update(params_for(:Topic))
         redirect path_for(:topic, @topic)
       else
         haml :'topics/edit'
@@ -58,16 +58,16 @@ module Iceberg
     end
     
     get :move_topic do |id|
-      @topic = Topic.get(id)
+      @topic = model_for(:Topic).get(id)
       halt 404 unless @topic
-      @boards = Board.all(:id.not => @topic.board.id, :allow_topics => true)
+      @boards = model_for(:Board).all(:id.not => @topic.board.id, :allow_topics => true)
       haml :'topics/move'
     end
     
     post :move_topic do |id|
-      @topic = Topic.get(id)
+      @topic = model_for(:Topic).get(id)
       halt 404 unless @topic
-      board = Board.get(params['iceberg-app-topic']['board_id'])
+      board = model_for(:Board).get(params_for(:Topic)['board_id'])
       if @topic.move_to(board)
         redirect path_for(:topic, @topic)
       else

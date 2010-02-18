@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe Iceberg::App::Board do
+describe "Board" do
   it "should save with valid attributes" do
     @board = Factory.build(:board)
     @board.save.should be_true
@@ -161,7 +161,7 @@ describe Iceberg::App::Board do
     end
     
     it "should have children" do
-      @board = Iceberg::App::Board.first(:parent_id => nil)
+      @board = TestApp::Board.first(:parent_id => nil)
       @board.should == @general_board
       
       @board = @board.children.first
@@ -173,12 +173,12 @@ describe Iceberg::App::Board do
     
     describe "#by_ancestory" do
       it "should retrieve the child given correct slugs" do
-        @board = Iceberg::App::Board.by_ancestory(%w[general carriers verizon])
+        @board = TestApp::Board.by_ancestory(%w[general carriers verizon])
         @board.should == @verizon_board
       end
       
       it "should not retrieve the child given incorrect slugs" do
-        @board = Iceberg::App::Board.by_ancestory(%w[carriers general verizon])
+        @board = TestApp::Board.by_ancestory(%w[carriers general verizon])
         @board.should be_nil
       end
     end

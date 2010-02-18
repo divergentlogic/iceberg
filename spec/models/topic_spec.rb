@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe Iceberg::App::Topic do
+describe "Topic" do
   describe "updating the title" do
     before(:each) do
       @board = Factory.create(:board)

@@ -41,7 +41,7 @@ describe "Posts Routes" do
       @topic  = @board.post_topic(@author, {:title => "Topic", :message => "Discuss"})
       @post   = @topic.posts.first
       
-      post "/posts/#{@post.id}", {'iceberg-app-post' => {'message' => 'Yo Dawg'}}
+      post "/posts/#{@post.id}", {'test_app-post' => {'message' => 'Yo Dawg'}}
       follow_redirect!
     end
     
