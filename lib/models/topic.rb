@@ -22,9 +22,9 @@ module Iceberg::Models::Topic
 
       attr_accessor :author, :message, :existing_topic
 
-      belongs_to :board
-      has n, :posts
-      belongs_to :last_post, :model => 'Post', :required => false
+      has n,      :posts, :order => [:created_at]
+      belongs_to  :board
+      belongs_to  :last_post, :model => 'Post', :required => false
 
       validates_present     :message, :on => :create
       validates_present     :board, :title, :slug
