@@ -21,7 +21,7 @@ require 'dm-validations'
 require 'dm-is-list'
 require 'dm-is-tree'
 
-require File.expand_path(File.join(File.dirname(__FILE__), '..', 'will_paginate', 'lib', 'will_paginate'))
+# require File.expand_path(File.join(File.dirname(__FILE__), '..', 'will_paginate', 'lib', 'will_paginate'))
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'will_paginate', 'lib', 'will_paginate', 'finders', 'data_mapper'))
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'will_paginate', 'lib', 'will_paginate', 'view_helpers', 'base'))
 require File.expand_path(File.join(File.dirname(__FILE__), '..', 'will_paginate', 'lib', 'will_paginate', 'view_helpers', 'link_renderer'))
