@@ -1,12 +1,17 @@
-gem_env = "#{File.dirname(__FILE__)}/../vendor/gems/environment.rb"
-if File.exists?(gem_env)
-  require gem_env
-  Bundler.require_env
+begin
+  # Require the preresolved locked set of gems.
+  require File.expand_path('../.bundle/environment', __FILE__)
+rescue LoadError
+  # Fallback on doing the resolve at runtime.
+  require "rubygems"
+  require "bundler"
+  Bundler.setup
 end
 
 require 'sinatra/base'
 require 'haml'
 require 'rack-flash'
+require 'active_support'
 
 require 'dm-core'
 require 'dm-types'
