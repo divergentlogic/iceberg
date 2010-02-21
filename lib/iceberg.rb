@@ -21,11 +21,10 @@ require 'dm-validations'
 require 'dm-is-list'
 require 'dm-is-tree'
 
-$: << File.expand_path(File.dirname(__FILE__)+'/../will_paginate/lib')
-require 'will_paginate'
-require 'will_paginate/finders/data_mapper'
-require 'will_paginate/view_helpers/base'
-require 'will_paginate/view_helpers/link_renderer'
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'will_paginate', 'lib', 'will_paginate'))
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'will_paginate', 'lib', 'will_paginate', 'finders', 'data_mapper'))
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'will_paginate', 'lib', 'will_paginate', 'view_helpers', 'base'))
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'will_paginate', 'lib', 'will_paginate', 'view_helpers', 'link_renderer'))
 
 WillPaginate::ViewHelpers::LinkRenderer.class_eval do
   protected
