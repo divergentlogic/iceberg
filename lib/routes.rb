@@ -55,8 +55,9 @@ module Iceberg
     
     register_route(:topic) do
       path "/boards/*/topics/:topic/?"
-      generate do |topic|
-        "/boards/#{topic.board.ancestory_path}/topics/#{topic.slug}"
+      generate do |topic, board|
+        board ||= topic.board
+        "/boards/#{board.ancestory_path}/topics/#{topic.slug}"
       end
     end
     
