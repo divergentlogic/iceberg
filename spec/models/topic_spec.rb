@@ -1,6 +1,29 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe "Topic" do
+  describe "unique title and slug" do
+    before(:each) do
+      @board = Factory.create(:board)
+      @topic = @board.post_topic(nil, :title => "A very special title", :message => "First post")
+    end
+    
+    it "should complain if the title is not unique" do
+      topic = @board.post_topic(nil, :title => "A very special title", :message => "Second post")
+      topic.should be_new
+      topic.should error_on(:title)
+      topic.errors.on(:title).should == ["A topic with that title has been posted in this board already; maybe you'd like to post under that topic instead?"]
+      topic.existing_topic.should == @topic
+    end
+    
+    it "should complain if the slug is not unique" do
+      topic = @board.post_topic(nil, :title => "A (very) special title", :message => "Second post")
+      topic.should be_new
+      topic.should error_on(:slug)
+      topic.errors.on(:slug).should == ["A topic with that title has been posted in this board already; maybe you'd like to post under that topic instead?"]
+      topic.existing_topic.should == @topic
+    end
+  end
+  
   describe "updating the title" do
     before(:each) do
       @board = Factory.create(:board)

@@ -28,7 +28,7 @@ module Iceberg::Models::Topic
 
       validates_present     :message, :on => :create
       validates_present     :board, :title, :slug
-      validates_is_unique   :title, :scope => :board_id, :message => "A topic with that title has been posted in this board already; maybe you'd like to post under that topic instead?"
+      validates_is_unique   :title, :slug, :scope => :board_id, :message => "A topic with that title has been posted in this board already; maybe you'd like to post under that topic instead?"
       validates_with_method :board, :method => :validate_board_allows_topics
 
       before  :valid?,  :set_slug
@@ -77,8 +77,8 @@ module Iceberg::Models::Topic
       end
 
       def set_existing_topic
-        if errors.on(:title)
-          self.existing_topic = self.class.first(:title => title)
+        if errors.on(:title) || errors.on(:slug)
+          self.existing_topic = self.class.first(:title => title) || self.class.first(:slug => slug)
         end
       end
 
