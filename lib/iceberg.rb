@@ -33,7 +33,6 @@ module Iceberg
     register SinatraMore::MarkupPlugin
     register SinatraMore::RenderPlugin
     
-    helpers WillPaginate::ViewHelpers::Base
     helpers Iceberg::Helpers::Utilities
     helpers Iceberg::Helpers::Visuals
   end
