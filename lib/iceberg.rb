@@ -11,21 +11,6 @@ require 'dm-validations'
 require 'dm-is-list'
 require 'dm-is-tree'
 
-# require File.expand_path(File.join(File.dirname(__FILE__), '..', 'will_paginate', 'lib', 'will_paginate'))
-require File.expand_path(File.join(File.dirname(__FILE__), '..', 'will_paginate', 'lib', 'will_paginate', 'finders', 'data_mapper'))
-require File.expand_path(File.join(File.dirname(__FILE__), '..', 'will_paginate', 'lib', 'will_paginate', 'view_helpers', 'base'))
-require File.expand_path(File.join(File.dirname(__FILE__), '..', 'will_paginate', 'lib', 'will_paginate', 'view_helpers', 'link_renderer'))
-
-WillPaginate::ViewHelpers::LinkRenderer.class_eval do
-  protected
-  def url(page)
-    url = @template.request.url.split('?').first
-    query = @template.request.GET.dup
-    page == 1 ? query.reject! {|k,v| k == "page"} : query["page"] = page
-    query.empty? ? url : url + "?" + query.map {|k, v| "#{k}=#{v}"}.join("&")
-  end
-end
-
 require File.expand_path(File.dirname(__FILE__)+'/../sinatra_more/lib/sinatra_more/markup_plugin')
 require File.expand_path(File.dirname(__FILE__)+'/../sinatra_more/lib/sinatra_more/render_plugin')
 require File.expand_path(File.dirname(__FILE__)+'/helpers/utilities')
@@ -43,7 +28,6 @@ module Iceberg
     include Mixins::ExternalLayout
     
     set :views,     File.dirname(__FILE__) + '/views'
-    set :per_page,  25
 
     register Iceberg::NamedRoutePlugin
     register SinatraMore::MarkupPlugin
@@ -52,11 +36,6 @@ module Iceberg
     helpers WillPaginate::ViewHelpers::Base
     helpers Iceberg::Helpers::Utilities
     helpers Iceberg::Helpers::Visuals
-    
-    before do
-      @page     = params['page']      || 1
-      @per_page = params['per_page']  || options.per_page
-    end
   end
 end
 
