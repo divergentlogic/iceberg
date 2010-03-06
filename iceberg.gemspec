@@ -9,21 +9,21 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Christopher Durtschi"]
-  s.date = %q{2010-01-25}
+  s.date = %q{2010-03-06}
   s.description = %q{Forum as Rack middleware}
   s.email = %q{christopher.durtschi@gmail.com}
+  s.executables = ["autospec", "css2sass", "edit_json.rb", "haml", "html2haml", "nokogiri", "prettify_json.rb", "rackup", "sass", "spec"]
   s.extra_rdoc_files = [
     "LICENSE",
      "README.rdoc"
   ]
   s.files = [
-    "LICENSE",
+    "Gemfile",
+     "LICENSE",
      "README.rdoc",
      "Rakefile",
      "VERSION",
      "iceberg.gemspec",
-     "lib/helpers/authentication.rb",
-     "lib/helpers/paths.rb",
      "lib/helpers/utilities.rb",
      "lib/helpers/visuals.rb",
      "lib/iceberg.rb",
@@ -31,15 +31,24 @@ Gem::Specification.new do |s|
      "lib/models/board.rb",
      "lib/models/post.rb",
      "lib/models/topic.rb",
+     "lib/plugins/named_route_plugin.rb",
+     "lib/plugins/named_route_plugin/named_route.rb",
+     "lib/plugins/named_route_plugin/routing_helpers.rb",
+     "lib/routes.rb",
      "lib/routes/boards.rb",
      "lib/routes/posts.rb",
      "lib/routes/topics.rb",
+     "lib/views/boards/edit.haml",
      "lib/views/boards/index.haml",
      "lib/views/boards/new.haml",
+     "lib/views/boards/show.builder",
      "lib/views/boards/show.haml",
      "lib/views/layout.haml",
      "lib/views/posts/new.haml",
+     "lib/views/topics/edit.haml",
+     "lib/views/topics/move.haml",
      "lib/views/topics/new.haml",
+     "lib/views/topics/show.builder",
      "lib/views/topics/show.haml",
      "sinatra_more/.document",
      "sinatra_more/.gitignore",
@@ -137,6 +146,8 @@ Gem::Specification.new do |s|
      "sinatra_more/test/fixtures/markup_app/views/link_to.haml",
      "sinatra_more/test/fixtures/markup_app/views/mail_to.erb",
      "sinatra_more/test/fixtures/markup_app/views/mail_to.haml",
+     "sinatra_more/test/fixtures/markup_app/views/meta_tag.erb",
+     "sinatra_more/test/fixtures/markup_app/views/meta_tag.haml",
      "sinatra_more/test/fixtures/render_app/app.rb",
      "sinatra_more/test/fixtures/render_app/views/erb/test.erb",
      "sinatra_more/test/fixtures/render_app/views/haml/test.haml",
@@ -164,32 +175,40 @@ Gem::Specification.new do |s|
      "sinatra_more/vendor/pony/lib/pony.rb",
      "sinatra_more/vendor/pony/spec/base.rb",
      "sinatra_more/vendor/pony/spec/pony_spec.rb",
-     "spec/factories.rb",
      "spec/helpers/visuals_spec.rb",
      "spec/iceberg_spec.rb",
      "spec/models/board_spec.rb",
      "spec/models/post_spec.rb",
      "spec/models/topic_spec.rb",
      "spec/routes/boards_spec.rb",
+     "spec/routes/posts_spec.rb",
+     "spec/routes/topics_spec.rb",
      "spec/spec.opts",
      "spec/spec_helper.rb",
-     "spec/support/custom_matchers.rb"
+     "spec/support/app.rb",
+     "spec/support/be_valid_asset.rb",
+     "spec/support/custom_matchers.rb",
+     "spec/support/factories.rb"
   ]
   s.homepage = %q{http://github.com/robotapocalypse/iceberg}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{Forum as Rack middleware}
   s.test_files = [
-    "spec/factories.rb",
-     "spec/helpers/visuals_spec.rb",
+    "spec/helpers/visuals_spec.rb",
      "spec/iceberg_spec.rb",
      "spec/models/board_spec.rb",
      "spec/models/post_spec.rb",
      "spec/models/topic_spec.rb",
      "spec/routes/boards_spec.rb",
+     "spec/routes/posts_spec.rb",
+     "spec/routes/topics_spec.rb",
      "spec/spec_helper.rb",
-     "spec/support/custom_matchers.rb"
+     "spec/support/app.rb",
+     "spec/support/be_valid_asset.rb",
+     "spec/support/custom_matchers.rb",
+     "spec/support/factories.rb"
   ]
 
   if s.respond_to? :specification_version then
@@ -203,8 +222,10 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<dm-core>, ["= 0.10.2"])
       s.add_runtime_dependency(%q<dm-more>, ["= 0.10.2"])
       s.add_runtime_dependency(%q<data_objects>, ["= 0.10.1"])
-      s.add_runtime_dependency(%q<do_mysql>, ["= 0.10.1"])
+      s.add_runtime_dependency(%q<haml>, [">= 0"])
+      s.add_runtime_dependency(%q<activesupport>, ["= 2.3.5"])
       s.add_development_dependency(%q<rspec>, [">= 0"])
+      s.add_development_dependency(%q<be_valid_asset>, [">= 0"])
     else
       s.add_dependency(%q<rack>, ["= 1.0.1"])
       s.add_dependency(%q<rack-flash>, ["= 0.1.1"])
@@ -212,8 +233,10 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<dm-core>, ["= 0.10.2"])
       s.add_dependency(%q<dm-more>, ["= 0.10.2"])
       s.add_dependency(%q<data_objects>, ["= 0.10.1"])
-      s.add_dependency(%q<do_mysql>, ["= 0.10.1"])
+      s.add_dependency(%q<haml>, [">= 0"])
+      s.add_dependency(%q<activesupport>, ["= 2.3.5"])
       s.add_dependency(%q<rspec>, [">= 0"])
+      s.add_dependency(%q<be_valid_asset>, [">= 0"])
     end
   else
     s.add_dependency(%q<rack>, ["= 1.0.1"])
@@ -222,8 +245,10 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<dm-core>, ["= 0.10.2"])
     s.add_dependency(%q<dm-more>, ["= 0.10.2"])
     s.add_dependency(%q<data_objects>, ["= 0.10.1"])
-    s.add_dependency(%q<do_mysql>, ["= 0.10.1"])
+    s.add_dependency(%q<haml>, [">= 0"])
+    s.add_dependency(%q<activesupport>, ["= 2.3.5"])
     s.add_dependency(%q<rspec>, [">= 0"])
+    s.add_dependency(%q<be_valid_asset>, [">= 0"])
   end
 end
 
