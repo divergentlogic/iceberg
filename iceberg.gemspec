@@ -216,7 +216,7 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<rack>, ["= 1.0.1"])
+      s.add_runtime_dependency(%q<rack>, [">= 0"])
       s.add_runtime_dependency(%q<rack-flash>, ["= 0.1.1"])
       s.add_runtime_dependency(%q<sinatra>, ["= 0.9.4"])
       s.add_runtime_dependency(%q<dm-core>, ["= 0.10.2"])
@@ -227,7 +227,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<rspec>, [">= 0"])
       s.add_development_dependency(%q<be_valid_asset>, [">= 0"])
     else
-      s.add_dependency(%q<rack>, ["= 1.0.1"])
+      s.add_dependency(%q<rack>, [">= 0"])
       s.add_dependency(%q<rack-flash>, ["= 0.1.1"])
       s.add_dependency(%q<sinatra>, ["= 0.9.4"])
       s.add_dependency(%q<dm-core>, ["= 0.10.2"])
@@ -239,7 +239,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<be_valid_asset>, [">= 0"])
     end
   else
-    s.add_dependency(%q<rack>, ["= 1.0.1"])
+    s.add_dependency(%q<rack>, [">= 0"])
     s.add_dependency(%q<rack-flash>, ["= 0.1.1"])
     s.add_dependency(%q<sinatra>, ["= 0.9.4"])
     s.add_dependency(%q<dm-core>, ["= 0.10.2"])
