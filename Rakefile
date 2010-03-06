@@ -17,7 +17,7 @@ begin
     gem.add_dependency 'dm-more', '0.10.2'
     gem.add_dependency 'data_objects', '=0.10.1'
     gem.add_dependency 'haml'
-    gem.add_dependency 'activesupport',  '2.3.5'
+    gem.add_dependency 'activesupport'
     gem.add_development_dependency "rspec"
     gem.add_development_dependency "be_valid_asset"
     files = `git ls-files`.split("\n").sort.reject{ |file| file =~ /^\./ }.reject { |file| file =~ /^doc/ }

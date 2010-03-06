@@ -223,7 +223,7 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<dm-more>, ["= 0.10.2"])
       s.add_runtime_dependency(%q<data_objects>, ["= 0.10.1"])
       s.add_runtime_dependency(%q<haml>, [">= 0"])
-      s.add_runtime_dependency(%q<activesupport>, ["= 2.3.5"])
+      s.add_runtime_dependency(%q<activesupport>, [">= 0"])
       s.add_development_dependency(%q<rspec>, [">= 0"])
       s.add_development_dependency(%q<be_valid_asset>, [">= 0"])
     else
@@ -234,7 +234,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<dm-more>, ["= 0.10.2"])
       s.add_dependency(%q<data_objects>, ["= 0.10.1"])
       s.add_dependency(%q<haml>, [">= 0"])
-      s.add_dependency(%q<activesupport>, ["= 2.3.5"])
+      s.add_dependency(%q<activesupport>, [">= 0"])
       s.add_dependency(%q<rspec>, [">= 0"])
       s.add_dependency(%q<be_valid_asset>, [">= 0"])
     end
@@ -246,7 +246,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<dm-more>, ["= 0.10.2"])
     s.add_dependency(%q<data_objects>, ["= 0.10.1"])
     s.add_dependency(%q<haml>, [">= 0"])
-    s.add_dependency(%q<activesupport>, ["= 2.3.5"])
+    s.add_dependency(%q<activesupport>, [">= 0"])
     s.add_dependency(%q<rspec>, [">= 0"])
     s.add_dependency(%q<be_valid_asset>, [">= 0"])
   end
