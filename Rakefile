@@ -10,7 +10,7 @@ begin
     gem.email = "christopher.durtschi@gmail.com"
     gem.homepage = "http://github.com/robotapocalypse/iceberg"
     gem.authors = ["Christopher Durtschi"]
-    gem.add_dependency 'rack', '=1.0.1'
+    gem.add_dependency 'rack'
     gem.add_dependency 'rack-flash', '=0.1.1'
     gem.add_dependency 'sinatra', '=0.9.4'
     gem.add_dependency 'dm-core', '=0.10.2'
