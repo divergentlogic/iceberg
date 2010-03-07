@@ -70,7 +70,6 @@ module Iceberg::Models::Topic
 
       def set_post
         posts.create({
-          :board => board,
           :author => author,
           :message => message
         })
