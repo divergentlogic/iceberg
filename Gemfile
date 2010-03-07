@@ -11,6 +11,8 @@ gem 'sqlite3-ruby'
 gem 'haml'
 gem 'activesupport',  '2.3.5',  :require => 'active_support'
 
+gem 'ruby-debug', :group => 'development'
+
 group :test do
   gem 'rspec',            '>=1.2.9',  :require => nil
   gem "rack-test",                    :require => nil
