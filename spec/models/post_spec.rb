@@ -1,6 +1,16 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe "Post" do
+  it "should delete in a paranoid fashion" do
+    Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 1, 0, 0))
+    @board = Factory.create(:board)
+    @topic = @board.post_topic(nil, :title => "Topic 1", :message => "First post")
+    @post  = @topic.posts.first
+    
+    @post.destroy
+    @post.deleted_at.should == Time.utc(2010, 1, 1, 1, 0, 0)
+  end
+  
   describe "reply" do
     before(:each) do
       @author1  = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")

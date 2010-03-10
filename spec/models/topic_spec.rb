@@ -38,6 +38,26 @@ describe "Topic" do
     end
   end
   
+  describe "deleting" do
+    before(:each) do
+      Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 1, 0, 0))
+      @board = Factory.create(:board)
+      @topic = @board.post_topic(nil, :title => "To be deleted", :message => "First post")
+    end
+    
+    it "should delete in a paranoid fashion" do
+      @topic.destroy
+      @topic.deleted_at.should == Time.utc(2010, 1, 1, 1, 0, 0)
+    end
+
+    it "should allow titles to be reused from deleted topics" do
+      @topic.destroy
+      
+      @new = @board.post_topic(nil, :title => "To be deleted", :message => "First post")
+      @new.save.should be_true
+    end
+  end
+  
   describe "#move_to" do
     before(:each) do
       @old_board      = Factory.create(:board, :title => "Old Board")

@@ -14,6 +14,7 @@ module Iceberg::Models::Post
       property :author_ip_address,  IPAddress
       property :created_at,         DateTime
       property :updated_at,         DateTime
+      property :deleted_at,         ParanoidDateTime
 
       attr_accessor :author
 

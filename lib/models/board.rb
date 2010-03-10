@@ -21,6 +21,7 @@ module Iceberg::Models::Board
       property :last_author_name,       String
       property :last_author_ip_address, IPAddress
       property :allow_topics,           Boolean,  :default => true
+      property :deleted_at,             ParanoidDateTime
 
       has n, :topics, :order => [:sticky.desc, :created_at.desc]
       has n, :posts, :through => :topics

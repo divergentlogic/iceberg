@@ -57,6 +57,13 @@ module Iceberg
       end
     end
     
+    delete :update_topic do |id|
+      @topic = model_for(:Topic).get(id)
+      halt 404 unless @topic
+      @topic.destroy
+      redirect path_for(:board, @topic.board)
+    end
+    
     get :move_topic do |id|
       @topic = model_for(:Topic).get(id)
       halt 404 unless @topic

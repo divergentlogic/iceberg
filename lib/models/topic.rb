@@ -19,6 +19,7 @@ module Iceberg::Models::Topic
       property :last_author_id,         Integer
       property :last_author_name,       String
       property :last_author_ip_address, DataMapper::Types::IPAddress
+      property :deleted_at,             ParanoidDateTime
 
       attr_accessor :author, :message, :existing_topic
 

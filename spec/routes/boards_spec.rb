@@ -234,6 +234,50 @@ describe "Boards Routes" do
         last_response.body.should have_xpath("//table/tbody/tr[3]/td/a[contains(text(), 'Topic 1')]")
       end
     end
+    
+    describe "DELETE" do
+      before(:each) do
+        @board = Factory.build(:board, :title => "Talk about stuff")
+        @board.save
+      end
+      
+      it "should be successful" do
+        delete "/boards/#{@board.id}"
+        follow_redirect!
+        last_response.should be_ok
+      end
+
+      it "should not match on non numeric parameters" do
+        delete "/boards/something-non-numeric"
+        last_response.should be_not_found
+      end
+      
+      it "should not match on IDs that begin with 0" do
+        delete "/boards/01"
+        last_response.should be_not_found
+      end
+      
+      it "should return 404 if the board is not found" do
+        delete "/boards/99999999"
+        last_response.should be_not_found
+      end
+      
+      it "should delete the board" do
+        get "/boards"
+        last_response.should contain("Talk about stuff")
+        
+        get "/boards/talk-about-stuff"
+        last_response.should be_ok
+        
+        delete "/boards/#{@board.id}"
+        
+        get "/boards"
+        last_response.should_not contain("Talk about stuff")
+        
+        get "/boards/talk-about-stuff"
+        last_response.should be_not_found
+      end
+    end
   end
 
   describe "viewing the ATOM feed" do
