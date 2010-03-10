@@ -42,7 +42,7 @@ module Iceberg
       @board = model_for(:Board).get(id)
       halt 404 unless @board
       @board.destroy
-      redirect path_for(:boards)
+      redirect path_for(:board, @board.parent)
     end
     
     get :board_atom do
