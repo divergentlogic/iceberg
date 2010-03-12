@@ -57,4 +57,44 @@ describe "Posts Routes" do
       last_response.body.should contain('Anonymous')
     end
   end
+  
+  describe "deleting a post" do
+    before(:each) do
+      @board  = Factory.create(:board, :title => "Talk about stuff")
+      @author = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      @topic  = @board.post_topic(@author, {:title => "Yak Yak Yak", :message => "Hello World"})
+      @post   = @topic.posts.first
+    end
+    
+    it "should be successful" do
+      delete "/posts/#{@post.id}"
+      follow_redirect!
+      last_response.should be_ok
+    end
+
+    it "should not match on non numeric parameters" do
+      delete "/posts/something-non-numeric"
+      last_response.should be_not_found
+    end
+    
+    it "should not match on IDs that begin with 0" do
+      delete "/posts/01"
+      last_response.should be_not_found
+    end
+    
+    it "should return 404 if the topic is not found" do
+      delete "/posts/99999999"
+      last_response.should be_not_found
+    end
+    
+    it "should delete the post" do
+      get "/boards/talk-about-stuff/topics/yak-yak-yak"
+      last_response.should contain("Hello World")
+      
+      delete "/posts/#{@post.id}"
+      
+      get "/boards/talk-about-stuff/topics/yak-yak-yak"
+      last_response.should_not contain("Hello World")
+    end
+  end
 end

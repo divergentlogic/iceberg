@@ -20,6 +20,13 @@ module Iceberg
         haml :'posts/new'
       end
     end
+    
+    delete :create_post do |id|
+      @post = model_for(:Post).get(id.to_i)
+      halt 404 unless @post
+      @post.destroy
+      redirect path_for(:topic, @post.topic)
+    end
 
   end
 end

@@ -38,6 +38,13 @@ module Iceberg
       end
     end
     
+    delete :update_board do |id|
+      @board = model_for(:Board).get(id)
+      halt 404 unless @board
+      @board.destroy
+      redirect path_for(:board, @board.parent)
+    end
+    
     get :board_atom do
       @board = model_for(:Board).by_ancestory(split_splat)
       halt 404 unless @board && @board.allow_topics?

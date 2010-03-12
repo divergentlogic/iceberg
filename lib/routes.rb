@@ -7,7 +7,7 @@ module Iceberg
     end
     
     register_route(:new_board) do
-      path %r{/boards/([1-9][0-9]*/)?new/?}
+      path %r{\A/boards/([1-9][0-9]*/)?new/?\Z}
       generate do |board|
         board ? "/boards/#{board.id}/new" : "/boards/new"
       end
@@ -19,14 +19,14 @@ module Iceberg
     end
     
     register_route(:edit_board) do
-      path %r{/boards/([1-9][0-9]*)/edit/?}
+      path %r{\A/boards/([1-9][0-9]*)/edit/?\Z}
       generate do |board|
         "/boards/#{board.id}/edit"
       end
     end
     
     register_route(:update_board) do
-      path %r{/boards/([1-9][0-9]*)/?}
+      path %r{\A/boards/([1-9][0-9]*)/?\Z}
       generate do |board|
         "/boards/#{board.id}"
       end
@@ -69,42 +69,42 @@ module Iceberg
     end
     
     register_route(:new_topic) do
-      path %r{/boards/([1-9][0-9]*)/topics/new/?}
+      path %r{\A/boards/([1-9][0-9]*)/topics/new/?\Z}
       generate do |board|
         "/boards/#{board.id}/topics/new"
       end
     end
     
     register_route(:create_topic) do
-      path  %r{/boards/([1-9][0-9]*)/topics/?}
+      path  %r{\A/boards/([1-9][0-9]*)/topics/?\Z}
       generate do |board|
         "/boards/#{board.id}/topics"
       end
     end
     
     register_route(:edit_topic) do
-      path %r{/topics/([1-9][0-9]*)/edit/?}
+      path %r{\A/topics/([1-9][0-9]*)/edit/?\Z}
       generate do |topic|
         "/topics/#{topic.id}/edit"
       end
     end
     
     register_route(:update_topic) do
-      path %r{/topics/([1-9][0-9]*)/?}
+      path %r{\A/topics/([1-9][0-9]*)/?\Z}
       generate do |topic|
         "/topics/#{topic.id}"
       end
     end
     
     register_route(:move_topic) do
-      path %r{/topics/([1-9][0-9]*)/move/?}
+      path %r{\A/topics/([1-9][0-9]*)/move/?\Z}
       generate do |topic|
         "/topics/#{topic.id}/move"
       end
     end
     
     register_route(:new_post) do
-      path %r{/topics/([1-9][0-9]*)/posts/([1-9][0-9]*/)?reply/?}
+      path %r{\A/topics/([1-9][0-9]*)/posts/([1-9][0-9]*/)?reply/?\Z}
       generate do |topic, post|
         if post
           "/topics/#{topic.id}/posts/#{post.id}/reply"
@@ -115,7 +115,7 @@ module Iceberg
     end
 
     register_route(:create_post) do
-      path %r{/posts/([1-9][0-9]*)/?}
+      path %r{\A/posts/([1-9][0-9]*)/?\Z}
       generate do |post|
         "/posts/#{post.id}"
       end

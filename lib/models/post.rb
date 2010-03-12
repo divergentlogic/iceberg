@@ -14,15 +14,15 @@ module Iceberg::Models::Post
       property :author_ip_address,  IPAddress
       property :created_at,         DateTime
       property :updated_at,         DateTime
+      property :deleted_at,         ParanoidDateTime
 
       attr_accessor :author
 
       belongs_to :topic
-      belongs_to :board
 
       is :tree, :order => :created_at
 
-      validates_present     :message, :board, :topic
+      validates_present     :message, :topic
       validates_with_method :topic, :method => :validate_topic_is_unlocked
 
       before  :create,  :set_author_attributes
@@ -33,7 +33,6 @@ module Iceberg::Models::Post
           post.parent = self
           post.author = author
           post.topic  = topic
-          post.board  = board
         end
       end
 
@@ -49,7 +48,7 @@ module Iceberg::Models::Post
 
       def update_caches
         topic.update_cache
-        board.update_cache
+        topic.board.update_cache
       end
 
       def validate_topic_is_unlocked

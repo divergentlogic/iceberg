@@ -1,6 +1,53 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "Topics Routes" do
+  describe "topic" do
+    describe "DELETE" do
+      before(:each) do
+        @board  = Factory.create(:board, :title => "Talk about stuff")
+        @author = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+        @topic  = @board.post_topic(@author, :title => "Yak Yak Yak", :message => "First Post")
+      end
+      
+      it "should be successful" do
+        delete "/topics/#{@topic.id}"
+        follow_redirect!
+        last_response.should be_ok
+      end
+
+      it "should not match on non numeric parameters" do
+        delete "/topics/something-non-numeric"
+        last_response.should be_not_found
+      end
+      
+      it "should not match on IDs that begin with 0" do
+        delete "/topics/01"
+        last_response.should be_not_found
+      end
+      
+      it "should return 404 if the topic is not found" do
+        delete "/topics/99999999"
+        last_response.should be_not_found
+      end
+      
+      it "should delete the topic" do
+        get "/boards/talk-about-stuff"
+        last_response.should contain("Yak Yak Yak")
+        
+        get "/boards/talk-about-stuff/topics/yak-yak-yak"
+        last_response.should be_ok
+        
+        delete "/topics/#{@topic.id}"
+        
+        get "/boards/talk-about-stuff"
+        last_response.should_not contain("Yak Yak Yak")
+        
+        get "/boards/talk-about-stuff/topics/yak-yak-yak"
+        last_response.should be_not_found
+      end
+    end
+  end
+  
   describe "editing a topic" do
     before(:each) do
       @board  = Factory.create(:board, :title => "Board")

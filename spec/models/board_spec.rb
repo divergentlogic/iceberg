@@ -48,6 +48,21 @@ describe "Board" do
     @success.should_not error_on(:title)
   end
   
+  it "should delete in a paranoid fashion" do
+    Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 1, 0, 0))
+    @board = Factory.create(:board, :title => "Hello world")
+    @board.destroy
+    @board.deleted_at.should == Time.utc(2010, 1, 1, 1, 0, 0)
+  end
+  
+  it "should allow titles to be reused from deleted boards" do
+    @board = Factory.create(:board, :title => "Hello world")
+    @board.destroy
+
+    @new = Factory.build(:board, :title => "Hello world")
+    @new.save.should be_true
+  end
+  
   describe "#post_topic" do
     before(:each) do
       Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 1, 0, 0))
