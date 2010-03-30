@@ -3,14 +3,14 @@ module Iceberg::Models::Topic
 
   def self.included(base)
     base.class_eval do
-      
+
       include DataMapper::Resource
-      
+
       property :id,                     Serial
       property :title,                  String,   :length => (1..250)
       property :slug,                   Slug,     :length => (1..250)
       property :sticky,                 Integer,  :default => 0
-      property :locked,                 Boolean
+      property :locked,                 Boolean,  :default => false
       property :posts_count,            Integer,  :default => 0
       property :view_count,             Integer,  :default => 0
       property :created_at,             DateTime
@@ -89,7 +89,7 @@ module Iceberg::Models::Topic
           [false, "This board does not allow topics"]
         end
       end
-      
+
     end
   end
 end
