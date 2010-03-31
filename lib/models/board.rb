@@ -1,11 +1,11 @@
 module Iceberg::Models::Board
   include DataMapper::Types
-  
+
   def self.included(base)
     base.class_eval do
-      
+
       include DataMapper::Resource
-      
+
       property :id,                     Serial
       property :title,                  String,   :length => (1..250)
       property :slug,                   Slug,     :length => (1..250)
@@ -60,7 +60,8 @@ module Iceberg::Models::Board
         topic = topics.model.new(attributes)
         topic.board   = self
         topic.author  = author
-        topic.save
+        topic.valid_for_adding_to_board? # errors aren't getting added without explicity calling the validation function
+        topic.save(:adding_to_board)
         topic
       end
 
@@ -105,7 +106,7 @@ module Iceberg::Models::Board
           attribute_set(:slug, title.to_url)
         end
       end
-      
+
     end
   end
 end

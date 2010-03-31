@@ -6,7 +6,7 @@ module CustomMatchers
 
     def matches?(actual)
       @actual = actual
-      @valid = @actual.valid?
+      @valid = @actual.errors.empty?
       !@actual.errors.on(@expected).nil?
     end
 
