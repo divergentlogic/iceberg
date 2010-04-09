@@ -6,7 +6,7 @@ module Iceberg
         @name = name
         @app.named_routes[@name] ||= {}
       end
-      
+
       def path(path)
         path = [path] unless path.kind_of? Array
         path.each do |p|
@@ -14,7 +14,7 @@ module Iceberg
           (@app.named_routes[@name][:matcher] ||= []) << @app.send(:compile, p).first
         end
       end
-      
+
       def generate(path=nil, &block)
         if path && !block_given?
           @app.named_routes[@name][:generator] = path

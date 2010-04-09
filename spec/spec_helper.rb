@@ -36,11 +36,11 @@ Spec::Runner.configure do |config|
       run TestApp
     end
   end
-    
+
   config.include(Rack::Test::Methods)
   config.include(Webrat::Matchers)
   config.include(CustomMatchers)
-  
+
   config.before(:each) do
     DataMapper.setup(:default, 'sqlite3::memory:')
     DataMapper.auto_migrate!

@@ -3,11 +3,11 @@ Dir[File.dirname(__FILE__) + '/named_route_plugin/**/*.rb'].each {|file| load fi
 module Iceberg
   module NamedRoutePlugin
     class RouteNotFound < RuntimeError; end
-    
+
     def self.registered(app)
       app.set :named_routes, {}
       app.helpers Iceberg::NamedRoutePlugin::RoutingHelpers
-      
+
       def register_route(name, &block)
         named_route = Iceberg::NamedRoutePlugin::NamedRoute.new(self, name)
         named_route.instance_eval(&block)

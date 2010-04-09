@@ -20,19 +20,19 @@ require File.expand_path(File.dirname(__FILE__)+'/mixins/external_layout')
 
 module Iceberg
   module Models; end
-  
+
   class App < Sinatra::Base
     use Rack::MethodOverride
     use Rack::Flash
-    
+
     include Mixins::ExternalLayout
-    
+
     set :views,     File.dirname(__FILE__) + '/views'
 
     register Iceberg::NamedRoutePlugin
     register SinatraMore::MarkupPlugin
     register SinatraMore::RenderPlugin
-    
+
     helpers Iceberg::Helpers::Utilities
     helpers Iceberg::Helpers::Visuals
   end
@@ -49,7 +49,7 @@ require File.expand_path(File.dirname(__FILE__)+'/models/post')
 
 module Iceberg
   class App < Sinatra::Base
-    
+
     class Author
       if defined? id
         undef id
@@ -61,16 +61,16 @@ module Iceberg
         @ip_address = values[:ip_address]
       end
     end
-    
+
     helpers do
       def current_author
         Iceberg::App::Author.new(:id => nil, :name => "Anonymous", :ip_address => request.ip)
       end
     end
-    
+
     class_inheritable_reader :_models
     @_models = {}
-    
+
     def self.models(*models)
       _models
       models.each do |model|
@@ -78,7 +78,7 @@ module Iceberg
       end
       _models
     end
-    
+
     def self.inherited(base)
       super
       class_defs = models.keys.map do |klass|
@@ -89,19 +89,19 @@ module Iceberg
       end
       base.class_eval(class_defs.join("\n"))
     end
-    
+
     models :Board, :Topic, :Post
-    
+
     helpers do
       def model_for(model)
         self.class.models[model]
       end
-      
+
       def params_for(model)
         key = model_for(model).to_s.underscore.gsub('/', '-')
         params[key]
       end
     end
-    
+
   end
 end

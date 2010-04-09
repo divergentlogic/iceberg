@@ -5,12 +5,12 @@
       Forums
       %span
         %a{:href => path_for(:new_board)} (Add new root board)
-        
+
     %form#contentSearch.search{:method => "get", :action => ""}
       %p.fields
         %input#s2{:type => "text", :value => "Search Forum", :name => "s2", :onfocus => "if (this.value == 'Search Forum') {this.value = '';}", :onblur => "if (this.value == '') {this.value = 'Search Forum';}"}
         %button.go_button{:type => "submit", :name => "submit"} GO
-    
+
     #article_white
       - @boards.each do |board|
         .article_white_container
@@ -75,7 +75,7 @@
 
             .clear
           .article_white_bottom
-    
+
     #aside_white
       .aside_white_top
       .aside_white_center
@@ -180,7 +180,7 @@
         .class
 
       .aside_white_bottom
-        
+
     .clear
-    
+
   #single_container_bottom

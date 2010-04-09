@@ -5,16 +5,16 @@
 - form_for(@board, path_for(:boards)) do |f|
   - if @parent
     = f.hidden_field :parent_id
-    
+
   = f.error_messages
-  
+
   = f.label :title, :caption => "Title"
   = f.text_field :title
-  
+
   = f.label :description, :caption => "Description"
   = f.text_area :description
-  
+
   = f.label :allow_topics, :caption => "Allow Topics?"
   = f.check_box :allow_topics
-  
+
   = f.submit 'Create'

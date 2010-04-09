@@ -5,7 +5,7 @@ module Iceberg
         query = get_query(*args)
         "#{request.script_name}#{get_url_fragment(name, *args)}#{query}"
       end
-      
+
       def url_for(name, *args)
         scheme = request.scheme
         if (scheme == 'http' && request.port == 80 ||
@@ -17,7 +17,7 @@ module Iceberg
         query = get_query(*args)
         "#{scheme}://#{request.host}#{port}#{request.script_name}#{get_url_fragment(name, *args)}#{query}"
       end
-      
+
       def current_path_matches?(name)
         route   = get_route(name)
         matcher = route[:matcher]
@@ -26,9 +26,9 @@ module Iceberg
         end
         false
       end
-      
+
     private
-      
+
       def get_url_fragment(name, *args)
         route = get_route(name)
         generator = route[:generator]
@@ -38,18 +38,18 @@ module Iceberg
           generator
         end
       end
-      
+
       def get_route(name)
         route = self.class.named_routes[name]
         raise Iceberg::NamedRoutePlugin::RouteNotFound.new("Route alias #{name.inspect} is not mapped to a url") unless route
         route
       end
-      
+
       def get_query(*args)
         options = get_options(*args)
         options[:query] ? "?#{options[:query].map {|k,v| "#{CGI::escape(k)}=#{CGI::escape(v)}"}.join('&')}" : nil
       end
-      
+
       def get_options(*args)
         args.last.is_a?(Hash) ? args.last : {}
       end

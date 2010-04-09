@@ -18,22 +18,22 @@ describe Iceberg::Helpers::Visuals do
       @bears    = Factory.create(:board, :title => "Bears",   :parent => @animals)
       @topic    = @bears.post_topic(nil, :title => "Watch out", :message => "Bears will eat your face off")
     end
-    
+
     it "should display a trail of links for a board" do
       get "/breadcrumbs/board/#{@bears.id}"
       last_response.body.should == %{<a href="/boards">Index</a> &gt; <a href="/boards/root">Root</a> &gt; <a href="/boards/root/animals">Animals</a> &gt; <a href="/boards/root/animals/bears">Bears</a>}
     end
-    
+
     it "should display a trail of links for a topic" do
       get "/breadcrumbs/topic/#{@topic.id}"
       last_response.body.should == %{<a href="/boards">Index</a> &gt; <a href="/boards/root">Root</a> &gt; <a href="/boards/root/animals">Animals</a> &gt; <a href="/boards/root/animals/bears">Bears</a> &gt; <a href="/boards/root/animals/bears/topics/watch-out">Watch out</a>}
     end
-    
+
     it "should display a trail of links with the supplied separator" do
       get "/breadcrumbs/board/#{@animals.id}?separator=+%7C+"
       last_response.body.should == %{<a href="/boards">Index</a> | <a href="/boards/root">Root</a> | <a href="/boards/root/animals">Animals</a>}
     end
-    
+
     it "should wrap links in supplied tag" do
       get "/breadcrumbs/board/#{@animals.id}?separator=&wrap_with_tag=li"
       last_response.body.should == %{<li><a href="/boards">Index</a></li><li><a href="/boards/root">Root</a></li><li><a href="/boards/root/animals">Animals</a></li>}

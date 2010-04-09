@@ -1,11 +1,11 @@
 module Iceberg::Models::Post
   include DataMapper::Types
-  
+
   def self.included(base)
     base.class_eval do
-      
+
       include DataMapper::Resource
-      
+
       property :id,                 Serial
       property :message,            Text
       property :parent_id,          Integer
@@ -58,7 +58,7 @@ module Iceberg::Models::Post
           [false, "This topic has been locked"]
         end
       end
-    
+
     end
   end
 end
