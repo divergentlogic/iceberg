@@ -23,8 +23,9 @@ module Iceberg
     end
 
     get :edit_post do |id|
-      @post   = model_for(:Post).get(id.to_i)
+      @post = model_for(:Post).get(id.to_i)
       halt 404 unless @post
+      @topic = @post.topic
       haml :'posts/edit'
     end
 
