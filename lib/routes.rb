@@ -114,6 +114,13 @@ module Iceberg
       end
     end
 
+    register_route(:edit_post) do
+      path %r{\A/posts/([1-9][0-9]*)/edit/?\Z}
+      generate do |post|
+        "/posts/#{post.id}/edit"
+      end
+    end
+
     register_route(:create_post) do
       path %r{\A/posts/([1-9][0-9]*)/?\Z}
       generate do |post|

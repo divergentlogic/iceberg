@@ -95,7 +95,7 @@ describe "Posts Routes" do
       last_response.should be_not_found
     end
 
-    it "should return 404 if the topic is not found" do
+    it "should return 404 if the post is not found" do
       delete "/posts/99999999"
       last_response.should be_not_found
     end
@@ -108,6 +108,94 @@ describe "Posts Routes" do
 
       get "/boards/talk-about-stuff/topics/yak-yak-yak"
       last_response.should_not contain("Hello World")
+    end
+  end
+
+  describe "editing a post" do
+    before(:each) do
+      @board  = Factory.create(:board, :title => "Talk about stuff")
+      @author = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      @topic  = @board.post_topic(@author, {:title => "Yak Yak Yak", :message => "Hello World"})
+      @post   = @topic.posts.first
+    end
+
+    it "should be successful" do
+      get "/posts/#{@post.id}/edit"
+      last_response.should be_ok
+    end
+
+    it "should not match on non numeric parameters" do
+      put "/posts/something-non-numeric/edit"
+      last_response.should be_not_found
+    end
+
+    it "should not match on IDs that begin with 0" do
+      put "/posts/01/edit"
+      last_response.should be_not_found
+    end
+
+    it "should return 404 if the post is not found" do
+      put "/posts/99999999/edit"
+      last_response.should be_not_found
+    end
+
+    it "should contain an edit form" do
+      get "/posts/#{@post.id}/edit"
+      last_response.body.should have_xpath("//textarea[contains(text(), 'Hello World')]")
+    end
+  end
+
+  describe "updating a post" do
+    before(:each) do
+      @board  = Factory.create(:board, :title => "Talk about stuff")
+      @author = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      @topic  = @board.post_topic(@author, {:title => "Yak Yak Yak", :message => "Hello World"})
+      @post   = @topic.posts.first
+    end
+
+    it "should be successful" do
+      put "/posts/#{@post.id}", {'test_app-post' => {'message' => 'Yo Dawg'}}
+      follow_redirect!
+      last_response.should be_ok
+    end
+
+    it "should not match on non numeric parameters" do
+      put "/posts/something-non-numeric"
+      last_response.should be_not_found
+    end
+
+    it "should not match on IDs that begin with 0" do
+      put "/posts/01"
+      last_response.should be_not_found
+    end
+
+    it "should return 404 if the post is not found" do
+      put "/posts/99999999"
+      last_response.should be_not_found
+    end
+
+    it "should redirect to the post's topic" do
+      put "/posts/#{@post.id}", {'test_app-post' => {'message' => 'Yo Dawg'}}
+      follow_redirect!
+      last_request.path.should == "/boards/talk-about-stuff/topics/yak-yak-yak"
+    end
+
+    it "should render the edit form if there are errors" do
+      put "/posts/#{@post.id}", {'test_app-post' => {'message' => ''}}
+      last_request.path.should == "/posts/#{@post.id}"
+      last_response.body.should contain('Message must not be blank')
+      last_response.body.should have_selector("textarea")
+    end
+
+    it "should update the post" do
+      get "/boards/talk-about-stuff/topics/yak-yak-yak"
+      last_response.should contain("Hello World")
+
+      put "/posts/#{@post.id}", {'test_app-post' => {'message' => 'Yo Dawg'}}
+
+      get "/boards/talk-about-stuff/topics/yak-yak-yak"
+      last_response.should_not contain("Hello World")
+      last_response.should contain('Yo Dawg')
     end
   end
 end

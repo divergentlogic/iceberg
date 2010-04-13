@@ -1,0 +1,9 @@
+- form_for(@post, path_for(:edit_post, @post)) do |f|
+  = hidden_form_method_field('put')
+
+  = f.error_messages
+
+  = f.label :message, :caption => "Message:"
+  = f.text_area :message
+
+  = f.submit 'Update'

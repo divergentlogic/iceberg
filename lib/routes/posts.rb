@@ -16,9 +16,27 @@ module Iceberg
       @topic  = @parent.topic
       @post   = @parent.reply(current_author, params_for(:Post))
       if @post.save
-        redirect path_for(:topic, @post.topic)
+        redirect path_for(:topic, @topic)
       else
         haml :'posts/new'
+      end
+    end
+
+    get :edit_post do |id|
+      @post   = model_for(:Post).get(id.to_i)
+      halt 404 unless @post
+      haml :'posts/edit'
+    end
+
+    put :create_post do |id|
+      @post = model_for(:Post).get(id.to_i)
+      halt 404 unless @post
+      @topic = @post.topic
+      @post.attributes = params_for(:Post)
+      if @post.save
+        redirect path_for(:topic, @topic)
+      else
+        haml :'posts/edit'
       end
     end
 
