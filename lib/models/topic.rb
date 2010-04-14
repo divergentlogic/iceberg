@@ -24,6 +24,7 @@ module Iceberg::Models::Topic
       attr_accessor :author, :message, :existing_topic
 
       has n,      :posts, :order => [:created_at]
+      has n,      :views, :order => [:created_at.desc], :model => 'TopicView'
       belongs_to  :board
       belongs_to  :last_post, :model => 'Post', :required => false
 
@@ -38,6 +39,14 @@ module Iceberg::Models::Topic
 
       def sticky?
         sticky > 0
+      end
+
+      def view!(viewer=nil)
+        viewer_id         = viewer && viewer.respond_to?(:id)         ? viewer.id         : nil
+        viewer_name       = viewer && viewer.respond_to?(:name)       ? viewer.name       : nil
+        viewer_ip_address = viewer && viewer.respond_to?(:ip_address) ? viewer.ip_address : nil
+        views.create(:viewer_id => viewer_id, :viewer_name => viewer_name, :viewer_ip_address => viewer_ip_address)
+        adjust!({:view_count => 1}, true)
       end
 
       def move_to(board)

@@ -43,9 +43,7 @@ require File.expand_path(File.dirname(__FILE__)+'/routes/posts')
 require File.expand_path(File.dirname(__FILE__)+'/routes/topics')
 require File.expand_path(File.dirname(__FILE__)+'/routes/boards')
 
-require File.expand_path(File.dirname(__FILE__)+'/models/board')
-require File.expand_path(File.dirname(__FILE__)+'/models/topic')
-require File.expand_path(File.dirname(__FILE__)+'/models/post')
+Dir[File.join(File.dirname(__FILE__), 'models', '**')].each {|f| require f}
 
 module Iceberg
   class App < Sinatra::Base
@@ -90,7 +88,7 @@ module Iceberg
       base.class_eval(class_defs.join("\n"))
     end
 
-    models :Board, :Topic, :Post
+    models :Board, :Topic, :Post, :TopicView
 
     helpers do
       def model_for(model)

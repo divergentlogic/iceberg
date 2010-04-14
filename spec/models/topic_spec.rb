@@ -39,6 +39,72 @@ describe "Topic" do
     end
   end
 
+  describe "view!" do
+    before(:each) do
+      Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 1, 0, 0))
+      @board = Factory.create(:board)
+      @topic = @board.post_topic(nil, :title => "Topic", :message => "First Post")
+    end
+
+    it "should not have any views on creation" do
+      @topic.view_count.should == 0
+      @topic.views.should      be_empty
+    end
+
+    describe "with a user" do
+      before(:each) do
+        @viewer = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+        @topic.view!(@viewer)
+      end
+
+      it "should update the view count" do
+        @topic.view_count.should == 1
+      end
+
+      it "should create a view" do
+        @topic.should have(1).views
+      end
+
+      it "should time stamp the view" do
+        view = @topic.views.first
+        view.created_at.should == Time.utc(2010, 1, 1, 1, 0, 0)
+      end
+
+      it "should create a view with viewer attributes" do
+        view = @topic.views.first
+        view.viewer_id.should         == 1
+        view.viewer_name.should       == "Billy Gnosis"
+        view.viewer_ip_address.should == "127.0.0.1"
+      end
+    end
+
+    describe "without a user" do
+      before(:each) do
+        @topic.view!
+      end
+
+      it "should update the view count" do
+        @topic.view_count.should == 1
+      end
+
+      it "should create a view" do
+        @topic.should have(1).views
+      end
+
+      it "should time stamp the view" do
+        view = @topic.views.first
+        view.created_at.should == Time.utc(2010, 1, 1, 1, 0, 0)
+      end
+
+      it "should create a view with viewer attributes" do
+        view = @topic.views.first
+        view.viewer_id.should         be_nil
+        view.viewer_name.should       be_nil
+        view.viewer_ip_address.should be_nil
+      end
+    end
+  end
+
   describe "deleting" do
     before(:each) do
       Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 1, 0, 0))
