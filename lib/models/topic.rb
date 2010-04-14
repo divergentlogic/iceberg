@@ -36,6 +36,10 @@ module Iceberg::Models::Topic
       after   :valid?,  :set_existing_topic
       after   :create,  :set_post
 
+      def sticky?
+        sticky > 0
+      end
+
       def move_to(board)
         unless self.board == board
           old = self.board
