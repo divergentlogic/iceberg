@@ -38,6 +38,7 @@ module Iceberg
       get_board
       @topic = @board.topics.first(:slug => params[:topic])
       halt 404 unless @topic
+      @topic.view!(current_author)
       haml :'topics/show'
     end
 

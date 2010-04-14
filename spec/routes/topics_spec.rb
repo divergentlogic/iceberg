@@ -2,6 +2,37 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe "Topics Routes" do
   describe "topic" do
+    describe "GET" do
+      before(:each) do
+        @board  = Factory.create(:board, :title => "Talk about stuff")
+        @topic  = @board.post_topic(nil, :title => "Yak Yak Yak", :message => "First Post")
+      end
+
+      it "should be successful" do
+        get "/boards/talk-about-stuff/topics/yak-yak-yak"
+        last_response.should be_ok
+      end
+
+      it "should update the topic view count and create a view record for the current author" do
+        Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 1, 0, 0))
+
+        @topic.view_count.should == 0
+        @topic.should have(0).views
+
+        get "/boards/talk-about-stuff/topics/yak-yak-yak"
+
+        @topic.reload
+        @topic.view_count.should == 1
+        @topic.should have(1).views
+
+        view = @topic.views.first
+        view.viewer_id.should         == nil
+        view.viewer_name.should       == "Anonymous"
+        view.viewer_ip_address.should == "127.0.0.1"
+        view.created_at.should        == Time.utc(2010, 1, 1, 1, 0, 0)
+      end
+    end
+
     describe "DELETE" do
       before(:each) do
         @board  = Factory.create(:board, :title => "Talk about stuff")
