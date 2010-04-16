@@ -4,7 +4,7 @@ describe "Topics Routes" do
   describe "topic" do
     describe "GET" do
       before(:each) do
-        @board  = Factory.create(:board, :title => "Talk about stuff")
+        @board  = TestApp::Board.generate(:title => "Talk about stuff")
         @topic  = @board.post_topic(nil, :title => "Yak Yak Yak", :message => "First Post")
       end
 
@@ -35,7 +35,7 @@ describe "Topics Routes" do
 
     describe "DELETE" do
       before(:each) do
-        @board  = Factory.create(:board, :title => "Talk about stuff")
+        @board  = TestApp::Board.generate(:title => "Talk about stuff")
         @author = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
         @topic  = @board.post_topic(@author, :title => "Yak Yak Yak", :message => "First Post")
       end
@@ -81,7 +81,7 @@ describe "Topics Routes" do
 
   describe "editing a topic" do
     before(:each) do
-      @board  = Factory.create(:board, :title => "Board")
+      @board  = TestApp::Board.generate(:title => "Board")
       @author = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
       @topic  = @board.post_topic(@author, :title => "Topic", :message => "First Post")
     end
@@ -175,12 +175,12 @@ describe "Topics Routes" do
 
   describe "moving a topic" do
     before(:each) do
-      @original_board = Factory.create(:board, :title => "Original Board")
+      @original_board = TestApp::Board.generate(:title => "Original Board")
       @author         = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
       @topic          = @original_board.post_topic(@author, {:title => "My Topic", :message => "Move me"})
-      @valid_board1   = Factory.create(:board, :title => "Valid Board 1")
-      @valid_board2   = Factory.create(:board, :title => "Valid Board 2")
-      @invalid_board  = Factory.create(:board, :title => "Invalid Board", :allow_topics => false)
+      @valid_board1   = TestApp::Board.generate(:title => "Valid Board 1")
+      @valid_board2   = TestApp::Board.generate(:title => "Valid Board 2")
+      @invalid_board  = TestApp::Board.generate(:title => "Invalid Board", :allow_topics => false)
     end
 
     describe "GET" do
@@ -274,7 +274,7 @@ describe "Topics Routes" do
 
   describe "viewing the ATOM feed" do
     before(:each) do
-      @board    = Factory.create(:board, :title => "Board")
+      @board    = TestApp::Board.generate(:title => "Board")
       @author1  = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
       @author2  = Iceberg::App::Author.new(:id => 2, :name => "Brett Gurewitz", :ip_address => "192.168.1.1")
       @author3  = Iceberg::App::Author.new(:id => 3, :name => "Greg Graffin", :ip_address => "55.55.55.55")

@@ -2,30 +2,30 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe "Board" do
   it "should save with valid attributes" do
-    @board = Factory.build(:board)
+    @board = TestApp::Board.generate
     @board.save.should be_true
   end
 
   [:title, :description].each do |field|
     it "should validate presence of #{field}" do
-      @board = Factory.build(:board, field => nil)
+      @board = TestApp::Board.generate(field => nil)
       @board.valid?
       @board.should error_on(field)
     end
   end
 
   it "should set the slug based on title" do
-    @board = Factory.build(:board, :title => "Here is a title")
+    @board = TestApp::Board.generate(:title => "Here is a title")
     @board.save
     @board.slug.should == "here-is-a-title"
 
-    @board = Factory.build(:board, :title => "I have $5")
+    @board = TestApp::Board.generate(:title => "I have $5")
     @board.save
     @board.slug.should == "i-have-5-dollars"
   end
 
   it "should not change the slug if the title is updated" do
-    @board = Factory.build(:board, :title => "Here is a title")
+    @board = TestApp::Board.generate(:title => "Here is a title")
     @board.save
     @board.slug.should == "here-is-a-title"
 
@@ -36,42 +36,42 @@ describe "Board" do
   end
 
   it "should have unique titles at the same level in the tree" do
-    @board = Factory.create(:board, :title => "Hello world")
-    @fail = Factory.build(:board, :title => "Hello world")
+    @board = TestApp::Board.generate(:title => "Hello world")
+    @fail  = TestApp::Board.make(:title => "Hello world")
     @fail.valid?
     @fail.should error_on(:title)
-    @success = Factory.build(:board, :title => "Goodbye cruel world")
+    @success = TestApp::Board.make(:title => "Goodbye cruel world")
     @success.valid?
     @success.should_not error_on(:title)
 
-    Factory.create(:board, :title => "Goodbye cruel world", :parent => @board)
-    @fail = Factory.build(:board, :title => "Goodbye cruel world", :parent => @board)
+    TestApp::Board.generate(:title => "Goodbye cruel world", :parent => @board)
+    @fail = TestApp::Board.make(:title => "Goodbye cruel world", :parent => @board)
     @fail.valid?
     @fail.should error_on(:title)
-    @success = Factory.build(:board, :title => "Hello world", :parent => @board)
+    @success = TestApp::Board.make(:title => "Hello world", :parent => @board)
     @success.valid?
     @success.should_not error_on(:title)
   end
 
   it "should delete in a paranoid fashion" do
     Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 1, 0, 0))
-    @board = Factory.create(:board, :title => "Hello world")
+    @board = TestApp::Board.generate(:title => "Hello world")
     @board.destroy
     @board.deleted_at.should == Time.utc(2010, 1, 1, 1, 0, 0)
   end
 
   it "should allow titles to be reused from deleted boards" do
-    @board = Factory.create(:board, :title => "Hello world")
+    @board = TestApp::Board.generate(:title => "Hello world")
     @board.destroy
 
-    @new = Factory.build(:board, :title => "Hello world")
+    @new = TestApp::Board.make(:title => "Hello world")
     @new.save.should be_true
   end
 
   describe "#post_topic" do
     before(:each) do
       Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 1, 0, 0))
-      @board  = Factory.create(:board)
+      @board  = TestApp::Board.generate
       @author = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
       @topic  = @board.post_topic(@author, {:title => "Hello there", :message => "Welcome to my topic"})
       @post   = @topic.posts.first
@@ -164,7 +164,7 @@ describe "Board" do
     end
 
     it "should fail if the board does not allow topics" do
-      board = Factory.create(:board, :allow_topics => false)
+      board = TestApp::Board.generate(:allow_topics => false)
       topic = board.post_topic(@author, {:title => "Don't allow topics", :message => "This will fail"})
       topic.should error_on(:board)
     end
@@ -172,12 +172,9 @@ describe "Board" do
 
   describe "tree" do
     before(:each) do
-      @general_board = Factory.build(:board, :title => "General")
-      @general_board.save
-      @carriers_board = Factory.build(:board, :title => "Carriers", :parent => @general_board)
-      @carriers_board.save
-      @verizon_board = Factory.build(:board, :title => "Verizon", :parent => @carriers_board)
-      @verizon_board.save
+      @general_board  = TestApp::Board.generate(:title => "General")
+      @carriers_board = TestApp::Board.generate(:title => "Carriers", :parent => @general_board)
+      @verizon_board  = TestApp::Board.generate(:title => "Verizon", :parent => @carriers_board)
     end
 
     it "should have children" do

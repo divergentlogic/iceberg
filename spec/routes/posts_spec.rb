@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe "Posts Routes" do
   describe "replying to a post" do
     before(:each) do
-      @board  = Factory.create(:board, :title => "Board")
+      @board  = TestApp::Board.generate(:title => "Board")
       @author = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
       @topic  = @board.post_topic(@author, {:title => "Topic", :message => "Discuss"})
       @post   = @topic.posts.first
@@ -36,7 +36,7 @@ describe "Posts Routes" do
 
   describe "creating a new post" do
     before(:each) do
-      @board  = Factory.create(:board, :title => "Board")
+      @board  = TestApp::Board.generate(:title => "Board")
       @author = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
       @topic  = @board.post_topic(@author, {:title => "Topic", :message => "Discuss"})
       @post   = @topic.posts.first
@@ -73,7 +73,7 @@ describe "Posts Routes" do
 
   describe "deleting a post" do
     before(:each) do
-      @board  = Factory.create(:board, :title => "Talk about stuff")
+      @board  = TestApp::Board.generate(:title => "Talk about stuff")
       @author = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
       @topic  = @board.post_topic(@author, {:title => "Yak Yak Yak", :message => "Hello World"})
       @post   = @topic.posts.first
@@ -113,7 +113,7 @@ describe "Posts Routes" do
 
   describe "editing a post" do
     before(:each) do
-      @board  = Factory.create(:board, :title => "Talk about stuff")
+      @board  = TestApp::Board.generate(:title => "Talk about stuff")
       @author = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
       @topic  = @board.post_topic(@author, {:title => "Yak Yak Yak", :message => "Hello World"})
       @post   = @topic.posts.first
@@ -147,7 +147,7 @@ describe "Posts Routes" do
 
   describe "updating a post" do
     before(:each) do
-      @board  = Factory.create(:board, :title => "Talk about stuff")
+      @board  = TestApp::Board.generate(:title => "Talk about stuff")
       @author = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
       @topic  = @board.post_topic(@author, {:title => "Yak Yak Yak", :message => "Hello World"})
       @post   = @topic.posts.first

@@ -3,8 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe "Boards Routes" do
   describe "new board" do
     before(:each) do
-      @root = Factory.build(:board, :title => "Root")
-      @root.save
+      @root = TestApp::Board.generate(:title => "Root")
     end
 
     describe "GET" do
@@ -100,8 +99,7 @@ describe "Boards Routes" do
 
   describe "edit board" do
     before(:each) do
-      @board = Factory.build(:board, :title => "Board", :description => "First board", :allow_topics => true)
-      @board.save
+      @board = TestApp::Board.generate(:title => "Board", :description => "First board", :allow_topics => true)
     end
 
     describe "GET" do
@@ -182,7 +180,7 @@ describe "Boards Routes" do
       end
 
       it "should render the edit form with errors if the update is unsuccessful" do
-        @new_board = Factory.create(:board, :title => 'New Board', :description => 'There will be a conflict with title')
+        @new_board = TestApp::Board.generate(:title => 'New Board', :description => 'There will be a conflict with title')
         put "/boards/#{@board.id}", {'test_app-board' => {'title' => 'New Board', 'description' => 'My new board', 'allow_topics' => 0}}
         last_request.path.should  == "/boards/#{@board.id}"
         last_response.body.should have_xpath("//form[@action='/boards/#{@board.id}'][@method='post']")
@@ -194,7 +192,7 @@ describe "Boards Routes" do
   describe "boards" do
     describe "GET" do
       before(:each) do
-        @root = Factory.create(:board, :title => "Root")
+        @root = TestApp::Board.generate(:title => "Root")
       end
 
       it "should retrieve the index page" do
@@ -208,15 +206,14 @@ describe "Boards Routes" do
       end
 
       it "should display link to create a new topic if the board allows topics" do
-        board = Factory.build(:board, :title => "Fun Stuff", :parent => @root, :allow_topics => true)
-        board.save
+        board = TestApp::Board.generate(:title => "Fun Stuff", :parent => @root, :allow_topics => true)
 
         get "/boards/root/fun-stuff"
         last_response.should have_xpath("//a[contains(text(), 'New Topic')]")
       end
 
       it "should not display link to create a new topic if the board does not allows topics" do
-        board = Factory.create(:board, :title => "Fun Stuff", :parent => @root, :allow_topics => false)
+        board = TestApp::Board.generate(:title => "Fun Stuff", :parent => @root, :allow_topics => false)
         board.save
 
         get "/boards/root/fun-stuff"
@@ -237,8 +234,7 @@ describe "Boards Routes" do
 
     describe "DELETE" do
       before(:each) do
-        @board = Factory.build(:board, :title => "Talk about stuff")
-        @board.save
+        @board = TestApp::Board.generate(:title => "Talk about stuff")
       end
 
       it "should be successful" do
@@ -282,8 +278,8 @@ describe "Boards Routes" do
 
   describe "viewing the ATOM feed" do
     before(:each) do
-      @root     = Factory.create(:board, :title => "Root", :allow_topics => false)
-      @board    = Factory.create(:board, :title => "Board", :parent => @root)
+      @root     = TestApp::Board.generate(:title => "Root", :allow_topics => false)
+      @board    = TestApp::Board.generate(:title => "Board", :parent => @root)
       @author1  = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
       @author2  = Iceberg::App::Author.new(:id => 2, :name => "Brett Gurewitz", :ip_address => "127.0.0.1")
 

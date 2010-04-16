@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe "Post" do
   it "should delete in a paranoid fashion" do
     Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 1, 0, 0))
-    @board = Factory.create(:board)
+    @board = TestApp::Board.generate
     @topic = @board.post_topic(nil, :title => "Topic 1", :message => "First post")
     @post  = @topic.posts.first
 
@@ -15,7 +15,7 @@ describe "Post" do
     before(:each) do
       @author1  = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
       @author2  = Iceberg::App::Author.new(:id => 2, :name => "Brett Gurewitz", :ip_address => "192.168.1.1")
-      @board    = Factory.create(:board)
+      @board    = TestApp::Board.generate
 
       Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 6, 0, 0))
       @topic    = @board.post_topic(@author1, :title => "Topic", :message => "First Post")
@@ -64,7 +64,7 @@ describe "Post" do
 
   describe "author" do
     before(:each) do
-      @board = Factory.create(:board)
+      @board = TestApp::Board.generate
       Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 6, 0, 0))
     end
 
