@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe "Topic" do
   describe "unique title and slug" do
     before(:each) do
-      @board = Factory.create(:board)
+      @board = TestApp::Board.generate
       @topic = @board.post_topic(nil, :title => "A very special title", :message => "First post")
     end
 
@@ -27,7 +27,7 @@ describe "Topic" do
 
   describe "updating the title" do
     before(:each) do
-      @board = Factory.create(:board)
+      @board = TestApp::Board.generate
       @topic = @board.post_topic(nil, :title => "Topic", :message => "First Post")
     end
 
@@ -42,7 +42,7 @@ describe "Topic" do
   describe "view!" do
     before(:each) do
       Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 1, 0, 0))
-      @board = Factory.create(:board)
+      @board = TestApp::Board.generate
       @topic = @board.post_topic(nil, :title => "Topic", :message => "First Post")
     end
 
@@ -108,7 +108,7 @@ describe "Topic" do
   describe "deleting" do
     before(:each) do
       Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 1, 0, 0))
-      @board = Factory.create(:board)
+      @board = TestApp::Board.generate
       @topic = @board.post_topic(nil, :title => "To be deleted", :message => "First post")
     end
 
@@ -127,9 +127,9 @@ describe "Topic" do
 
   describe "#move_to" do
     before(:each) do
-      @old_board      = Factory.create(:board, :title => "Old Board")
-      @new_board      = Factory.create(:board, :title => "New Board")
-      @invalid_board  = Factory.create(:board, :title => "Invalid Board", :allow_topics => false)
+      @old_board      = TestApp::Board.generate(:title => "Old Board")
+      @new_board      = TestApp::Board.generate(:title => "New Board")
+      @invalid_board  = TestApp::Board.generate(:title => "Invalid Board", :allow_topics => false)
 
       Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 1, 0, 0))
       @author = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")

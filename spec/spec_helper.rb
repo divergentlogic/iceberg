@@ -19,7 +19,7 @@ require 'spec/autorun'
 require 'spec/interop/test'
 require 'rack/test'
 require 'webrat'
-require 'factory_girl'
+require 'dm-sweatshop'
 require 'be_valid_asset'
 
 Dir[File.expand_path(File.join(File.dirname(__FILE__), 'support', '**', '*.rb'))].each {|f| require f}

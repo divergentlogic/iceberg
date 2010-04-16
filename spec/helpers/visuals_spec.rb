@@ -13,9 +13,9 @@ end
 describe Iceberg::Helpers::Visuals do
   describe "#breadcrumbs" do
     before(:each) do
-      @root     = Factory.create(:board, :title => "Root")
-      @animals  = Factory.create(:board, :title => "Animals", :parent => @root)
-      @bears    = Factory.create(:board, :title => "Bears",   :parent => @animals)
+      @root     = TestApp::Board.generate(:title => "Root")
+      @animals  = TestApp::Board.generate(:title => "Animals", :parent => @root)
+      @bears    = TestApp::Board.generate(:title => "Bears",   :parent => @animals)
       @topic    = @bears.post_topic(nil, :title => "Watch out", :message => "Bears will eat your face off")
     end
 
