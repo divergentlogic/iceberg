@@ -80,6 +80,20 @@ describe "Board" do
       @topic.reload
     end
 
+    it "should fail if a title is not provided" do
+      topic = @board.post_topic(@author, :message => "This needs a title")
+      topic.should be_new
+      topic.should error_on(:title)
+      topic.posts.should be_empty
+    end
+
+    it "should fail if a message is not provided" do
+      topic = @board.post_topic(@author, :title => "This needs a message")
+      topic.should be_new
+      topic.should error_on(:message)
+      topic.posts.should be_empty
+    end
+
     it "should create a topic" do
       @topic.title.should == "Hello there"
     end

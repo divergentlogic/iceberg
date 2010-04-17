@@ -60,8 +60,7 @@ module Iceberg::Models::Board
         topic = topics.model.new(attributes)
         topic.board   = self
         topic.author  = author
-        topic.valid_for_adding_to_board? # errors aren't getting added without explicity calling the validation function
-        topic.save(:adding_to_board)
+        topic.save(:create)
         topic
       end
 
