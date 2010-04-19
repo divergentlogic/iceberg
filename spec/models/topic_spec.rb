@@ -113,15 +113,34 @@ describe "Topic" do
     end
 
     it "should delete in a paranoid fashion" do
-      @topic.destroy
+      @topic.destroy.should_not be_false
       @topic.deleted_at.should == Time.utc(2010, 1, 1, 1, 0, 0)
     end
 
     it "should allow titles to be reused from deleted topics" do
-      @topic.destroy
+      @topic.destroy.should_not be_false
 
       @new = @board.post_topic(nil, :title => "To be deleted", :message => "First post")
       @new.save.should be_true
+    end
+
+    it "should delete all posts" do
+      @topic.posts.first.reply(nil, :message => "Second post")
+      @topic.posts.reload
+
+      post1 = @topic.posts.first
+      post2 = @topic.posts.last
+
+      @topic.destroy.should_not be_false
+      post1.deleted_at.should == Time.utc(2010, 1, 1, 1, 0, 0)
+      post2.deleted_at.should == Time.utc(2010, 1, 1, 1, 0, 0)
+    end
+
+    it "should delete all views" do
+      3.times { @topic.view! }
+      @topic.should have(3).views
+      @topic.destroy
+      @topic.should have(0).views
     end
   end
 
@@ -173,6 +192,7 @@ describe "Topic" do
 
     it "should update the caches for the original board" do
       @topic.move_to(@new_board).should be_true
+      @old_board.reload
       @old_board.topics.count.should            == 0
       @old_board.last_post.should               be_nil
       @old_board.last_topic.should              be_nil
@@ -186,6 +206,7 @@ describe "Topic" do
 
     it "should update the caches for the new board" do
       @topic.move_to(@new_board).should be_true
+      @new_board.reload
       @new_board.topics.count.should                == 1
       @new_board.last_post.should                   == @post
       @new_board.last_topic.should                  == @topic
@@ -249,6 +270,7 @@ describe "Topic" do
 
       it "should update the caches for the original board" do
         @topic.move_to(@new_board).should be_true
+        @old_board.reload
         @old_board.last_post.should                   == @old_last_post
         @old_board.last_topic.should                  == @old_last_topic
         @old_board.last_updated_at.should             == @old_last_post.updated_at.to_s
@@ -261,6 +283,7 @@ describe "Topic" do
 
       it "should update the caches for the new board" do
         @topic.move_to(@new_board).should be_true
+        @new_board.reload
         @new_board.last_post.should                   == @new_last_post
         @new_board.last_topic.should                  == @new_last_topic
         @new_board.last_updated_at.to_s.should        == @new_last_post.updated_at.to_s

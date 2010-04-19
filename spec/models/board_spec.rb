@@ -53,19 +53,54 @@ describe "Board" do
     @success.should_not error_on(:title)
   end
 
-  it "should delete in a paranoid fashion" do
-    Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 1, 0, 0))
-    @board = TestApp::Board.generate(:title => "Hello world")
-    @board.destroy
-    @board.deleted_at.should == Time.utc(2010, 1, 1, 1, 0, 0)
-  end
+  describe "deleting" do
+    before(:each) do
+      Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 1, 0, 0))
+      @board = TestApp::Board.generate(:title => "Hello world")
+    end
 
-  it "should allow titles to be reused from deleted boards" do
-    @board = TestApp::Board.generate(:title => "Hello world")
-    @board.destroy
+    it "should delete in a paranoid fashion" do
+      @board.destroy.should_not be_false
+      @board.deleted_at.should == Time.utc(2010, 1, 1, 1, 0, 0)
+    end
 
-    @new = TestApp::Board.make(:title => "Hello world")
-    @new.save.should be_true
+    it "should allow titles to be reused from deleted boards" do
+      @board.destroy.should_not be_false
+      @new = TestApp::Board.make(:title => "Hello world")
+      @new.save.should be_true
+    end
+
+    it "should delete all sub-boards, topics, and posts" do
+      @board.children.create(:title => "Sub Board", :description => "Sub Board").
+        post_topic(nil, :title => "Topic 1", :message => "Post 1").posts.first.
+        reply(nil, :message => "Post 2")
+
+      @board.post_topic(nil, :title => "Topic 2", :message => "Post 3").posts.first.
+        reply(nil, :message => "Post 4")
+
+      @board.children.reload
+      @board.topics.reload
+      subboard = @board.children.first
+      topic1   = @board.topics.first
+      topic1.posts.reload
+      post1    = topic1.posts.first
+      post2    = topic1.posts.last
+      topic2   = subboard.topics.first
+      topic2.posts.reload
+      post3    = topic2.posts.first
+      post4    = topic2.posts.last
+
+      @board.destroy
+
+      @board.deleted_at.should   == Time.utc(2010, 1, 1, 1, 0, 0)
+      subboard.deleted_at.should == Time.utc(2010, 1, 1, 1, 0, 0)
+      topic1.deleted_at.should   == Time.utc(2010, 1, 1, 1, 0, 0)
+      topic2.deleted_at.should   == Time.utc(2010, 1, 1, 1, 0, 0)
+      post1.deleted_at.should    == Time.utc(2010, 1, 1, 1, 0, 0)
+      post2.deleted_at.should    == Time.utc(2010, 1, 1, 1, 0, 0)
+      post3.deleted_at.should    == Time.utc(2010, 1, 1, 1, 0, 0)
+      post4.deleted_at.should    == Time.utc(2010, 1, 1, 1, 0, 0)
+    end
   end
 
   describe "#post_topic" do
@@ -127,7 +162,6 @@ describe "Board" do
         Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 2, 0, 0))
         @new_author = Iceberg::App::Author.new(:id => 2, :name => "Mickey Mouse", :ip_address => "192.168.1.1")
         @new_post   = @post.reply(@new_author, :message => "Hello there")
-        @new_post.save
 
         @topic.reload
         @board.reload
