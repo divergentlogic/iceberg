@@ -278,21 +278,20 @@ describe "Boards Routes" do
 
   describe "viewing the ATOM feed" do
     before(:each) do
-      @root     = TestApp::Board.generate(:title => "Root", :allow_topics => false)
-      @board    = TestApp::Board.generate(:title => "Board", :parent => @root)
-      @author1  = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
-      @author2  = Iceberg::App::Author.new(:id => 2, :name => "Brett Gurewitz", :ip_address => "127.0.0.1")
+      root    = TestApp::Board.generate(:title => "Root", :allow_topics => false)
+      board   = TestApp::Board.generate(:title => "Board", :parent => root)
+      author1 = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      author2 = Iceberg::App::Author.new(:id => 2, :name => "Brett Gurewitz", :ip_address => "127.0.0.1")
 
       Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 6, 0, 0))
-      @topic1 = @board.post_topic(@author1, :title => "Topic 1", :message => "First post for Topic 1", :sticky => 1)
+      topic1 = board.post_topic(author1, :title => "Topic 1", :message => "First post for Topic 1", :sticky => 1)
 
       Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 7, 0, 0))
-      @topic2 = @board.post_topic(@author1, :title => "Topic 2", :message => "First post for Topic 2")
-      @post1  = @topic2.posts.first
+      topic2 = board.post_topic(author1, :title => "Topic 2", :message => "First post for Topic 2")
+      post   = topic2.posts.first
 
       Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 8, 0, 0))
-      @post2  = @post1.reply(@author2, :message => "Second post for Topic 2")
-      @post2.save
+      post.reply(author2, :message => "Second post for Topic 2")
     end
 
     it "should be successful" do

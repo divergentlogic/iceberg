@@ -173,6 +173,7 @@ describe "Topic" do
 
     it "should update the caches for the original board" do
       @topic.move_to(@new_board).should be_true
+      @old_board.reload
       @old_board.topics.count.should            == 0
       @old_board.last_post.should               be_nil
       @old_board.last_topic.should              be_nil
@@ -186,6 +187,7 @@ describe "Topic" do
 
     it "should update the caches for the new board" do
       @topic.move_to(@new_board).should be_true
+      @new_board.reload
       @new_board.topics.count.should                == 1
       @new_board.last_post.should                   == @post
       @new_board.last_topic.should                  == @topic
@@ -249,6 +251,7 @@ describe "Topic" do
 
       it "should update the caches for the original board" do
         @topic.move_to(@new_board).should be_true
+        @old_board.reload
         @old_board.last_post.should                   == @old_last_post
         @old_board.last_topic.should                  == @old_last_topic
         @old_board.last_updated_at.should             == @old_last_post.updated_at.to_s
@@ -261,6 +264,7 @@ describe "Topic" do
 
       it "should update the caches for the new board" do
         @topic.move_to(@new_board).should be_true
+        @new_board.reload
         @new_board.last_post.should                   == @new_last_post
         @new_board.last_topic.should                  == @new_last_topic
         @new_board.last_updated_at.to_s.should        == @new_last_post.updated_at.to_s

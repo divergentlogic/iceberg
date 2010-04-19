@@ -23,7 +23,9 @@ describe "Post" do
 
       Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 7, 0, 0))
       @post2    = @post1.reply(@author2, :message => "Second Post")
-      @post2.save
+
+      @board.reload
+      @topic.reload
     end
 
     it "should be successful" do
@@ -33,7 +35,7 @@ describe "Post" do
     end
 
     it "should update the topic cache" do
-      @topic.last_post.id.should                == @post2.id
+      @topic.last_post.should                   == @post2
       @topic.last_updated_at.to_s.should        == @post2.updated_at.to_s
       @topic.last_author_id.should              == 2
       @topic.last_author_name.should            == "Brett Gurewitz"
@@ -42,7 +44,7 @@ describe "Post" do
     end
 
     it "should update the board cache" do
-      @board.last_post.id.should                == @post2.id
+      @board.last_post.should                   == @post2
       @board.last_topic.should                  == @topic
       @board.last_updated_at.to_s.should        == @post2.updated_at.to_s
       @board.last_author_id.should              == 2
@@ -57,7 +59,6 @@ describe "Post" do
       @topic.save
 
       reply = @post2.reply(@author1, :message => "Can't post to a locked topic")
-      reply.valid?.should be_false
       reply.should error_on(:topic)
     end
   end
@@ -126,7 +127,6 @@ describe "Post" do
 
       it "should not save author attributes if the author is nil" do
         reply = @post.reply(nil, :message => "Reply")
-        reply.save
         reply.author_id.should          be_nil
         reply.author_name.should        be_nil
         reply.author_ip_address.should  be_nil
@@ -135,7 +135,6 @@ describe "Post" do
       it "should save author attributes if the author is given" do
         author  = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
         reply   = @post.reply(author, :message => "Reply")
-        reply.save
         reply.author_id.should              == 1
         reply.author_name.should            == "Billy Gnosis"
         reply.author_ip_address.to_s.should == "127.0.0.1"
@@ -145,7 +144,6 @@ describe "Post" do
         it "should only save id" do
           author  = Iceberg::App::Author.new(:id => 1)
           reply   = @post.reply(author, :message => "Reply")
-          reply.save
           reply.author_id.should          == 1
           reply.author_name.should        be_nil
           reply.author_ip_address.should  be_nil
@@ -154,7 +152,6 @@ describe "Post" do
         it "should only save name" do
           author  = Iceberg::App::Author.new(:name => "Billy Gnosis")
           reply   = @post.reply(author, :message => "Reply")
-          reply.save
           reply.author_id.should          be_nil
           reply.author_name.should        == "Billy Gnosis"
           reply.author_ip_address.should  be_nil
@@ -163,7 +160,6 @@ describe "Post" do
         it "should only save IP Address" do
           author  = Iceberg::App::Author.new(:ip_address => "127.0.0.1")
           reply   = @post.reply(author, :message => "Reply")
-          reply.save
           reply.author_id.should              be_nil
           reply.author_name.should            be_nil
           reply.author_ip_address.to_s.should == '127.0.0.1'

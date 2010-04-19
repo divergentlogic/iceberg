@@ -57,27 +57,24 @@ module Iceberg::Models::Board
       end
 
       def post_topic(author, attributes={})
-        topic = topics.model.new(attributes)
-        topic.board   = self
-        topic.author  = author
-        topic.save(:create)
+        topic        = topics.new(attributes)
+        topic.author = author
+        topic.valid_for_adding_to_board?
+        topic.save(:adding_to_board)
         topic
       end
 
       def update_cache
-        topics.reload
-        last_post   = posts.first(:order => [:updated_at.desc])
-        last_topic  = topics.first(:order => [:last_updated_at.desc])
-
-        self.last_topic_id          = last_topic ? last_topic.id : nil
-        self.last_post_id           = last_post ? last_post.id : nil
-        self.last_updated_at        = last_post ? last_post.updated_at : nil
-        self.last_author_id         = last_post ? last_post.author_id : nil
-        self.last_author_name       = last_post ? last_post.author_name : nil
-        self.last_author_ip_address = last_post ? last_post.author_ip_address : nil
-        self.topics_count           = topics.count
-        self.posts_count            = posts.count
-
+        topic = topics.model.last(:board_id => id, :order => [:last_updated_at])
+        post  = posts.model.last(:topic_id => topic.id, :order => [:created_at]) if topic
+        self.last_topic_id          = topic ? topic.id               : nil
+        self.last_post_id           = post  ? post.id                : nil
+        self.last_updated_at        = post  ? post.updated_at        : nil
+        self.last_author_id         = post  ? post.author_id         : nil
+        self.last_author_name       = post  ? post.author_name       : nil
+        self.last_author_ip_address = post  ? post.author_ip_address : nil
+        self.topics_count           = topics.model.count(:board_id => id)
+        self.posts_count            = posts.model.count(:topic_id => topics.model.all(:board_id => id).map(&:id))
         allow_topics? && topics.empty? ? save : save! # Don't save up the chain
         # TODO - get a better understanding of how associations are saved in DM - this is ugly
       end

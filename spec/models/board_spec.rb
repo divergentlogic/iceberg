@@ -127,7 +127,6 @@ describe "Board" do
         Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 2, 0, 0))
         @new_author = Iceberg::App::Author.new(:id => 2, :name => "Mickey Mouse", :ip_address => "192.168.1.1")
         @new_post   = @post.reply(@new_author, :message => "Hello there")
-        @new_post.save
 
         @topic.reload
         @board.reload

@@ -23,17 +23,17 @@ module Iceberg::Models::Post
       is :tree, :order => :created_at
 
       validates_present     :message, :topic
-      validates_with_method :topic, :method => :validate_topic_is_unlocked
+      validates_with_method :topic, :method => :validate_topic_is_unlocked, :if => :new?
 
       before  :create,  :set_author_attributes
       after   :create,  :update_caches
 
       def reply(author, attributes)
-        returning self.class.new(attributes) do |post| # FIXME should be posts.create ?
-          post.parent = self
-          post.author = author
-          post.topic  = topic
-        end
+        reply        = children.new(attributes)
+        reply.author = author
+        reply.topic  = topic
+        reply.save
+        reply
       end
 
     protected
@@ -47,8 +47,10 @@ module Iceberg::Models::Post
       end
 
       def update_caches
-        topic.update_cache
-        topic.board.update_cache
+        update_topic = self.topic.model.get(topic_id)
+        update_board = topic.board.model.get(topic.board_id)
+        update_topic.update_cache
+        update_board.update_cache
       end
 
       def validate_topic_is_unlocked

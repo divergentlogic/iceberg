@@ -28,10 +28,10 @@ module Iceberg::Models::Topic
       belongs_to  :board
       belongs_to  :last_post, :model => 'Post', :required => false
 
-      validates_present     :message, :on => [:create]
-      validates_present     :board, :title, :slug, :when => [:default, :adding_to_board, :create]
-      validates_is_unique   :title, :slug, :scope => :board_id, :message => "A topic with that title has been posted in this board already; maybe you'd like to post under that topic instead?", :when => [:default, :adding_to_board, :create]
-      validates_with_method :board, :method => :validate_board_allows_topics, :when => [:adding_to_board, :create]
+      validates_present     :message, :if => :new?, :when => [:default, :adding_to_board]
+      validates_present     :board, :title, :slug, :when => [:default, :adding_to_board]
+      validates_is_unique   :title, :slug, :scope => :board_id, :message => "A topic with that title has been posted in this board already; maybe you'd like to post under that topic instead?", :when => [:default, :adding_to_board]
+      validates_with_method :board, :method => :validate_board_allows_topics, :when => [:adding_to_board]
 
       before  :valid?,  :set_slug
       after   :valid?,  :set_existing_topic
@@ -54,8 +54,8 @@ module Iceberg::Models::Topic
           old = self.board
           self.board = board
           if valid_for_adding_to_board? && save(:adding_to_board)
-            board.update_cache
-            old.update_cache
+            self.board.model.get(board.id).update_cache
+            self.board.model.get(old.id).update_cache
             return true
           end
         end
@@ -63,15 +63,14 @@ module Iceberg::Models::Topic
       end
 
       def update_cache
-        last_post = posts.first(:order => [:updated_at.desc])
-
-        self.last_post_id           = last_post ? last_post.id : nil
-        self.last_updated_at        = last_post ? last_post.updated_at : nil
-        self.last_author_id         = last_post ? last_post.author_id : nil
-        self.last_author_name       = last_post ? last_post.author_name : nil
-        self.last_author_ip_address = last_post ? last_post.author_ip_address : nil
-        self.posts_count            = posts.count
-        save! # Don't save up the chain
+        post = posts.model.last(:topic_id => id, :order => [:created_at])
+        self.last_post_id           = post ? post.id                : nil
+        self.last_updated_at        = post ? post.updated_at        : nil
+        self.last_author_id         = post ? post.author_id         : nil
+        self.last_author_name       = post ? post.author_name       : nil
+        self.last_author_ip_address = post ? post.author_ip_address : nil
+        self.posts_count            = posts.model.count(:topic_id => id)
+        save!
       end
 
     protected
@@ -83,10 +82,8 @@ module Iceberg::Models::Topic
       end
 
       def set_post
-        posts.create({
-          :author => author,
-          :message => message
-        })
+        post = posts.new(:author => author, :message => message)
+        post.save
       end
 
       def set_existing_topic

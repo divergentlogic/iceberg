@@ -285,11 +285,9 @@ describe "Topics Routes" do
 
       Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 7, 0, 0))
       @post2 = @post1.reply(@author2, {:message => "Second post"})
-      @post2.save
 
       Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 8, 0, 0))
       @post3 = @post2.reply(@author3, {:message => "Third post"})
-      @post3.save
     end
 
     it "should be successful" do
