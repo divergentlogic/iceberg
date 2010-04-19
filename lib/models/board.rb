@@ -36,6 +36,12 @@ module Iceberg::Models::Board
       alias_method :boards, :children
 
       before :valid?, :set_slug
+      before :update do # TODO: replace with :destroy when upgrading to DM 0.10.3
+        if attribute_dirty? :deleted_at
+          children.destroy
+          topics.destroy
+        end
+      end
 
       class << self
         def ordered(options={})

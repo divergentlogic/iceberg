@@ -1,14 +1,29 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe "Post" do
-  it "should delete in a paranoid fashion" do
-    Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 1, 0, 0))
-    @board = TestApp::Board.generate
-    @topic = @board.post_topic(nil, :title => "Topic 1", :message => "First post")
-    @post  = @topic.posts.first
+  describe "deleting" do
+    before(:each) do
+      Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 1, 0, 0))
+      @board = TestApp::Board.generate
+      @topic = @board.post_topic(nil, :title => "Topic 1", :message => "First post")
+      @post  = @topic.posts.first
+    end
 
-    @post.destroy
-    @post.deleted_at.should == Time.utc(2010, 1, 1, 1, 0, 0)
+    it "should delete in a paranoid fashion" do
+      @post.destroy.should_not be_false
+      @post.deleted_at.should == Time.utc(2010, 1, 1, 1, 0, 0)
+    end
+
+    it "should move its replies underneath its parent" do
+      reply1 = @post.reply(nil, :message => 'Reply 1')
+      reply2 = reply1.reply(nil, :message => 'Reply 2')
+
+      reply1.destroy.should_not be_false
+      reply1.deleted_at.should == Time.utc(2010, 1, 1, 1, 0, 0)
+
+      reply2.deleted_at.should be_nil
+      reply2.parent.should == @post
+    end
   end
 
   describe "reply" do

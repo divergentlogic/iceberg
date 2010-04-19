@@ -21,12 +21,21 @@ module Iceberg::Models::Post
       belongs_to :topic
 
       is :tree, :order => :created_at
+      alias_method :replies, :children
 
       validates_present     :message, :topic
       validates_with_method :topic, :method => :validate_topic_is_unlocked, :if => :new?
 
       before  :create,  :set_author_attributes
       after   :create,  :update_caches
+      before  :update do # TODO: replace with :destroy when upgrading to DM 0.10.3
+        if attribute_dirty?(:deleted_at) && !topic.attribute_dirty?(:deleted_at)
+          children.each do |child|
+            child.parent = parent
+            child.save!
+          end
+        end
+      end
 
       def reply(author, attributes)
         reply        = children.new(attributes)

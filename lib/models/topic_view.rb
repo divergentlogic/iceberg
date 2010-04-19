@@ -11,6 +11,7 @@ module Iceberg::Models::TopicView
       property :viewer_id,         Integer
       property :viewer_name,       String
       property :viewer_ip_address, DataMapper::Types::IPAddress
+      property :deleted_at,        ParanoidDateTime
 
       belongs_to  :topic
 

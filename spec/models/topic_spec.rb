@@ -113,15 +113,34 @@ describe "Topic" do
     end
 
     it "should delete in a paranoid fashion" do
-      @topic.destroy
+      @topic.destroy.should_not be_false
       @topic.deleted_at.should == Time.utc(2010, 1, 1, 1, 0, 0)
     end
 
     it "should allow titles to be reused from deleted topics" do
-      @topic.destroy
+      @topic.destroy.should_not be_false
 
       @new = @board.post_topic(nil, :title => "To be deleted", :message => "First post")
       @new.save.should be_true
+    end
+
+    it "should delete all posts" do
+      @topic.posts.first.reply(nil, :message => "Second post")
+      @topic.posts.reload
+
+      post1 = @topic.posts.first
+      post2 = @topic.posts.last
+
+      @topic.destroy.should_not be_false
+      post1.deleted_at.should == Time.utc(2010, 1, 1, 1, 0, 0)
+      post2.deleted_at.should == Time.utc(2010, 1, 1, 1, 0, 0)
+    end
+
+    it "should delete all views" do
+      3.times { @topic.view! }
+      @topic.should have(3).views
+      @topic.destroy
+      @topic.should have(0).views
     end
   end
 
