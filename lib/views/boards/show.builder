@@ -12,7 +12,7 @@ xml.feed(:xmlns => "http://www.w3.org/2005/Atom") do
       xml.id url_for(:topic, topic)
       xml.updated topic.last_updated_at.utc.strftime("%Y-%m-%dT%H:%M:%SZ")
       xml.author do
-        xml.name topic.last_author_name
+        xml.name topic.last_user_name
       end
       xml.content(topic.last_post.message, :type => "html")
     end

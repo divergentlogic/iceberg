@@ -13,7 +13,7 @@ describe "Topics Routes" do
         last_response.should be_ok
       end
 
-      it "should update the topic view count and create a view record for the current author" do
+      it "should update the topic view count and create a view record for the current user" do
         Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 1, 0, 0))
 
         @topic.view_count.should == 0
@@ -26,18 +26,18 @@ describe "Topics Routes" do
         @topic.should have(1).views
 
         view = @topic.views.first
-        view.viewer_id.should         == nil
-        view.viewer_name.should       == "Anonymous"
-        view.viewer_ip_address.should == "127.0.0.1"
-        view.created_at.should        == Time.utc(2010, 1, 1, 1, 0, 0)
+        view.user_id.should         == nil
+        view.user_name.should       == "Anonymous"
+        view.user_ip_address.should == "127.0.0.1"
+        view.created_at.should      == Time.utc(2010, 1, 1, 1, 0, 0)
       end
     end
 
     describe "DELETE" do
       before(:each) do
-        @board  = TestApp::Board.generate(:title => "Talk about stuff")
-        @author = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
-        @topic  = @board.post_topic(@author, :title => "Yak Yak Yak", :message => "First Post")
+        @board = TestApp::Board.generate(:title => "Talk about stuff")
+        @user  = Iceberg::App::User.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+        @topic = @board.post_topic(@user, :title => "Yak Yak Yak", :message => "First Post")
       end
 
       it "should be successful" do
@@ -81,9 +81,9 @@ describe "Topics Routes" do
 
   describe "editing a topic" do
     before(:each) do
-      @board  = TestApp::Board.generate(:title => "Board")
-      @author = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
-      @topic  = @board.post_topic(@author, :title => "Topic", :message => "First Post")
+      @board = TestApp::Board.generate(:title => "Board")
+      @user  = Iceberg::App::User.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      @topic = @board.post_topic(@user, :title => "Topic", :message => "First Post")
     end
 
     describe "GET" do
@@ -164,7 +164,7 @@ describe "Topics Routes" do
       end
 
       it "should render the edit form with errors if the update is unsuccessful" do
-        @board.post_topic(@author, :title => "New Title", :message => "There will be a conflict")
+        @board.post_topic(@user, :title => "New Title", :message => "There will be a conflict")
         put "/topics/#{@topic.id}", {'test_app-topic' => {'title' => 'New Title', 'sticky' => '2', 'locked' => '1'}}
         last_request.path.should  == "/topics/#{@topic.id}"
         last_response.body.should have_xpath("//form[@action='/topics/#{@topic.id}'][@method='post']")
@@ -176,8 +176,8 @@ describe "Topics Routes" do
   describe "moving a topic" do
     before(:each) do
       @original_board = TestApp::Board.generate(:title => "Original Board")
-      @author         = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
-      @topic          = @original_board.post_topic(@author, {:title => "My Topic", :message => "Move me"})
+      @user           = Iceberg::App::User.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      @topic          = @original_board.post_topic(@user, {:title => "My Topic", :message => "Move me"})
       @valid_board1   = TestApp::Board.generate(:title => "Valid Board 1")
       @valid_board2   = TestApp::Board.generate(:title => "Valid Board 2")
       @invalid_board  = TestApp::Board.generate(:title => "Invalid Board", :allow_topics => false)
@@ -274,20 +274,20 @@ describe "Topics Routes" do
 
   describe "viewing the ATOM feed" do
     before(:each) do
-      @board    = TestApp::Board.generate(:title => "Board")
-      @author1  = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
-      @author2  = Iceberg::App::Author.new(:id => 2, :name => "Brett Gurewitz", :ip_address => "192.168.1.1")
-      @author3  = Iceberg::App::Author.new(:id => 3, :name => "Greg Graffin", :ip_address => "55.55.55.55")
+      @board = TestApp::Board.generate(:title => "Board")
+      @user1 = Iceberg::App::User.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      @user2 = Iceberg::App::User.new(:id => 2, :name => "Brett Gurewitz", :ip_address => "192.168.1.1")
+      @user3 = Iceberg::App::User.new(:id => 3, :name => "Greg Graffin", :ip_address => "55.55.55.55")
 
       Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 6, 0, 0))
-      @topic = @board.post_topic(@author1, {:title => "Topic", :message => "First post"})
+      @topic = @board.post_topic(@user1, {:title => "Topic", :message => "First post"})
       @post1 = @topic.posts.first
 
       Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 7, 0, 0))
-      @post2 = @post1.reply(@author2, {:message => "Second post"})
+      @post2 = @post1.reply(@user2, {:message => "Second post"})
 
       Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 8, 0, 0))
-      @post3 = @post2.reply(@author3, {:message => "Third post"})
+      @post3 = @post2.reply(@user3, {:message => "Third post"})
     end
 
     it "should be successful" do

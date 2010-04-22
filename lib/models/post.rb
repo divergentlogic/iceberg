@@ -6,17 +6,17 @@ module Iceberg::Models::Post
 
       include DataMapper::Resource
 
-      property :id,                 Serial
-      property :message,            Text
-      property :parent_id,          Integer
-      property :author_id,          Integer
-      property :author_name,        String
-      property :author_ip_address,  IPAddress
-      property :created_at,         DateTime
-      property :updated_at,         DateTime
-      property :deleted_at,         ParanoidDateTime
+      property :id,               Serial
+      property :message,          Text
+      property :parent_id,        Integer
+      property :user_id,          Integer
+      property :user_name,        String
+      property :user_ip_address,  IPAddress
+      property :created_at,       DateTime
+      property :updated_at,       DateTime
+      property :deleted_at,       ParanoidDateTime
 
-      attr_accessor :author
+      attr_accessor :user
 
       belongs_to :topic
 
@@ -26,7 +26,7 @@ module Iceberg::Models::Post
       validates_present     :message, :topic
       validates_with_method :topic, :method => :validate_topic_is_unlocked, :if => :new?
 
-      before  :create,  :set_author_attributes
+      before  :create,  :set_user_attributes
       after   :create,  :update_caches
       before  :update do # TODO: replace with :destroy when upgrading to DM 0.10.3
         if attribute_dirty?(:deleted_at) && !topic.attribute_dirty?(:deleted_at)
@@ -37,9 +37,9 @@ module Iceberg::Models::Post
         end
       end
 
-      def reply(author, attributes)
+      def reply(user, attributes)
         reply        = children.new(attributes)
-        reply.author = author
+        reply.user = user
         reply.topic  = topic
         reply.save
         reply
@@ -47,11 +47,11 @@ module Iceberg::Models::Post
 
     protected
 
-      def set_author_attributes
-        if author
-          self.author_id          = author.id         if author.respond_to?(:id)
-          self.author_name        = author.name       if author.respond_to?(:name)
-          self.author_ip_address  = author.ip_address if author.respond_to?(:ip_address)
+      def set_user_attributes
+        if user
+          self.user_id          = user.id         if user.respond_to?(:id)
+          self.user_name        = user.name       if user.respond_to?(:name)
+          self.user_ip_address  = user.ip_address if user.respond_to?(:ip_address)
         end
       end
 

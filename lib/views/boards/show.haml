@@ -23,7 +23,7 @@
             - if board.last_post
               %a{:href => path_for(:post, board.last_post)}= board.last_post.topic.title
               %p= board.last_post.message
-              %p= "by #{board.last_author_name} on #{board.last_updated_at}"
+              %p= "by #{board.last_user_name} on #{board.last_updated_at}"
 
 - unless @board.topics.empty?
   %table
@@ -41,4 +41,4 @@
           %td
             %a{:href => path_for(:post, topic.last_post)}= topic.title
             %p= topic.last_post.message
-            %p= "by #{topic.last_author_name} on #{topic.last_updated_at}"
+            %p= "by #{topic.last_user_name} on #{topic.last_updated_at}"

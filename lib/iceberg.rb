@@ -48,7 +48,7 @@ Dir[File.join(File.dirname(__FILE__), 'models', '**')].each {|f| require f}
 module Iceberg
   class App < Sinatra::Base
 
-    class Author
+    class User
       if defined? id
         undef id
       end
@@ -61,8 +61,8 @@ module Iceberg
     end
 
     helpers do
-      def current_author
-        Iceberg::App::Author.new(:id => nil, :name => "Anonymous", :ip_address => request.ip)
+      def current_user
+        Iceberg::App::User.new(:id => nil, :name => "Anonymous", :ip_address => request.ip)
       end
     end
 

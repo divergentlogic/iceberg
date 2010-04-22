@@ -106,24 +106,24 @@ describe "Board" do
   describe "#post_topic" do
     before(:each) do
       Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 1, 0, 0))
-      @board  = TestApp::Board.generate
-      @author = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
-      @topic  = @board.post_topic(@author, {:title => "Hello there", :message => "Welcome to my topic"})
-      @post   = @topic.posts.first
+      @board = TestApp::Board.generate
+      @user  = Iceberg::App::User.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      @topic = @board.post_topic(@user, {:title => "Hello there", :message => "Welcome to my topic"})
+      @post  = @topic.posts.first
 
       @board.reload
       @topic.reload
     end
 
     it "should fail if a title is not provided" do
-      topic = @board.post_topic(@author, :message => "This needs a title")
+      topic = @board.post_topic(@user, :message => "This needs a title")
       topic.should be_new
       topic.should error_on(:title)
       topic.posts.should be_empty
     end
 
     it "should fail if a message is not provided" do
-      topic = @board.post_topic(@author, :title => "This needs a message")
+      topic = @board.post_topic(@user, :title => "This needs a message")
       topic.should be_new
       topic.should error_on(:message)
       topic.posts.should be_empty
@@ -138,82 +138,82 @@ describe "Board" do
     end
 
     it "should update the topic cache" do
-      @topic.last_post.should                   == @post
-      @topic.last_updated_at.to_s.should        == @post.updated_at.to_s
-      @topic.last_author_id.should              == 1
-      @topic.last_author_name.should            == "Billy Gnosis"
-      @topic.last_author_ip_address.to_s.should == "127.0.0.1"
-      @topic.posts_count.should                 == 1
+      @topic.last_post.should                 == @post
+      @topic.last_updated_at.to_s.should      == @post.updated_at.to_s
+      @topic.last_user_id.should              == 1
+      @topic.last_user_name.should            == "Billy Gnosis"
+      @topic.last_user_ip_address.to_s.should == "127.0.0.1"
+      @topic.posts_count.should               == 1
     end
 
     it "should update the board cache" do
-      @board.last_post.should                   == @post
-      @board.last_topic.should                  == @topic
-      @board.last_updated_at.to_s.should        == @post.updated_at.to_s
-      @board.last_author_id.should              == 1
-      @board.last_author_name.should            == "Billy Gnosis"
-      @board.last_author_ip_address.to_s.should == "127.0.0.1"
-      @board.topics_count.should                == 1
-      @board.posts_count.should                 == 1
+      @board.last_post.should                 == @post
+      @board.last_topic.should                == @topic
+      @board.last_updated_at.to_s.should      == @post.updated_at.to_s
+      @board.last_user_id.should              == 1
+      @board.last_user_name.should            == "Billy Gnosis"
+      @board.last_user_ip_address.to_s.should == "127.0.0.1"
+      @board.topics_count.should              == 1
+      @board.posts_count.should               == 1
     end
 
     describe "creating another post" do
       before(:each) do
         Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 2, 0, 0))
-        @new_author = Iceberg::App::Author.new(:id => 2, :name => "Mickey Mouse", :ip_address => "192.168.1.1")
-        @new_post   = @post.reply(@new_author, :message => "Hello there")
+        @new_user = Iceberg::App::User.new(:id => 2, :name => "Mickey Mouse", :ip_address => "192.168.1.1")
+        @new_post = @post.reply(@new_user, :message => "Hello there")
 
         @topic.reload
         @board.reload
       end
 
       it "should update the topic cache" do
-        @topic.last_post.should                   == @new_post
-        @topic.last_updated_at.to_s.should        == @new_post.updated_at.to_s
-        @topic.last_author_id.should              == 2
-        @topic.last_author_name.should            == "Mickey Mouse"
-        @topic.last_author_ip_address.to_s.should == "192.168.1.1"
-        @topic.posts_count.should                 == 2
+        @topic.last_post.should                 == @new_post
+        @topic.last_updated_at.to_s.should      == @new_post.updated_at.to_s
+        @topic.last_user_id.should              == 2
+        @topic.last_user_name.should            == "Mickey Mouse"
+        @topic.last_user_ip_address.to_s.should == "192.168.1.1"
+        @topic.posts_count.should               == 2
       end
 
       it "should update the board cache" do
-        @board.last_post.should                   == @new_post
-        @board.last_topic.should                  == @topic
-        @board.last_updated_at.to_s.should        == @new_post.updated_at.to_s
-        @board.last_author_id.should              == 2
-        @board.last_author_name.should            == "Mickey Mouse"
-        @board.last_author_ip_address.to_s.should == "192.168.1.1"
-        @board.topics_count.should                == 1
-        @board.posts_count.should                 == 2
+        @board.last_post.should                 == @new_post
+        @board.last_topic.should                == @topic
+        @board.last_updated_at.to_s.should      == @new_post.updated_at.to_s
+        @board.last_user_id.should              == 2
+        @board.last_user_name.should            == "Mickey Mouse"
+        @board.last_user_ip_address.to_s.should == "192.168.1.1"
+        @board.topics_count.should              == 1
+        @board.posts_count.should               == 2
       end
     end
 
     describe "creating another topic" do
       before(:each) do
         Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 2, 0, 0))
-        @new_author = Iceberg::App::Author.new(:id => 2, :name => "Mickey Mouse", :ip_address => "192.168.1.1")
-        @new_topic  = @board.post_topic(@new_author, :title => "New Topic", :message => "Hello there")
-        @new_post   = @new_topic.posts.first
+        @new_user  = Iceberg::App::User.new(:id => 2, :name => "Mickey Mouse", :ip_address => "192.168.1.1")
+        @new_topic = @board.post_topic(@new_user, :title => "New Topic", :message => "Hello there")
+        @new_post  = @new_topic.posts.first
 
         @new_topic.reload
         @board.reload
       end
 
       it "should update the board cache" do
-        @board.last_post.should                   == @new_post
-        @board.last_topic.should                  == @new_topic
-        @board.last_updated_at.to_s.should        == @new_post.updated_at.to_s
-        @board.last_author_id.should              == 2
-        @board.last_author_name.should            == "Mickey Mouse"
-        @board.last_author_ip_address.to_s.should == "192.168.1.1"
-        @board.topics_count.should                == 2
-        @board.posts_count.should                 == 2
+        @board.last_post.should                 == @new_post
+        @board.last_topic.should                == @new_topic
+        @board.last_updated_at.to_s.should      == @new_post.updated_at.to_s
+        @board.last_user_id.should              == 2
+        @board.last_user_name.should            == "Mickey Mouse"
+        @board.last_user_ip_address.to_s.should == "192.168.1.1"
+        @board.topics_count.should              == 2
+        @board.posts_count.should               == 2
       end
     end
 
     it "should fail if the board does not allow topics" do
       board = TestApp::Board.generate(:allow_topics => false)
-      topic = board.post_topic(@author, {:title => "Don't allow topics", :message => "This will fail"})
+      topic = board.post_topic(@user, {:title => "Don't allow topics", :message => "This will fail"})
       topic.should error_on(:board)
     end
   end
