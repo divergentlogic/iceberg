@@ -6,14 +6,14 @@ module Iceberg::Models::TopicView
 
       include DataMapper::Resource
 
-      property :id,                Serial
-      property :created_at,        DateTime
-      property :viewer_id,         Integer
-      property :viewer_name,       String
-      property :viewer_ip_address, DataMapper::Types::IPAddress
-      property :deleted_at,        ParanoidDateTime
+      property :id,              Serial
+      property :created_at,      DateTime
+      property :user_id,         Integer
+      property :user_name,       String
+      property :user_ip_address, DataMapper::Types::IPAddress
+      property :deleted_at,      ParanoidDateTime
 
-      belongs_to  :topic
+      belongs_to :topic
 
     end
   end

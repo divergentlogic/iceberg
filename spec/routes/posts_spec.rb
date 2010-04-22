@@ -3,10 +3,10 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe "Posts Routes" do
   describe "replying to a post" do
     before(:each) do
-      @board  = TestApp::Board.generate(:title => "Board")
-      @author = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
-      @topic  = @board.post_topic(@author, {:title => "Topic", :message => "Discuss"})
-      @post   = @topic.posts.first
+      @board = TestApp::Board.generate(:title => "Board")
+      @user  = Iceberg::App::User.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      @topic = @board.post_topic(@user, {:title => "Topic", :message => "Discuss"})
+      @post  = @topic.posts.first
     end
 
     it "should be successful with a topic without quoting" do
@@ -36,10 +36,10 @@ describe "Posts Routes" do
 
   describe "creating a new post" do
     before(:each) do
-      @board  = TestApp::Board.generate(:title => "Board")
-      @author = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
-      @topic  = @board.post_topic(@author, {:title => "Topic", :message => "Discuss"})
-      @post   = @topic.posts.first
+      @board = TestApp::Board.generate(:title => "Board")
+      @user  = Iceberg::App::User.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      @topic = @board.post_topic(@user, {:title => "Topic", :message => "Discuss"})
+      @post  = @topic.posts.first
     end
 
     describe "without errors" do
@@ -56,7 +56,7 @@ describe "Posts Routes" do
         last_request.path.should == "/boards/board/topics/topic"
       end
 
-      it "should post default author attributes" do
+      it "should post default user attributes" do
         last_response.body.should contain('Anonymous')
       end
     end
@@ -73,10 +73,10 @@ describe "Posts Routes" do
 
   describe "deleting a post" do
     before(:each) do
-      @board  = TestApp::Board.generate(:title => "Talk about stuff")
-      @author = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
-      @topic  = @board.post_topic(@author, {:title => "Yak Yak Yak", :message => "Hello World"})
-      @post   = @topic.posts.first
+      @board = TestApp::Board.generate(:title => "Talk about stuff")
+      @user  = Iceberg::App::User.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      @topic = @board.post_topic(@user, {:title => "Yak Yak Yak", :message => "Hello World"})
+      @post  = @topic.posts.first
     end
 
     it "should be successful" do
@@ -113,10 +113,10 @@ describe "Posts Routes" do
 
   describe "editing a post" do
     before(:each) do
-      @board  = TestApp::Board.generate(:title => "Talk about stuff")
-      @author = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
-      @topic  = @board.post_topic(@author, {:title => "Yak Yak Yak", :message => "Hello World"})
-      @post   = @topic.posts.first
+      @board = TestApp::Board.generate(:title => "Talk about stuff")
+      @user  = Iceberg::App::User.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      @topic = @board.post_topic(@user, {:title => "Yak Yak Yak", :message => "Hello World"})
+      @post  = @topic.posts.first
     end
 
     it "should be successful" do
@@ -147,10 +147,10 @@ describe "Posts Routes" do
 
   describe "updating a post" do
     before(:each) do
-      @board  = TestApp::Board.generate(:title => "Talk about stuff")
-      @author = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
-      @topic  = @board.post_topic(@author, {:title => "Yak Yak Yak", :message => "Hello World"})
-      @post   = @topic.posts.first
+      @board = TestApp::Board.generate(:title => "Talk about stuff")
+      @user  = Iceberg::App::User.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      @topic = @board.post_topic(@user, {:title => "Yak Yak Yak", :message => "Hello World"})
+      @post  = @topic.posts.first
     end
 
     it "should be successful" do

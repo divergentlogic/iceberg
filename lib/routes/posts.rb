@@ -14,7 +14,7 @@ module Iceberg
     post :create_post do |id|
       @parent = model_for(:Post).get(id.to_i)
       @topic  = @parent.topic
-      @post   = @parent.reply(current_author, params_for(:Post))
+      @post   = @parent.reply(current_user, params_for(:Post))
       unless @post.new?
         redirect path_for(:topic, @topic)
       else

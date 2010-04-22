@@ -6,22 +6,22 @@ module Iceberg::Models::Topic
 
       include DataMapper::Resource
 
-      property :id,                     Serial
-      property :title,                  String,   :length => (1..250)
-      property :slug,                   Slug,     :length => (1..250)
-      property :sticky,                 Integer,  :default => 0
-      property :locked,                 Boolean,  :default => false
-      property :posts_count,            Integer,  :default => 0
-      property :view_count,             Integer,  :default => 0
-      property :created_at,             DateTime
-      property :updated_at,             DateTime
-      property :last_updated_at,        DateTime
-      property :last_author_id,         Integer
-      property :last_author_name,       String
-      property :last_author_ip_address, DataMapper::Types::IPAddress
-      property :deleted_at,             ParanoidDateTime
+      property :id,                   Serial
+      property :title,                String,   :length => (1..250)
+      property :slug,                 Slug,     :length => (1..250)
+      property :sticky,               Integer,  :default => 0
+      property :locked,               Boolean,  :default => false
+      property :posts_count,          Integer,  :default => 0
+      property :view_count,           Integer,  :default => 0
+      property :created_at,           DateTime
+      property :updated_at,           DateTime
+      property :last_updated_at,      DateTime
+      property :last_user_id,         Integer
+      property :last_user_name,       String
+      property :last_user_ip_address, DataMapper::Types::IPAddress
+      property :deleted_at,           ParanoidDateTime
 
-      attr_accessor :author, :message, :existing_topic
+      attr_accessor :user, :message, :existing_topic
 
       has n,      :posts, :order => [:created_at]
       has n,      :views, :order => [:created_at.desc], :model => 'TopicView'
@@ -47,11 +47,11 @@ module Iceberg::Models::Topic
         sticky > 0
       end
 
-      def view!(viewer=nil)
-        viewer_id         = viewer && viewer.respond_to?(:id)         ? viewer.id         : nil
-        viewer_name       = viewer && viewer.respond_to?(:name)       ? viewer.name       : nil
-        viewer_ip_address = viewer && viewer.respond_to?(:ip_address) ? viewer.ip_address : nil
-        views.create(:viewer_id => viewer_id, :viewer_name => viewer_name, :viewer_ip_address => viewer_ip_address)
+      def view!(user=nil)
+        user_id         = user && user.respond_to?(:id)         ? user.id         : nil
+        user_name       = user && user.respond_to?(:name)       ? user.name       : nil
+        user_ip_address = user && user.respond_to?(:ip_address) ? user.ip_address : nil
+        views.create(:user_id => user_id, :user_name => user_name, :user_ip_address => user_ip_address)
         adjust!({:view_count => 1}, true)
       end
 
@@ -70,12 +70,12 @@ module Iceberg::Models::Topic
 
       def update_cache
         post = posts.model.last(:topic_id => id, :order => [:created_at])
-        self.last_post_id           = post ? post.id                : nil
-        self.last_updated_at        = post ? post.updated_at        : nil
-        self.last_author_id         = post ? post.author_id         : nil
-        self.last_author_name       = post ? post.author_name       : nil
-        self.last_author_ip_address = post ? post.author_ip_address : nil
-        self.posts_count            = posts.model.count(:topic_id => id)
+        self.last_post_id         = post ? post.id              : nil
+        self.last_updated_at      = post ? post.updated_at      : nil
+        self.last_user_id         = post ? post.user_id         : nil
+        self.last_user_name       = post ? post.user_name       : nil
+        self.last_user_ip_address = post ? post.user_ip_address : nil
+        self.posts_count          = posts.model.count(:topic_id => id)
         save!
       end
 
@@ -88,7 +88,7 @@ module Iceberg::Models::Topic
       end
 
       def set_post
-        post = posts.new(:author => author, :message => message)
+        post = posts.new(:user => user, :message => message)
         post.save
       end
 

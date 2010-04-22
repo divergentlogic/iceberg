@@ -53,8 +53,8 @@ describe "Topic" do
 
     describe "with a user" do
       before(:each) do
-        @viewer = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
-        @topic.view!(@viewer)
+        @user = Iceberg::App::User.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+        @topic.view!(@user)
       end
 
       it "should update the view count" do
@@ -70,11 +70,11 @@ describe "Topic" do
         view.created_at.should == Time.utc(2010, 1, 1, 1, 0, 0)
       end
 
-      it "should create a view with viewer attributes" do
+      it "should create a view with user attributes" do
         view = @topic.views.first
-        view.viewer_id.should         == 1
-        view.viewer_name.should       == "Billy Gnosis"
-        view.viewer_ip_address.should == "127.0.0.1"
+        view.user_id.should         == 1
+        view.user_name.should       == "Billy Gnosis"
+        view.user_ip_address.should == "127.0.0.1"
       end
     end
 
@@ -96,11 +96,11 @@ describe "Topic" do
         view.created_at.should == Time.utc(2010, 1, 1, 1, 0, 0)
       end
 
-      it "should create a view with viewer attributes" do
+      it "should create a view with user attributes" do
         view = @topic.views.first
-        view.viewer_id.should         be_nil
-        view.viewer_name.should       be_nil
-        view.viewer_ip_address.should be_nil
+        view.user_id.should         be_nil
+        view.user_name.should       be_nil
+        view.user_ip_address.should be_nil
       end
     end
   end
@@ -151,9 +151,9 @@ describe "Topic" do
       @invalid_board  = TestApp::Board.generate(:title => "Invalid Board", :allow_topics => false)
 
       Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 1, 0, 0))
-      @author = Iceberg::App::Author.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
-      @topic  = @old_board.post_topic(@author, {:title => "Mover and Shaker", :message => "Move me"})
-      @post   = @topic.posts.first
+      @user  = Iceberg::App::User.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      @topic = @old_board.post_topic(@user, {:title => "Mover and Shaker", :message => "Move me"})
+      @post  = @topic.posts.first
 
       @old_board.reload
       @new_board.reload
@@ -163,25 +163,25 @@ describe "Topic" do
     end
 
     it "should begin with a sane state" do
-      @old_board.topics.count.should                == 1
-      @old_board.last_post.should                   == @post
-      @old_board.last_topic.should                  == @topic
-      @old_board.last_updated_at.to_s.should        == @post.updated_at.to_s
-      @old_board.last_author_id.should              == 1
-      @old_board.last_author_name.should            == "Billy Gnosis"
-      @old_board.last_author_ip_address.to_s.should == "127.0.0.1"
-      @old_board.topics_count.should                == 1
-      @old_board.posts_count.should                 == 1
+      @old_board.topics.count.should              == 1
+      @old_board.last_post.should                 == @post
+      @old_board.last_topic.should                == @topic
+      @old_board.last_updated_at.to_s.should      == @post.updated_at.to_s
+      @old_board.last_user_id.should              == 1
+      @old_board.last_user_name.should            == "Billy Gnosis"
+      @old_board.last_user_ip_address.to_s.should == "127.0.0.1"
+      @old_board.topics_count.should              == 1
+      @old_board.posts_count.should               == 1
 
-      @new_board.topics.count.should            == 0
-      @new_board.last_post.should               be_nil
-      @new_board.last_topic.should              be_nil
-      @new_board.last_updated_at.should         be_nil
-      @new_board.last_author_id.should          be_nil
-      @new_board.last_author_name.should        be_nil
-      @new_board.last_author_ip_address.should  be_nil
-      @new_board.topics_count.should            == 0
-      @new_board.posts_count.should             == 0
+      @new_board.topics.count.should          == 0
+      @new_board.last_post.should             be_nil
+      @new_board.last_topic.should            be_nil
+      @new_board.last_updated_at.should       be_nil
+      @new_board.last_user_id.should          be_nil
+      @new_board.last_user_name.should        be_nil
+      @new_board.last_user_ip_address.should  be_nil
+      @new_board.topics_count.should          == 0
+      @new_board.posts_count.should           == 0
     end
 
     it "should move to another board" do
@@ -193,29 +193,29 @@ describe "Topic" do
     it "should update the caches for the original board" do
       @topic.move_to(@new_board).should be_true
       @old_board.reload
-      @old_board.topics.count.should            == 0
-      @old_board.last_post.should               be_nil
-      @old_board.last_topic.should              be_nil
-      @old_board.last_updated_at.should         be_nil
-      @old_board.last_author_id.should          be_nil
-      @old_board.last_author_name.should        be_nil
-      @old_board.last_author_ip_address.should  be_nil
-      @old_board.topics_count.should            == 0
-      @old_board.posts_count.should             == 0
+      @old_board.topics.count.should          == 0
+      @old_board.last_post.should             be_nil
+      @old_board.last_topic.should            be_nil
+      @old_board.last_updated_at.should       be_nil
+      @old_board.last_user_id.should          be_nil
+      @old_board.last_user_name.should        be_nil
+      @old_board.last_user_ip_address.should  be_nil
+      @old_board.topics_count.should          == 0
+      @old_board.posts_count.should           == 0
     end
 
     it "should update the caches for the new board" do
       @topic.move_to(@new_board).should be_true
       @new_board.reload
-      @new_board.topics.count.should                == 1
-      @new_board.last_post.should                   == @post
-      @new_board.last_topic.should                  == @topic
-      @new_board.last_updated_at.to_s.should        == @post.updated_at.to_s
-      @new_board.last_author_id.should              == 1
-      @new_board.last_author_name.should            == "Billy Gnosis"
-      @new_board.last_author_ip_address.to_s.should == "127.0.0.1"
-      @new_board.topics_count.should                == 1
-      @new_board.posts_count.should                 == 1
+      @new_board.topics.count.should              == 1
+      @new_board.last_post.should                 == @post
+      @new_board.last_topic.should                == @topic
+      @new_board.last_updated_at.to_s.should      == @post.updated_at.to_s
+      @new_board.last_user_id.should              == 1
+      @new_board.last_user_name.should            == "Billy Gnosis"
+      @new_board.last_user_ip_address.to_s.should == "127.0.0.1"
+      @new_board.topics_count.should              == 1
+      @new_board.posts_count.should               == 1
     end
 
     it "should not move to a board that does not allow topics" do
@@ -230,14 +230,14 @@ describe "Topic" do
     describe "with many topics" do
       before(:each) do
         Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 2, 0, 0))
-        @old_board.post_topic(@author, {:title => "Topic 1", :message => "Topic 1"})
+        @old_board.post_topic(@user, {:title => "Topic 1", :message => "Topic 1"})
 
         Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 3, 0, 0))
-        @old_last_topic = @old_board.post_topic(@author, {:title => "Topic 2", :message => "Topic 2"})
+        @old_last_topic = @old_board.post_topic(@user, {:title => "Topic 2", :message => "Topic 2"})
         @old_last_post  = @old_last_topic.posts.first
 
         Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 4, 0, 0))
-        @new_last_topic = @new_board.post_topic(@author, {:title => "Topic 3", :message => "Topic 3"})
+        @new_last_topic = @new_board.post_topic(@user, {:title => "Topic 3", :message => "Topic 3"})
         @new_last_post  = @new_last_topic.posts.first
 
         @old_board.reload
@@ -249,49 +249,49 @@ describe "Topic" do
       end
 
       it "should begin with a sane state" do
-        @old_board.last_post.should                   == @old_last_post
-        @old_board.last_topic.should                  == @old_last_topic
-        @old_board.last_updated_at.to_s.should        == @old_last_post.updated_at.to_s
-        @old_board.last_author_id.should              == 1
-        @old_board.last_author_name.should            == "Billy Gnosis"
-        @old_board.last_author_ip_address.to_s.should == "127.0.0.1"
-        @old_board.topics_count.should                == 3
-        @old_board.posts_count.should                 == 3
+        @old_board.last_post.should                 == @old_last_post
+        @old_board.last_topic.should                == @old_last_topic
+        @old_board.last_updated_at.to_s.should      == @old_last_post.updated_at.to_s
+        @old_board.last_user_id.should              == 1
+        @old_board.last_user_name.should            == "Billy Gnosis"
+        @old_board.last_user_ip_address.to_s.should == "127.0.0.1"
+        @old_board.topics_count.should              == 3
+        @old_board.posts_count.should               == 3
 
-        @new_board.last_post.should                   == @new_last_post
-        @new_board.last_topic.should                  == @new_last_topic
-        @new_board.last_updated_at.to_s.should        == @new_last_post.updated_at.to_s
-        @new_board.last_author_id.should              == 1
-        @new_board.last_author_name.should            == "Billy Gnosis"
-        @new_board.last_author_ip_address.to_s.should == "127.0.0.1"
-        @new_board.topics_count.should                == 1
-        @new_board.posts_count.should                 == 1
+        @new_board.last_post.should                 == @new_last_post
+        @new_board.last_topic.should                == @new_last_topic
+        @new_board.last_updated_at.to_s.should      == @new_last_post.updated_at.to_s
+        @new_board.last_user_id.should              == 1
+        @new_board.last_user_name.should            == "Billy Gnosis"
+        @new_board.last_user_ip_address.to_s.should == "127.0.0.1"
+        @new_board.topics_count.should              == 1
+        @new_board.posts_count.should               == 1
       end
 
       it "should update the caches for the original board" do
         @topic.move_to(@new_board).should be_true
         @old_board.reload
-        @old_board.last_post.should                   == @old_last_post
-        @old_board.last_topic.should                  == @old_last_topic
-        @old_board.last_updated_at.should             == @old_last_post.updated_at.to_s
-        @old_board.last_author_id.should              == 1
-        @old_board.last_author_name.should            == "Billy Gnosis"
-        @old_board.last_author_ip_address.to_s.should == "127.0.0.1"
-        @old_board.topics_count.should                == 2
-        @old_board.posts_count.should                 == 2
+        @old_board.last_post.should                 == @old_last_post
+        @old_board.last_topic.should                == @old_last_topic
+        @old_board.last_updated_at.should           == @old_last_post.updated_at.to_s
+        @old_board.last_user_id.should              == 1
+        @old_board.last_user_name.should            == "Billy Gnosis"
+        @old_board.last_user_ip_address.to_s.should == "127.0.0.1"
+        @old_board.topics_count.should              == 2
+        @old_board.posts_count.should               == 2
       end
 
       it "should update the caches for the new board" do
         @topic.move_to(@new_board).should be_true
         @new_board.reload
-        @new_board.last_post.should                   == @new_last_post
-        @new_board.last_topic.should                  == @new_last_topic
-        @new_board.last_updated_at.to_s.should        == @new_last_post.updated_at.to_s
-        @new_board.last_author_id.should              == 1
-        @new_board.last_author_name.should            == "Billy Gnosis"
-        @new_board.last_author_ip_address.to_s.should == "127.0.0.1"
-        @new_board.topics_count.should                == 2
-        @new_board.posts_count.should                 == 2
+        @new_board.last_post.should                 == @new_last_post
+        @new_board.last_topic.should                == @new_last_topic
+        @new_board.last_updated_at.to_s.should      == @new_last_post.updated_at.to_s
+        @new_board.last_user_id.should              == 1
+        @new_board.last_user_name.should            == "Billy Gnosis"
+        @new_board.last_user_ip_address.to_s.should == "127.0.0.1"
+        @new_board.topics_count.should              == 2
+        @new_board.posts_count.should               == 2
       end
     end
   end

@@ -18,7 +18,7 @@ module Iceberg
 
     post :create_topic do |board_id|
       @board = model_for(:Board).get!(board_id)
-      @topic = @board.post_topic(current_author, params_for(:Topic))
+      @topic = @board.post_topic(current_user, params_for(:Topic))
       unless @topic.new?
         redirect path_for(:board, @board)
       else
@@ -38,7 +38,7 @@ module Iceberg
       get_board
       @topic = @board.topics.first(:slug => params[:topic])
       halt 404 unless @topic
-      @topic.view!(current_author)
+      @topic.view!(current_user)
       haml :'topics/show'
     end
 
