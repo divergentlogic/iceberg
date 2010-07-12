@@ -4,25 +4,55 @@ describe "Post" do
   describe "deleting" do
     before(:each) do
       Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 1, 0, 0))
-      @board = TestApp::Board.generate
-      @topic = @board.post_topic(nil, :title => "Topic 1", :message => "First post")
-      @post  = @topic.posts.first
+      @board  = TestApp::Board.generate
+      @topic  = @board.post_topic(nil, :title => "Topic 1", :message => "First post")
+      @post   = @topic.posts.first
+
+      Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 2, 0, 0))
+      @reply1 = @post.reply(nil, :message => 'Reply 1')
+
+      Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 3, 0, 0))
+      @reply2 = @reply1.reply(nil, :message => 'Reply 2')
+
+      Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 4, 0, 0))
     end
 
     it "should delete in a paranoid fashion" do
-      @post.destroy.should_not be_false
-      @post.deleted_at.should == Time.utc(2010, 1, 1, 1, 0, 0)
+      @reply2.destroy.should_not be_false
+      @reply2.deleted_at.should == Time.utc(2010, 1, 1, 4, 0, 0)
     end
 
     it "should move its replies underneath its parent" do
-      reply1 = @post.reply(nil, :message => 'Reply 1')
-      reply2 = reply1.reply(nil, :message => 'Reply 2')
+      @reply1.destroy.should_not be_false
+      @reply1.deleted_at.should == Time.utc(2010, 1, 1, 4, 0, 0)
 
-      reply1.destroy.should_not be_false
-      reply1.deleted_at.should == Time.utc(2010, 1, 1, 1, 0, 0)
+      @reply2.deleted_at.should be_nil
+      @reply2.parent.should == @post
+    end
 
-      reply2.deleted_at.should be_nil
-      reply2.parent.should == @post
+    it "should update its topic's cache" do
+      @topic.reload
+      @topic.last_post.should   == @reply2
+      @topic.posts_count.should == 3
+
+      @reply2.destroy.should_not be_false
+      @topic.reload
+      @topic.last_post.should   == @reply1
+      @topic.posts_count.should == 2
+    end
+
+    it "should delete its topic if it is the last post" do
+      @reply2.reload
+      @reply2.destroy.should_not be_false
+
+      @reply1.reload
+      @reply1.destroy.should_not be_false
+
+      @post.reload
+      @post.destroy.should_not   be_false
+
+      @topic.reload
+      @topic.deleted_at.should == Time.utc(2010, 1, 1, 4, 0, 0)
     end
   end
 

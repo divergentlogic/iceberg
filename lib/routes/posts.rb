@@ -45,7 +45,11 @@ module Iceberg
       @post = model_for(:Post).get(id.to_i)
       halt 404 unless @post
       @post.destroy
-      redirect path_for(:topic, @post.topic)
+      if @post.topic.deleted_at
+        redirect path_for(:board, @post.topic.board)
+      else
+        redirect path_for(:topic, @post.topic)
+      end
     end
 
   end

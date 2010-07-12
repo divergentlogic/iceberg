@@ -36,6 +36,18 @@ module Iceberg::Models::Post
           end
         end
       end
+      after :update do # TODO: replace with :destroy when upgrading to DM 0.10.3
+        if deleted_at
+          update_topic = self.topic.model.get(topic_id)
+          if update_topic
+            if update_topic.posts.count > 0
+              update_topic.update_cache
+            else
+              update_topic.destroy
+            end
+          end
+        end
+      end
 
       def reply(user, attributes)
         reply        = children.new(attributes)
