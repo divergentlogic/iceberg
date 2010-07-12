@@ -7,7 +7,7 @@ gem 'dm-core',        '0.10.2', :require => nil
 gem 'dm-more',        '0.10.2', :require => nil
 gem 'data_objects',   '0.10.1', :require => nil
 gem 'do_sqlite3',     '0.10.1', :require => nil
-gem 'sqlite3-ruby'
+gem 'sqlite3-ruby',   '1.2.5'
 gem 'haml'
 gem 'activesupport',  '2.3.5',  :require => 'active_support'
 
