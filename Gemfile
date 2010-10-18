@@ -4,7 +4,14 @@ gem "rack",           '1.0.1'
 gem 'sinatra',        '0.9.4'
 gem 'rack-flash',     '0.1.1'
 gem 'dm-core',        '0.10.2', :require => nil
-gem 'dm-more',        '0.10.2', :require => nil
+gem 'dm-types',       '0.10.2', :require => nil
+gem 'dm-serializer',  '0.10.2', :require => nil
+gem 'dm-aggregates',  '0.10.2', :require => nil
+gem 'dm-timestamps',  '0.10.2', :require => nil
+gem 'dm-validations', '0.10.2', :require => nil
+gem 'dm-tags',        '0.10.2', :require => nil
+gem 'dm-is-list',     '0.10.2', :require => nil
+gem 'dm-is-tree',     '0.10.2', :require => nil
 gem 'data_objects',   '0.10.1', :require => nil
 gem 'do_sqlite3',     '0.10.1', :require => nil
 gem 'sqlite3-ruby',   '1.2.5'
