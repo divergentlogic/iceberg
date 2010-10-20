@@ -17,6 +17,7 @@ require File.expand_path(File.dirname(__FILE__)+'/helpers/utilities')
 require File.expand_path(File.dirname(__FILE__)+'/helpers/visuals')
 require File.expand_path(File.dirname(__FILE__)+'/plugins/named_route_plugin')
 require File.expand_path(File.dirname(__FILE__)+'/mixins/external_layout')
+require File.expand_path(File.dirname(__FILE__)+'/mixins/filters')
 
 module Iceberg
   module Models; end
@@ -47,7 +48,6 @@ Dir[File.join(File.dirname(__FILE__), 'models', '**')].each {|f| require f}
 
 module Iceberg
   class App < Sinatra::Base
-
     class User
       if defined? id
         undef id

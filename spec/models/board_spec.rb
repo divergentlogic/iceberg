@@ -264,4 +264,37 @@ describe "Board" do
       end
     end
   end
+
+  describe "filter" do
+    before(:each) do
+      @general_board  = TestApp::Board.generate(:title => "General")
+      @carriers_board = TestApp::Board.generate(:title => "Carriers", :parent => @general_board)
+      @verizon_board  = TestApp::Board.generate(:title => "Verizon", :parent => @general_board)
+      
+      TestApp::Board.instance_eval do
+        filter_on :title, :name
+        has n, :users
+      end
+      
+      @new_user = Iceberg::App::User.new(:id => 3, :name => "Verizon", :ip_address => "192.168.1.1")      
+    end
+
+    it "filters children based on user roles" do
+      filtered_boards = TestApp::Board.filtered(@new_user)
+      filtered_boards.should_not include(@carriers_board)
+      filtered_boards.should include(@verizon_board)
+    end
+
+    it "returns user values from filter" do
+      TestApp::Board.user_values(@new_user, :name).should == ["Verizon"]
+    end
+
+    it "parses filters properly" do
+      TestApp::Board.parse_filter({}, [:name, :name], @new_user).should == {:name => ["Verizon"]}
+    end
+
+    it "parses complex filters properly" do
+      TestApp::Board.parse_filter({}, [[:name, :reverse], [:name, :reverse]], @new_user).should == {:name => {:reverse => ["nozireV"]}}
+    end
+  end
 end

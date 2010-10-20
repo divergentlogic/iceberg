@@ -5,6 +5,7 @@ module Iceberg::Models::TopicView
     base.class_eval do
 
       include DataMapper::Resource
+      extend Iceberg::Filters
 
       property :id,              Serial
       property :created_at,      DateTime

@@ -5,6 +5,7 @@ module Iceberg::Models::Topic
     base.class_eval do
 
       include DataMapper::Resource
+      extend Iceberg::Filters
 
       property :id,                   Serial
       property :title,                String,   :length => (1..250)
