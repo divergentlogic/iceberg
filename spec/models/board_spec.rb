@@ -237,13 +237,17 @@ describe "Board" do
     end
 
     describe "#by_ancestory" do
+      before(:each) do
+        @user = Iceberg::App::User.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      end
+
       it "should retrieve the child given correct slugs" do
-        @board = TestApp::Board.by_ancestory(%w[general carriers verizon])
+        @board = TestApp::Board.by_ancestory(@user, %w[general carriers verizon])
         @board.should == @verizon_board
       end
 
       it "should not retrieve the child given incorrect slugs" do
-        @board = TestApp::Board.by_ancestory(%w[carriers general verizon])
+        @board = TestApp::Board.by_ancestory(@user, %w[carriers general verizon])
         @board.should be_nil
       end
     end

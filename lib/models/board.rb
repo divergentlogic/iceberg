@@ -49,13 +49,13 @@ module Iceberg::Models::Board
           all(options.merge!({:order => [:position]}))
         end
 
-        def by_ancestory(slugs)
+        def by_ancestory(current_user, slugs)
           while !slugs.empty?
             slug = slugs.shift
             child = if child
-              child.children(:slug => slug).first
+              child.children(:slug => slug).filtered(current_user).first
             else
-              first(:slug => slug, :parent_id => nil)
+              filtered(current_user).first(:slug => slug, :parent_id => nil)
             end
             return nil unless child
           end
@@ -64,7 +64,7 @@ module Iceberg::Models::Board
       end
 
       def post_topic(user, attributes={})
-        topic        = topics.new(attributes)
+        topic      = topics.new(attributes)
         topic.user = user
         topic.valid_for_adding_to_board?
         topic.save(:adding_to_board)
