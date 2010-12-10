@@ -265,36 +265,91 @@ describe "Board" do
     end
   end
 
-  describe "filter" do
+  describe "filter defined" do
+    before(:each) do
+      class FilteredBoard < TestApp::Board
+        property  :board_filter, String
+        filter_on :board_filter, :user_filter
+      end
+      FilteredBoard.auto_migrate!
+
+      class FilteredUser < Iceberg::App::User
+        attr_accessor :user_filter
+      end
+
+      @general_board  = FilteredBoard.generate(:title => "General",  :board_filter => "General")
+      @carriers_board = FilteredBoard.generate(:title => "Carriers", :board_filter => "Carriers", :parent => @general_board)
+      @verizon_board  = FilteredBoard.generate(:title => "Verizon",  :board_filter => "Verizon",  :parent => @general_board)
+
+      @filtered_user = FilteredUser.new(:id => 3, :name => "Filtered User", :ip_address => "192.168.1.1")
+    end
+
+    describe "single filter value" do
+      before(:each) do
+        @filtered_user.user_filter = "Verizon"
+      end
+
+      it "filters children based on user roles" do
+        filtered_boards = FilteredBoard.filtered(@filtered_user)
+        filtered_boards.should_not include(@general_board)
+        filtered_boards.should_not include(@carriers_board)
+        filtered_boards.should     include(@verizon_board)
+      end
+
+      it "parses filters properly" do
+        FilteredBoard.parse_filter([:board_filter, :user_filter], @filtered_user).should == ["test_app_boards.board_filter IN ? OR test_app_boards.board_filter IS NULL", ["Verizon"]]
+      end
+    end
+
+    describe "array filter value" do
+      before(:each) do
+        @filtered_user.user_filter = ["Verizon", "Sprint"]
+      end
+
+      it "filters children based on user roles" do
+        filtered_boards = FilteredBoard.filtered(@filtered_user)
+        filtered_boards.should_not include(@general_board)
+        filtered_boards.should_not include(@carriers_board)
+        filtered_boards.should     include(@verizon_board)
+      end
+
+      it "parses filters properly" do
+        FilteredBoard.parse_filter([:board_filter, :user_filter], @filtered_user).should == ["test_app_boards.board_filter IN ? OR test_app_boards.board_filter IS NULL", ["Verizon", "Sprint"]]
+      end
+    end
+
+    describe "filter attribute is blank" do
+      before(:each) do
+        @non_match_board = FilteredBoard.generate(:title => "Non Match", :board_filter => "Non Match")
+        @nil_board       = FilteredBoard.generate(:title => "Nil",       :board_filter => nil)
+        @match_board     = FilteredBoard.generate(:title => "Match",     :board_filter => "Match")
+
+        @filtered_user.user_filter = "Match"
+      end
+
+      it "returns all matching filters and boards with a nil filter" do
+        filtered_boards = FilteredBoard.filtered(@filtered_user)
+        filtered_boards.should_not include(@non_match_board)
+        filtered_boards.should     include(@nil_board)
+        filtered_boards.should     include(@match_board)
+      end
+    end
+  end
+
+  describe "no filters defined" do
     before(:each) do
       @general_board  = TestApp::Board.generate(:title => "General")
       @carriers_board = TestApp::Board.generate(:title => "Carriers", :parent => @general_board)
       @verizon_board  = TestApp::Board.generate(:title => "Verizon", :parent => @general_board)
-      
-      TestApp::Board.instance_eval do
-        filter_on :title, :name
-        has n, :users
-      end
-      
-      @new_user = Iceberg::App::User.new(:id => 3, :name => "Verizon", :ip_address => "192.168.1.1")      
+
+      @non_filtered_user = Iceberg::App::User.new(:id => 3, :name => "Non Filtered User", :ip_address => "192.168.1.1")
     end
 
-    it "filters children based on user roles" do
-      filtered_boards = TestApp::Board.filtered(@new_user)
-      filtered_boards.should_not include(@carriers_board)
+    it "returns all boards" do
+      filtered_boards = TestApp::Board.filtered(@non_filtered_user)
+      filtered_boards.should include(@general_board)
+      filtered_boards.should include(@carriers_board)
       filtered_boards.should include(@verizon_board)
-    end
-
-    it "returns user values from filter" do
-      TestApp::Board.user_values(@new_user, :name).should == ["Verizon"]
-    end
-
-    it "parses filters properly" do
-      TestApp::Board.parse_filter({}, [:name, :name], @new_user).should == {:name => ["Verizon"]}
-    end
-
-    it "parses complex filters properly" do
-      TestApp::Board.parse_filter({}, [[:name, :reverse], [:name, :reverse]], @new_user).should == {:name => {:reverse => ["nozireV"]}}
     end
   end
 end

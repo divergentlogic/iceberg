@@ -1,43 +1,31 @@
 module Iceberg
   module Filters
-    def filter_on(board_attribute, user_attribute)
+    def filters
       @filters ||= []
-      @filters << [board_attribute, user_attribute]
+    end
+
+    def filter_on(model_attribute, user_attribute)
+      filters << [model_attribute, user_attribute]
     end
 
     def filtered(user, options={})
-      all(options.merge(options_from_filters(user)))
+      proxy = self
+      options_from_filters(user).each { |opt| proxy = proxy.all(:conditions => opt) }
+      proxy.all(options)
     end
 
     def options_from_filters(user)
-      options = {}
-      @filters.each do |f|
-        parse_filter(options, f, user)
+      options = []
+      filters.each do |f|
+        options << parse_filter(f, user)
       end
       options
     end
 
-    def parse_filter(options, filter, user)
-      board_attributes = Array(filter[0])
-      subhash = options
-      size = board_attributes.size
-      board_attributes.each_with_index do |attr, index|
-        if index == size - 1 
-          subhash[attr] = user_values(user, filter[1])
-        end
-        subhash[attr] ||= { }
-        subhash = subhash[attr]
-        subhash
-      end
-      options
-    end
-
-    def user_values(user, user_attributes)
-      obj = Array(user)
-      Array(user_attributes).each do |u|
-        obj = obj.map { |o| Array(o.send(u)) }.flatten
-      end
-      obj
+    def parse_filter(filter, user)
+      model_attribute, user_attribute = filter
+      user_value = Array(user.send(user_attribute))
+      ["#{storage_name}.#{model_attribute} IN ? OR #{storage_name}.#{model_attribute} IS NULL", user_value]
     end
   end
 end
