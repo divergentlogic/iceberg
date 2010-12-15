@@ -18,6 +18,7 @@ require File.expand_path(File.dirname(__FILE__)+'/helpers/visuals')
 require File.expand_path(File.dirname(__FILE__)+'/plugins/named_route_plugin')
 require File.expand_path(File.dirname(__FILE__)+'/mixins/external_layout')
 require File.expand_path(File.dirname(__FILE__)+'/mixins/filters')
+require File.expand_path(File.dirname(__FILE__)+'/mixins/stringex')
 
 module Iceberg
   module Models; end
