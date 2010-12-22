@@ -21,7 +21,7 @@ module Iceberg
       halt 404 unless @board
       @topic = @board.post_topic(current_user, params_for(:Topic))
       unless @topic.new?
-        redirect path_for(:board, @board)
+        redirect path_for(:topic, @topic)
       else
         haml :'topics/new'
       end

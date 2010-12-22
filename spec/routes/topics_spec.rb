@@ -79,6 +79,88 @@ describe "Topics Routes" do
     end
   end
 
+  describe "creating a topic" do
+    before(:each) do
+      @board = TestApp::Board.generate(:title => "Board")
+      @user  = Iceberg::App::User.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+    end
+
+    describe "GET" do
+      it "should be successful" do
+        get "/boards/#{@board.id}/topics/new"
+        last_response.should be_ok
+      end
+
+      it "should not match on non numeric parameters" do
+        get "/boards/something-non-numeric/topics/new"
+        last_response.should be_not_found
+      end
+
+      it "should not match on IDs that begin with 0" do
+        get "/boards/01/topics/new"
+        last_response.should be_not_found
+      end
+
+      it "should return 404 if the board is not found" do
+        get "/boards/99999999/topics/new"
+        last_response.should be_not_found
+      end
+
+      it "should have a form posting to the create topic path" do
+        get "/boards/#{@board.id}/topics/new"
+        last_response.body.should have_xpath("//form[@action='/boards/#{@board.id}/topics'][@method='post']")
+      end
+
+      it "should have a text field for the title" do
+        get "/boards/#{@board.id}/topics/new"
+        last_response.body.should have_xpath("//form/input[@name='test_app-topic[title]'][@type='text']")
+      end
+
+      it "should have a text area for the message" do
+        get "/boards/#{@board.id}/topics/new"
+        last_response.body.should have_xpath("//form/textarea[@name='test_app-topic[message]']")
+      end
+    end
+
+    describe "POST" do
+      it "should be successful" do
+        post "/boards/#{@board.id}/topics", {'test_app-topic' => {'title' => 'Hello World', 'message' => 'My first post'}}
+        follow_redirect!
+        last_response.should be_ok
+      end
+
+      it "should not match on non numeric parameters" do
+        post "/boards/something-non-numeric/topics"
+        last_response.should be_not_found
+      end
+
+      it "should not match on IDs that begin with 0" do
+        post "/boards/01/topics"
+        last_response.should be_not_found
+      end
+
+      it "should return 404 if the board is not found" do
+        post "/boards/99999999/topics"
+        last_response.should be_not_found
+      end
+
+      it "should redirect to the newly created topic page if successful" do
+        post "/boards/#{@board.id}/topics", {'test_app-topic' => {'title' => 'Hello World', 'message' => 'My first post'}}
+        follow_redirect!
+        last_request.path.should  == "/boards/board/topics/hello-world"
+        last_response.body.should contain('Hello World')
+      end
+
+      it "should render the new form with errors if the creation is unsuccessful" do
+        post "/boards/#{@board.id}/topics", {'test_app-topic' => {'title' => '', 'message' => ''}}
+        last_request.path.should  == "/boards/#{@board.id}/topics"
+        last_response.body.should have_xpath("//form[@action='/boards/#{@board.id}/topics'][@method='post']")
+        last_response.body.should contain("Title must not be blank")
+        last_response.body.should contain("Message must not be blank")
+      end
+    end
+  end
+
   describe "editing a topic" do
     before(:each) do
       @board = TestApp::Board.generate(:title => "Board")
