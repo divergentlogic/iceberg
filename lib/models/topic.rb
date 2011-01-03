@@ -14,6 +14,9 @@ module Iceberg::Models::Topic
       property :locked,               Boolean,  :default => false
       property :posts_count,          Integer,  :default => 0
       property :view_count,           Integer,  :default => 0
+      property :user_id,              Integer
+      property :user_name,            String
+      property :user_ip_address,      IPAddress
       property :created_at,           DateTime
       property :updated_at,           DateTime
       property :last_updated_at,      DateTime
@@ -36,6 +39,7 @@ module Iceberg::Models::Topic
 
       before  :valid?,  :set_slug
       after   :valid?,  :set_existing_topic
+      before  :create,  :set_user_attributes
       after   :create,  :set_post
       before  :update do # TODO: replace with :destroy when upgrading to DM 0.10.3
         if attribute_dirty? :deleted_at
@@ -85,6 +89,14 @@ module Iceberg::Models::Topic
       def set_slug
         if title && slug.nil?
           attribute_set(:slug, title.to_url)
+        end
+      end
+
+      def set_user_attributes
+        if user
+          self.user_id          = user.id         if user.respond_to?(:id)
+          self.user_name        = user.name       if user.respond_to?(:name)
+          self.user_ip_address  = user.ip_address if user.respond_to?(:ip_address)
         end
       end
 

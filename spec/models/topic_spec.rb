@@ -25,6 +25,27 @@ describe "Topic" do
     end
   end
 
+  describe "user" do
+    before(:each) do
+      @board = TestApp::Board.generate
+    end
+
+    it "should fill out the user attributes" do
+      user = Iceberg::App::User.new(:id => 1, :name => "Billy Gnosis", :ip_address => "127.0.0.1")
+      topic = @board.post_topic(user, :title => "A very special title", :message => "First post")
+      topic.user_id.should         == 1
+      topic.user_name.should       == "Billy Gnosis"
+      topic.user_ip_address.should == "127.0.0.1"
+    end
+
+    it "should leave the user attributes nil if no user is given" do
+      topic = @board.post_topic(nil, :title => "A very special title", :message => "First post")
+      topic.user_id.should         be_nil
+      topic.user_name.should       be_nil
+      topic.user_ip_address.should be_nil
+    end
+  end
+
   describe "updating the title" do
     before(:each) do
       @board = TestApp::Board.generate
