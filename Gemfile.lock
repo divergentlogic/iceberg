@@ -74,8 +74,8 @@ GEM
     ruby-debug-base (0.10.3)
       linecache (>= 0.3)
     sexp_processor (3.0.5)
-    sinatra (0.9.4)
-      rack (>= 0.9.1)
+    sinatra (1.0)
+      rack (>= 1.0)
     sqlite3-ruby (1.2.5)
     stringex (1.1.0)
     sys-uname (0.8.4)
@@ -111,6 +111,6 @@ DEPENDENCIES
   rack-test
   rspec (~> 1.2.9)
   ruby-debug
-  sinatra (= 0.9.4)
+  sinatra (= 1.0)
   sqlite3-ruby (= 1.2.5)
   webrat

@@ -12,7 +12,7 @@ begin
     gem.authors = ["Christopher Durtschi"]
     gem.add_dependency 'rack'
     gem.add_dependency 'rack-flash', '=0.1.1'
-    gem.add_dependency 'sinatra', '=0.9.4'
+    gem.add_dependency 'sinatra', '1.0'
     gem.add_dependency 'dm-core', '=0.10.2'
     gem.add_dependency 'dm-types', '0.10.2'
     gem.add_dependency 'dm-serializer', '0.10.2'

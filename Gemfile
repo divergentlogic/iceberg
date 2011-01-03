@@ -1,7 +1,7 @@
 source :gemcutter
 
 gem "rack",           '1.0.1'
-gem 'sinatra',        '0.9.4'
+gem 'sinatra',        '1.0'
 gem 'rack-flash',     '0.1.1'
 gem 'dm-core',        '0.10.2', :require => nil
 gem 'dm-types',       '0.10.2', :require => nil
