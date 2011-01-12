@@ -52,11 +52,11 @@ describe "Topic" do
       @topic = @board.post_topic(nil, :title => "Topic", :message => "First Post")
     end
 
-    it "should not change the slug" do
+    it "should change the title and slug" do
       @topic.title = "New Title"
       @topic.save
       @topic.title.should == "New Title"
-      @topic.slug.should  == "topic"
+      @topic.slug.should  == "new-title"
     end
   end
 

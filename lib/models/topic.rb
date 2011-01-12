@@ -87,9 +87,7 @@ module Iceberg::Models::Topic
     protected
 
       def set_slug
-        if title && slug.nil?
-          attribute_set(:slug, title.to_url)
-        end
+        attribute_set(:slug, title.to_url) if title
       end
 
       def set_user_attributes

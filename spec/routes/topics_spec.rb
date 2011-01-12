@@ -241,7 +241,7 @@ describe "Topics Routes" do
       it "should redirect to the topic page if successful" do
         put "/topics/#{@topic.id}", {'test_app-topic' => {'title' => 'New Title', 'sticky' => '2', 'locked' => '1'}}
         follow_redirect!
-        last_request.path.should  == "/boards/board/topics/topic"
+        last_request.path.should  == "/boards/board/topics/new-title"
         last_response.body.should contain('New Title')
       end
 
