@@ -1,39 +1,5 @@
-require 'rubygems'
-require 'rake'
-
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |gem|
-    gem.name = "iceberg"
-    gem.summary = %Q{Forum as Rack middleware}
-    gem.description = %Q{Forum as Rack middleware}
-    gem.email = "christopher.durtschi@gmail.com"
-    gem.homepage = "http://github.com/robotapocalypse/iceberg"
-    gem.authors = ["Christopher Durtschi"]
-    gem.add_dependency 'rack'
-    gem.add_dependency 'rack-flash', '=0.1.1'
-    gem.add_dependency 'sinatra', '1.0'
-    gem.add_dependency 'dm-core', '=0.10.2'
-    gem.add_dependency 'dm-types', '0.10.2'
-    gem.add_dependency 'dm-serializer', '0.10.2'
-    gem.add_dependency 'dm-aggregates', '0.10.2'
-    gem.add_dependency 'dm-timestamps', '0.10.2'
-    gem.add_dependency 'dm-validations', '0.10.2'
-    gem.add_dependency 'dm-tags', '0.10.2'
-    gem.add_dependency 'dm-is-list', '0.10.2'
-    gem.add_dependency 'dm-is-tree', '0.10.2'
-    gem.add_dependency 'data_objects', '0.10.1'
-    gem.add_dependency 'haml'
-    gem.add_dependency 'activesupport', '2.3.5'
-    gem.add_development_dependency "rspec"
-    gem.add_development_dependency "be_valid_asset"
-    files = `git ls-files`.split("\n").sort.reject{ |file| file =~ /^\./ }.reject { |file| file =~ /^doc/ }
-    gem.files = files
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
-  end
-rescue LoadError
-  puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
-end
+require 'bundler'
+Bundler::GemHelper.install_tasks
 
 require 'spec/rake/spectask'
 Spec::Rake::SpecTask.new(:spec) do |spec|
@@ -46,8 +12,6 @@ Spec::Rake::SpecTask.new(:rcov) do |spec|
   spec.pattern = 'spec/**/*_spec.rb'
   spec.rcov = true
 end
-
-task :spec => :check_dependencies
 
 task :default => :spec
 
