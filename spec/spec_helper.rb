@@ -1,12 +1,4 @@
-begin
-  # Require the preresolved locked set of gems.
-  require File.expand_path('../.bundle/environment', __FILE__)
-rescue LoadError
-  # Fallback on doing the resolve at runtime.
-  require "rubygems"
-  require "bundler"
-  Bundler.setup
-end
+require 'bundler/setup'
 
 ENV['RACK_ENV'] ||= 'test'
 
@@ -14,9 +6,7 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'iceberg'
 require 'sinatra'
-require 'spec'
-require 'spec/autorun'
-require 'spec/interop/test'
+require 'rspec'
 require 'rack/test'
 require 'webrat'
 require 'dm-sweatshop'
@@ -29,7 +19,7 @@ Iceberg::App.set :run, false
 Iceberg::App.set :raise_errors, true
 Iceberg::App.set :logging, false
 
-Spec::Runner.configure do |config|
+RSpec.configure do |config|
   def app
     @app ||= Rack::Builder.app do
       use Rack::Session::Cookie

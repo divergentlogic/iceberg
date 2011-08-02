@@ -16,16 +16,11 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'bundler', '>= 1.0.0'
   s.add_development_dependency 'rake', '~> 0.8.7'
-  s.add_development_dependency 'rspec', '~> 1.2.9'
+  s.add_development_dependency 'rspec', '~> 2.6.0'
   s.add_development_dependency "rack-test"
-  s.add_development_dependency 'autotest'
   s.add_development_dependency 'webrat'
   s.add_development_dependency 'be_valid_asset'
   s.add_development_dependency 'dm-sweatshop', '0.10.2'
-
-  if RUBY_PLATFORM =~ /darwin/
-    s.add_development_dependency "autotest-fsevent", "= 0.1.1"
-  end
 
   case RUBY_VERSION
   when /^1\.9/
