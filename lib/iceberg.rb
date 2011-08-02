@@ -67,24 +67,22 @@ module Iceberg
       end
     end
 
-    class_inheritable_reader :_models
-    @_models = {}
+    class_inheritable_hash :_models
+    self._models = {}
 
     def self.models(*models)
-      _models
       models.each do |model|
         _models[model.to_sym] = nil
       end
-      _models
     end
 
     def self.inherited(base)
       super
-      class_defs = models.keys.map do |klass|
+      class_defs = self._models.keys.map do |klass|
         %{class #{klass}
             include Iceberg::Models::#{klass}
           end
-          models[:#{klass}] = #{klass}}
+          self._models[:#{klass}] = #{klass}}
       end
       base.class_eval(class_defs.join("\n"))
     end
