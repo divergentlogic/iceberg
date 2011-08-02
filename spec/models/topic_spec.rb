@@ -294,7 +294,7 @@ describe "Topic" do
         @old_board.reload
         @old_board.last_post.should                 == @old_last_post
         @old_board.last_topic.should                == @old_last_topic
-        @old_board.last_updated_at.should           == @old_last_post.updated_at.to_s
+        @old_board.last_updated_at.to_s.should      == @old_last_post.updated_at.to_s
         @old_board.last_user_id.should              == 1
         @old_board.last_user_name.should            == "Billy Gnosis"
         @old_board.last_user_ip_address.to_s.should == "127.0.0.1"
