@@ -45,6 +45,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'do_sqlite3', '0.10.1'
   s.add_runtime_dependency 'sqlite3-ruby', '1.2.5'
   s.add_runtime_dependency 'haml'
+  s.add_runtime_dependency 'builder'
   s.add_runtime_dependency 'activesupport', '~> 3.0.0'
 
   s.files        = `git ls-files`.split("\n")
