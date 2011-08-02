@@ -21,6 +21,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'webrat'
   s.add_development_dependency 'be_valid_asset'
   s.add_development_dependency 'dm-sweatshop', '0.10.2'
+  s.add_development_dependency 'do_sqlite3', '0.10.1'
+  s.add_development_dependency 'sqlite3-ruby', '1.2.5'
 
   case RUBY_VERSION
   when /^1\.9/
@@ -42,8 +44,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'dm-is-list', '0.10.2'
   s.add_runtime_dependency 'dm-is-tree', '0.10.2'
   s.add_runtime_dependency 'data_objects', '0.10.1'
-  s.add_runtime_dependency 'do_sqlite3', '0.10.1'
-  s.add_runtime_dependency 'sqlite3-ruby', '1.2.5'
   s.add_runtime_dependency 'haml'
   s.add_runtime_dependency 'builder'
   s.add_runtime_dependency 'activesupport', '~> 3.0.0'
