@@ -1,28 +1,27 @@
 module Iceberg::Models::Topic
   extend ActiveSupport::Concern
-  include DataMapper::Types
 
   included do
     include DataMapper::Resource
     include Iceberg::Filters
 
-    property :id,                   Serial
-    property :title,                String,   :length => (1..250)
-    property :slug,                 Slug,     :length => (1..250)
-    property :sticky,               Integer,  :default => 0
-    property :locked,               Boolean,  :default => false
-    property :posts_count,          Integer,  :default => 0
-    property :view_count,           Integer,  :default => 0
-    property :user_id,              Integer
-    property :user_name,            String
-    property :user_ip_address,      IPAddress
-    property :created_at,           DateTime
-    property :updated_at,           DateTime
-    property :last_updated_at,      DateTime
-    property :last_user_id,         Integer
-    property :last_user_name,       String
-    property :last_user_ip_address, DataMapper::Types::IPAddress
-    property :deleted_at,           ParanoidDateTime
+    property :id,                   DataMapper::Property::Serial
+    property :title,                DataMapper::Property::String,   :length => (1..250)
+    property :slug,                 DataMapper::Property::Slug,     :length => (1..250)
+    property :sticky,               DataMapper::Property::Integer,  :default => 0
+    property :locked,               DataMapper::Property::Boolean,  :default => false
+    property :posts_count,          DataMapper::Property::Integer,  :default => 0
+    property :view_count,           DataMapper::Property::Integer,  :default => 0
+    property :user_id,              DataMapper::Property::Integer
+    property :user_name,            DataMapper::Property::String
+    property :user_ip_address,      DataMapper::Property::IPAddress
+    property :created_at,           DataMapper::Property::DateTime
+    property :updated_at,           DataMapper::Property::DateTime
+    property :last_updated_at,      DataMapper::Property::DateTime
+    property :last_user_id,         DataMapper::Property::Integer
+    property :last_user_name,       DataMapper::Property::String
+    property :last_user_ip_address, DataMapper::Property::IPAddress
+    property :deleted_at,           DataMapper::Property::ParanoidDateTime
 
     attr_accessor :user, :message, :existing_topic
 

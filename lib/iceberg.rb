@@ -4,6 +4,7 @@ require 'rack-flash'
 require 'active_support'
 
 require 'dm-core'
+require 'dm-migrations'
 require 'dm-types'
 require 'dm-aggregates'
 require 'dm-timestamps'
@@ -86,6 +87,7 @@ module Iceberg
           self._models[:#{klass}] = #{klass}}
       end
       base.class_eval(class_defs.join("\n"))
+      DataMapper.finalize
     end
 
     models :Board, :Topic, :Post, :TopicView

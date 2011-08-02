@@ -1,27 +1,26 @@
 module Iceberg::Models::Board
   extend ActiveSupport::Concern
-  include DataMapper::Types
 
   included do
     include DataMapper::Resource
     include Iceberg::Filters
 
-    property :id,                   Serial
-    property :title,                String,   :length => (1..250)
-    property :slug,                 Slug,     :length => (1..250)
-    property :description,          String,   :length => (1..500)
-    property :parent_id,            Integer
-    property :position,             Integer,  :default => 0
-    property :topics_count,         Integer,  :default => 0
-    property :posts_count,          Integer,  :default => 0
-    property :created_at,           DateTime
-    property :updated_at,           DateTime
-    property :last_updated_at,      DateTime
-    property :last_user_id,         Integer
-    property :last_user_name,       String
-    property :last_user_ip_address, IPAddress
-    property :allow_topics,         Boolean,  :default => true
-    property :deleted_at,           ParanoidDateTime
+    property :id,                   DataMapper::Property::Serial
+    property :title,                DataMapper::Property::String,   :length => (1..250)
+    property :slug,                 DataMapper::Property::Slug,     :length => (1..250)
+    property :description,          DataMapper::Property::String,   :length => (1..500)
+    property :parent_id,            DataMapper::Property::Integer
+    property :position,             DataMapper::Property::Integer,  :default => 0
+    property :topics_count,         DataMapper::Property::Integer,  :default => 0
+    property :posts_count,          DataMapper::Property::Integer,  :default => 0
+    property :created_at,           DataMapper::Property::DateTime
+    property :updated_at,           DataMapper::Property::DateTime
+    property :last_updated_at,      DataMapper::Property::DateTime
+    property :last_user_id,         DataMapper::Property::Integer
+    property :last_user_name,       DataMapper::Property::String
+    property :last_user_ip_address, DataMapper::Property::IPAddress
+    property :allow_topics,         DataMapper::Property::Boolean,  :default => true
+    property :deleted_at,           DataMapper::Property::ParanoidDateTime
 
     has n, :topics, :order => [:sticky.desc, :created_at.desc]
     has n, :posts, :through => :topics

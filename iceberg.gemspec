@@ -20,9 +20,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rack-test"
   s.add_development_dependency 'webrat'
   s.add_development_dependency 'be_valid_asset'
-  s.add_development_dependency 'dm-sweatshop', '0.10.2'
-  s.add_development_dependency 'do_sqlite3', '0.10.1'
-  s.add_development_dependency 'sqlite3-ruby', '1.2.5'
+  s.add_development_dependency 'dm-sqlite-adapter', '1.1.0'
+  s.add_development_dependency 'dm-sweatshop', '1.1.0'
 
   case RUBY_VERSION
   when /^1\.9/
@@ -33,16 +32,16 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'sinatra', '~> 1.2.0'
   s.add_runtime_dependency 'rack-flash', '0.1.2'
-  s.add_runtime_dependency 'dm-core', '0.10.2'
-  s.add_runtime_dependency 'dm-types', '0.10.2'
-  s.add_runtime_dependency 'dm-serializer', '0.10.2'
-  s.add_runtime_dependency 'dm-aggregates', '0.10.2'
-  s.add_runtime_dependency 'dm-timestamps', '0.10.2'
-  s.add_runtime_dependency 'dm-validations', '0.10.2'
-  s.add_runtime_dependency 'dm-tags', '0.10.2'
-  s.add_runtime_dependency 'dm-is-list', '0.10.2'
-  s.add_runtime_dependency 'dm-is-tree', '0.10.2'
-  s.add_runtime_dependency 'data_objects', '0.10.1'
+  s.add_runtime_dependency 'dm-core', '1.1.0'
+  s.add_runtime_dependency 'dm-migrations', '1.1.0'
+  s.add_runtime_dependency 'dm-types', '1.1.0'
+  s.add_runtime_dependency 'dm-serializer', '1.1.0'
+  s.add_runtime_dependency 'dm-aggregates', '1.1.0'
+  s.add_runtime_dependency 'dm-timestamps', '1.1.0'
+  s.add_runtime_dependency 'dm-validations', '1.1.0'
+  s.add_runtime_dependency 'dm-tags', '1.1.0'
+  s.add_runtime_dependency 'dm-is-list', '1.1.0'
+  s.add_runtime_dependency 'dm-is-tree', '1.1.0'
   s.add_runtime_dependency 'haml'
   s.add_runtime_dependency 'builder'
   s.add_runtime_dependency 'activesupport', '~> 3.0.0'
