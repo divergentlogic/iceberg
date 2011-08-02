@@ -31,9 +31,8 @@ Gem::Specification.new do |s|
     s.add_development_dependency "ruby-debug" unless defined?(RUBY_ENGINE) && RUBY_ENGINE == "rbx"
   end
 
-  s.add_runtime_dependency "rack", '1.0.1'
-  s.add_runtime_dependency 'sinatra', '1.0'
-  s.add_runtime_dependency 'rack-flash', '0.1.1'
+  s.add_runtime_dependency 'sinatra', '~> 1.2.0'
+  s.add_runtime_dependency 'rack-flash', '0.1.2'
   s.add_runtime_dependency 'dm-core', '0.10.2'
   s.add_runtime_dependency 'dm-types', '0.10.2'
   s.add_runtime_dependency 'dm-serializer', '0.10.2'
