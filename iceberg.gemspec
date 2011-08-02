@@ -46,6 +46,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'haml'
   s.add_runtime_dependency 'builder'
   s.add_runtime_dependency 'activesupport', '~> 3.0.0'
+  s.add_runtime_dependency 'i18n'
 
   s.files        = `git ls-files`.split("\n")
   s.executables  = `git ls-files`.split("\n").map{|f| f =~ /^bin\/(.*)/ ? $1 : nil}.compact
