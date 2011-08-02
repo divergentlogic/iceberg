@@ -67,7 +67,7 @@ module Iceberg
       end
     end
 
-    class_inheritable_hash :_models
+    class_attribute :_models
     self._models = {}
 
     def self.models(*models)
@@ -78,6 +78,7 @@ module Iceberg
 
     def self.inherited(base)
       super
+      self._models = self._models.dup
       class_defs = self._models.keys.map do |klass|
         %{class #{klass}
             include Iceberg::Models::#{klass}
