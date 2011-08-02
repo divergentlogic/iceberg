@@ -91,7 +91,7 @@ module Iceberg
 
     helpers do
       def model_for(model)
-        self.class.models[model]
+        self.class._models[model]
       end
 
       def params_for(model)
