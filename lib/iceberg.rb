@@ -87,7 +87,6 @@ module Iceberg
           self._models[:#{klass}] = #{klass}}
       end
       base.class_eval(class_defs.join("\n"))
-      DataMapper.finalize
     end
 
     models :Board, :Topic, :Post, :TopicView
