@@ -42,6 +42,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'dm-tags', '1.1.0'
   s.add_runtime_dependency 'dm-is-list', '1.1.0'
   s.add_runtime_dependency 'dm-is-tree', '1.1.0'
+  s.add_runtime_dependency 'padrino'
   s.add_runtime_dependency 'haml'
   s.add_runtime_dependency 'builder'
   s.add_runtime_dependency 'activesupport', '~> 3.0.0'

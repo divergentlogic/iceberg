@@ -2,6 +2,7 @@ require 'sinatra/base'
 require 'haml'
 require 'rack-flash'
 require 'active_support'
+require 'active_support/core_ext/class'
 
 require 'dm-core'
 require 'dm-migrations'
@@ -12,8 +13,8 @@ require 'dm-validations'
 require 'dm-is-list'
 require 'dm-is-tree'
 
-require File.expand_path(File.dirname(__FILE__)+'/../sinatra_more/lib/sinatra_more/markup_plugin')
-require File.expand_path(File.dirname(__FILE__)+'/../sinatra_more/lib/sinatra_more/render_plugin')
+require 'padrino-helpers'
+require File.expand_path(File.dirname(__FILE__)+'/helpers/form_builder')
 require File.expand_path(File.dirname(__FILE__)+'/helpers/utilities')
 require File.expand_path(File.dirname(__FILE__)+'/helpers/visuals')
 require File.expand_path(File.dirname(__FILE__)+'/plugins/named_route_plugin')
@@ -30,11 +31,12 @@ module Iceberg
 
     include Mixins::ExternalLayout
 
-    set :views,     File.dirname(__FILE__) + '/views'
+    set :views, File.dirname(__FILE__) + '/views'
 
     register Iceberg::NamedRoutePlugin
-    register SinatraMore::MarkupPlugin
-    register SinatraMore::RenderPlugin
+
+    register Padrino::Helpers
+    set :default_builder, 'IcebergFormBuilder'
 
     helpers Iceberg::Helpers::Utilities
     helpers Iceberg::Helpers::Visuals
