@@ -22,7 +22,7 @@ module Iceberg::Models::Post
     is :tree, :order => :created_at
     alias_method :replies, :children
 
-    validates_present     :message, :topic
+    validates_presence_of :message, :topic
     validates_with_method :topic, :method => :validate_topic_is_unlocked, :if => :new?
 
     before  :create,  :set_user_attributes

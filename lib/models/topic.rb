@@ -30,10 +30,10 @@ module Iceberg::Models::Topic
     belongs_to  :board
     belongs_to  :last_post, :model => 'Post', :required => false
 
-    validates_present     :message, :if => :new?, :when => [:default, :adding_to_board]
-    validates_present     :board, :title, :slug, :when => [:default, :adding_to_board]
-    validates_is_unique   :title, :slug, :scope => :board_id, :message => "A topic with that title has been posted in this board already; maybe you'd like to post under that topic instead?", :when => [:default, :adding_to_board]
-    validates_with_method :board, :method => :validate_board_allows_topics, :when => [:adding_to_board]
+    validates_presence_of   :message, :if => :new?, :when => [:default, :adding_to_board]
+    validates_presence_of   :board, :title, :slug, :when => [:default, :adding_to_board]
+    validates_uniqueness_of :title, :slug, :scope => :board_id, :message => "A topic with that title has been posted in this board already; maybe you'd like to post under that topic instead?", :when => [:default, :adding_to_board]
+    validates_with_method   :board, :method => :validate_board_allows_topics, :when => [:adding_to_board]
 
     before  :valid?,  :set_slug
     after   :valid?,  :set_existing_topic
