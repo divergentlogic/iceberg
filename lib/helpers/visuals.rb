@@ -11,13 +11,13 @@ module Iceberg
 
         links = []
         current = if board_or_topic.is_a?(Iceberg::Models::Topic)
-          links << link_to(board_or_topic.title, path_for(:topic, board_or_topic))
+          links << link_to(h(board_or_topic.title), path_for(:topic, board_or_topic))
           board_or_topic.board
         else
           board_or_topic
         end
         while current
-          links.unshift(link_to(current.title, path_for(:board, current)))
+          links.unshift(link_to(h(current.title), path_for(:board, current)))
           current = current.parent
         end
         links.unshift(link_to("Index", path_for(:boards)))
