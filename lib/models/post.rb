@@ -7,8 +7,8 @@ module Iceberg::Models::Post
 
     property :id,               DataMapper::Property::Serial
     property :message,          DataMapper::Property::Text
-    property :parent_id,        DataMapper::Property::Integer
-    property :user_id,          DataMapper::Property::Integer
+    property :parent_id,        DataMapper::Property::Integer, :index => true
+    property :user_id,          DataMapper::Property::Integer, :index => true
     property :user_name,        DataMapper::Property::String
     property :user_ip_address,  DataMapper::Property::IPAddress
     property :created_at,       DataMapper::Property::DateTime

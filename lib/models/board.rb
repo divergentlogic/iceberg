@@ -9,14 +9,14 @@ module Iceberg::Models::Board
     property :title,                DataMapper::Property::String,   :length => (1..250)
     property :slug,                 DataMapper::Property::Slug,     :length => (1..250)
     property :description,          DataMapper::Property::String,   :length => (1..500)
-    property :parent_id,            DataMapper::Property::Integer
+    property :parent_id,            DataMapper::Property::Integer,  :index => true
     property :position,             DataMapper::Property::Integer,  :default => 0
     property :topics_count,         DataMapper::Property::Integer,  :default => 0
     property :posts_count,          DataMapper::Property::Integer,  :default => 0
     property :created_at,           DataMapper::Property::DateTime
     property :updated_at,           DataMapper::Property::DateTime
     property :last_updated_at,      DataMapper::Property::DateTime
-    property :last_user_id,         DataMapper::Property::Integer
+    property :last_user_id,         DataMapper::Property::Integer,  :index => true
     property :last_user_name,       DataMapper::Property::String
     property :last_user_ip_address, DataMapper::Property::IPAddress
     property :allow_topics,         DataMapper::Property::Boolean,  :default => true

@@ -12,13 +12,13 @@ module Iceberg::Models::Topic
     property :locked,               DataMapper::Property::Boolean,  :default => false
     property :posts_count,          DataMapper::Property::Integer,  :default => 0
     property :view_count,           DataMapper::Property::Integer,  :default => 0
-    property :user_id,              DataMapper::Property::Integer
+    property :user_id,              DataMapper::Property::Integer,  :index => true
     property :user_name,            DataMapper::Property::String
     property :user_ip_address,      DataMapper::Property::IPAddress
     property :created_at,           DataMapper::Property::DateTime
     property :updated_at,           DataMapper::Property::DateTime
     property :last_updated_at,      DataMapper::Property::DateTime
-    property :last_user_id,         DataMapper::Property::Integer
+    property :last_user_id,         DataMapper::Property::Integer,  :index => true
     property :last_user_name,       DataMapper::Property::String
     property :last_user_ip_address, DataMapper::Property::IPAddress
     property :deleted_at,           DataMapper::Property::ParanoidDateTime
