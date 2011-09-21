@@ -27,23 +27,19 @@ module Iceberg::Models::Post
 
     before  :create,  :set_user_attributes
     after   :create,  :update_caches
-    before  :update do # TODO: replace with :destroy when upgrading to DM 0.10.3
-      if attribute_dirty?(:deleted_at) && !topic.attribute_dirty?(:deleted_at)
-        children.each do |child|
-          child.parent = parent
-          child.save!
-        end
+    before  :destroy do
+      children.each do |child|
+        child.parent = parent
+        child.save!
       end
     end
-    after :update do # TODO: replace with :destroy when upgrading to DM 0.10.3
-      if deleted_at
-        update_topic = self.topic.model.get(topic_id)
-        if update_topic
-          if update_topic.posts.count > 0
-            update_topic.update_cache
-          else
-            update_topic.destroy
-          end
+    after :destroy do
+      update_topic = self.topic.model.get(topic_id)
+      if update_topic
+        if update_topic.posts.count > 0
+          update_topic.update_cache
+        else
+          update_topic.destroy
         end
       end
     end

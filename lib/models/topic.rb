@@ -39,11 +39,9 @@ module Iceberg::Models::Topic
     after   :valid?,  :set_existing_topic
     before  :create,  :set_user_attributes
     after   :create,  :set_post
-    before  :update do # TODO: replace with :destroy when upgrading to DM 0.10.3
-      if attribute_dirty? :deleted_at
-        posts.destroy
-        views.destroy
-      end
+    before  :destroy do
+      posts.destroy
+      views.destroy
     end
 
     def sticky?

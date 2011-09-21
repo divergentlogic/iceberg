@@ -54,6 +54,17 @@ describe "Post" do
       @topic.reload
       @topic.deleted_at.should == Time.utc(2010, 1, 1, 4, 0, 0)
     end
+
+    it "should delete its topic if it is the first post" do
+      board = TestApp::Board.generate
+      topic = board.post_topic(nil, :title => "Title", :message => "First post")
+      post  = topic.posts.first
+
+      Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 2, 0, 0))
+      post.destroy.should_not be_false
+      topic.reload
+      topic.deleted_at.should == Time.utc(2010, 1, 1, 2, 0, 0)
+    end
   end
 
   describe "reply" do
