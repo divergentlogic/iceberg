@@ -2,10 +2,18 @@ module Iceberg
   class App < Sinatra::Base
 
     helpers do
-      def get_board
-        slugs   = split_splat
-        @board  = model_for(:Board).by_ancestory(current_user, slugs)
-        halt 404 unless @board
+      def get_topic(forum_path=:topic)
+        slugs  = split_splat
+        @board = model_for(:Board).by_ancestory(current_user, slugs)
+        @topic = @board.topics.filtered(current_user).first(:slug => params[:topic]) if @board
+        unless @topic
+          move = model_for(:Move).first(:board_path => slugs.join('/'), :topic_slug => params[:topic])
+          if move
+            redirect path_for(forum_path, move.topic), 301
+          else
+            halt 404
+          end
+        end
       end
     end
 
@@ -28,17 +36,13 @@ module Iceberg
     end
 
     get :topic_atom do
-      get_board
-      @topic = @board.topics.filtered(current_user).first(:slug => params[:topic])
-      halt 404 unless @topic
+      get_topic(:topic_atom)
       headers['Content-Type'] = 'application/atom+xml'
       builder :'topics/show', :layout => false
     end
 
     get :topic do
-      get_board
-      @topic = @board.topics.filtered(current_user).first(:slug => params[:topic])
-      halt 404 unless @topic
+      get_topic
       @topic.view!(current_user)
       haml :'topics/show'
     end

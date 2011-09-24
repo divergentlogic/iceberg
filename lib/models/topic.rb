@@ -27,6 +27,7 @@ module Iceberg::Models::Topic
 
     has n,      :posts, :order => [:created_at]
     has n,      :views, :order => [:created_at.desc], :model => 'TopicView'
+    has n,      :moves
     belongs_to  :board
     belongs_to  :last_post, :model => 'Post', :required => false
 
@@ -34,6 +35,7 @@ module Iceberg::Models::Topic
     validates_presence_of   :board, :title, :slug, :when => [:default, :adding_to_board]
     validates_uniqueness_of :title, :slug, :scope => :board_id, :message => "A topic with that title has been posted in this board already; maybe you'd like to post under that topic instead?", :when => [:default, :adding_to_board]
     validates_with_method   :board, :method => :validate_board_allows_topics, :when => [:adding_to_board]
+    validates_with_method   :title, :method => :validate_move_does_not_exist, :when => [:default, :adding_to_board]
 
     before  :valid?,  :set_slug
     after   :valid?,  :set_existing_topic
@@ -61,6 +63,7 @@ module Iceberg::Models::Topic
         old = self.board
         self.board = board
         if valid_for_adding_to_board? && save(:adding_to_board)
+          self.moves.create(:board_path => old.ancestory_path, :topic_slug => slug)
           self.board.model.get(board.id).update_cache
           self.board.model.get(old.id).update_cache
           return true
@@ -110,6 +113,15 @@ module Iceberg::Models::Topic
         true
       else
         [false, "This board does not allow topics"]
+      end
+    end
+
+    def validate_move_does_not_exist
+      move = moves.model.first(:board_path => board.ancestory_path, :topic_slug => slug)
+      if move
+        [false, "This title has already been taken"]
+      else
+        true
       end
     end
   end

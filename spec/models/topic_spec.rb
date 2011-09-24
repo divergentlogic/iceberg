@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe "Topic" do
   describe "unique title and slug" do
     before(:each) do
-      @board = TestApp::Board.generate
+      @board = TestApp::Board.generate :title => "This is a Board"
       @topic = @board.post_topic(nil, :title => "A very special title", :message => "First post")
     end
 
@@ -22,6 +22,14 @@ describe "Topic" do
       topic.should error_on(:slug)
       topic.errors.on(:slug).should == ["A topic with that title has been posted in this board already; maybe you'd like to post under that topic instead?"]
       topic.existing_topic.should == @topic
+    end
+
+    it "should complain if the slug exists for a Move" do
+      move  = TestApp::Move.generate :board_path => "this-is-a-board", :topic_slug => "this-is-a-topic"
+      topic = @board.post_topic(nil, :title => "This is a Topic", :message => "Message")
+      topic.should be_new
+      topic.should error_on(:title)
+      topic.errors.on(:title).should == ["This title has already been taken"]
     end
   end
 
@@ -246,6 +254,14 @@ describe "Topic" do
 
     it "should not move to the same board" do
       @topic.move_to(@old_board).should be_false
+    end
+
+    it "should create a Move to redirect from the old path" do
+      @topic.move_to(@new_board)
+      move = TestApp::Move.first
+      move.topic.should      == @topic
+      move.board_path.should == "old-board"
+      move.topic_slug.should == "mover-and-shaker"
     end
 
     describe "with many topics" do

@@ -91,7 +91,7 @@ module Iceberg
       base.class_eval(class_defs.join("\n"))
     end
 
-    models :Board, :Topic, :Post, :TopicView
+    models :Board, :Topic, :Post, :TopicView, :Move
 
     helpers do
       def model_for(model)

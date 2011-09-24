@@ -13,6 +13,24 @@ describe "Topics Routes" do
         last_response.should be_ok
       end
 
+      it "should return 404 if Board does not exist" do
+        get "/boards/does-not-exist/topics/yak-yak-yak"
+        last_response.should be_not_found
+      end
+
+      it "should return 404 if Topic does not exist" do
+        get "/boards/talk-about-stuff/topics/blah-blah-blah"
+        last_response.should be_not_found
+      end
+
+      it "should return 301 redirect if Move exists" do
+        TestApp::Move.generate :topic => @topic, :board_path => "does-not-exist", :topic_slug => "yak-yak-yak"
+        get "/boards/does-not-exist/topics/yak-yak-yak"
+        last_response.should be_redirect
+        last_response.status.should == 301
+        last_response.headers['Location'].should == "http://example.org/boards/talk-about-stuff/topics/yak-yak-yak"
+      end
+
       it "should update the topic view count and create a view record for the current user" do
         Time.stub!(:now).and_return(Time.utc(2010, 1, 1, 1, 0, 0))
 

@@ -5,5 +5,12 @@ TestApp::Board.fixture {{
 
 TestApp::Topic.fixture {{
   :title => /\w+/.gen,
-  :message => /\w+/.gen
+  :message => /\w+/.gen,
+  :board => TestApp::Board.generate
+}}
+
+TestApp::Move.fixture {{
+  :board_path => /\w+/.gen,
+  :topic_slug => /\w+/.gen,
+  :topic => TestApp::Topic.make
 }}

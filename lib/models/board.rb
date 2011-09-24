@@ -45,7 +45,8 @@ module Iceberg::Models::Board
         all(options.merge!({:order => [:position]}))
       end
 
-      def by_ancestory(current_user, slugs)
+      def by_ancestory(current_user, original_slugs)
+        slugs = original_slugs.dup
         while !slugs.empty?
           slug = slugs.shift
           child = if child
